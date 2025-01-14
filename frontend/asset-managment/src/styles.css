@@ -1,0 +1,175 @@
+/* You can add global styles to this file, and also import other style files */
+
+@font-face {
+  font-family: "Iran-Yekan-Regular";
+  src: url("/assets/Fonts/iranyekanwebregularfanum.ttf");
+}
+
+@font-face {
+  font-family: "Iran-Yekan-Bold";
+  src: url("/assets/Fonts/iranyekanwebboldfanum.ttf");
+}
+
+@font-face {
+  font-family: "Iran-Yekan-Light";
+  src: url("/assets/Fonts/iranyekanweblightfanum.ttf");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Iran-Yekan-Regular, sans-serif;
+}
+
+body {
+  height: 100%;
+  background-color: #e4e9f7 !important;
+}
+body {
+  margin: 0;
+  font-family: Iran-Yekan-Regular, "Helvetica Neue", sans-serif;
+}
+.dialog-container,
+.mat-mdc-dialog-surface.mdc-dialog__surface,
+.mdc-tab__text-label,
+.choose-supporter-form,
+.change-password-form,
+.userDeliveryGoods-form,
+.userPc-form,
+.software-form,
+.sealPc-form {
+  background-color: #e4e9f7 !important;
+  color: #000000 !important;
+}
+.mdc-data-table__table {
+  background-color: inherit !important;
+}
+.mat-mdc-paginator {
+  background-color: inherit !important;
+}
+.space {
+  height: 100px;
+  background-color: #e4e9f7;
+}
+.mat-elevation-z8 {
+  margin: 11px;
+  border: 6px solid;
+  border-radius: 20px;
+  border-image: linear-gradient(45deg, #0dcaf0, rgba(29, 25, 247, 0.636)) 1;
+  padding: 10px;
+}
+.filters,
+.change-password-form,
+.choose-supporter-form,
+.userPc-form,
+.software-form,
+.sealPc-form,
+.userDeliveryGoods-form,
+.mat-mdc-dialog-surface {
+  margin: 11px;
+  margin-top: 75px;
+  border: 6px solid;
+  border-radius: 20px;
+  border-image: linear-gradient(45deg, #0dcaf0, rgba(29, 25, 247, 0.636)) 1;
+  padding: 10px;
+}
+.filters .col-md-4 {
+  display: flex;
+  flex-direction: row-reverse;
+  align-self: center;
+  width: 23%;
+}
+.filters .row {
+  flex-direction: row-reverse;
+  justify-content: space-between !important;
+}
+.filters {
+  select {
+    height: 40px;
+    width: 200px;
+    margin-top: 17px;
+  }
+  input {
+    height: 40px;
+    border-color: aliceblue;
+    direction: rtl;
+  }
+}
+.filters .col-md-4.bt {
+  .btn.btn-primary,
+  .btn.btn-danger {
+    margin: 0;
+    margin-left: 10px;
+  }
+}
+/* Dark Theme Styles */
+.dark-theme {
+  background-color: rgb(89, 89, 92) !important;
+  color: #ffffff !important;
+}
+
+.dark-theme {
+  /* header,
+  .sidebar,
+  .sidebar .sub-menu, */
+  .dialog-container,
+  p#warning,
+  .help-content,
+  .help-content > h2,
+  .mdc-tab__text-label {
+    background-color: rgb(89, 89, 92) !important;
+    color: white !important;
+  }
+}
+/* .dark-theme {
+  .sidebar i,
+  .sidebar a,
+  .sidebar span {
+    color: white !important;
+  }
+  .sidebar .nav-links li.active i,
+  .sidebar .nav-links li:hover i {
+    color: #000000;
+  }
+} */
+.dark-theme {
+  .mat-mdc-table {
+    tr {
+      color: rgb(255, 255, 255) !important;
+    }
+    th {
+      color: black !important;
+    }
+  }
+}
+.dark-theme {
+  .mdc-tab-indicator > span {
+    border-color: black !important;
+  }
+}
+.dark-theme {
+  .choose-supporter-form,
+  .change-password-form,
+  .userPc-form,
+  .software-form,
+  .sealPc-form,
+  .userDeliveryGoods-form,
+  .mat-mdc-dialog-surface.mdc-dialog__surface,
+  .space {
+    background-color: rgb(89, 89, 92) !important;
+  }
+}
+.app-wrapper {
+  display: flex;
+  height: 100vh;
+}
+
+.content-area {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.as-side-nav ~ .content-area {
+  margin-right: 78px;
+}

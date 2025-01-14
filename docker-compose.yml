@@ -1,0 +1,11 @@
+services:
+    angular:
+        build:
+            context: ./frontend/asset-managment
+            dockerfile: Dockerfile
+        ports:
+            - "80:4200"
+        volumes:
+            - angular_data:/frontend
+volumes:
+    angular_data:

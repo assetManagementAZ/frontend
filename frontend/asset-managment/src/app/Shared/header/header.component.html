@@ -1,0 +1,53 @@
+<header class="p-3 mb-3 border-bottom">
+  <div class="container">
+    <div
+      class="custom d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"
+    >
+      <div class="dropdown show" style="cursor: pointer">
+        <a
+          class="dropdown-toggle"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <img
+            src="assets/Images/home.png.png"
+            alt="mdo"
+            width="32"
+            height="32"
+            class="rounded-circle"
+          />
+        </a>
+        <ul class="dropdown-menu text-small">
+          <li>
+            <a routerLink="/panel" class="dropdown-item">خانه</a>
+          </li>
+          <li *ngIf="userRole !== 'admin'">
+            <a routerLink="/userProfile" class="dropdown-item"> پروفایل</a>
+          </li>
+          <li>
+            <a routerLink="/profile" class="dropdown-item">تغییر رمز</a>
+          </li>
+          <li><hr class="dropdown-divider" /></li>
+          <li>
+            <a class="dropdown-item" style="cursor: pointer" (click)="log_out()"
+              >خروج</a
+            >
+          </li>
+        </ul>
+      </div>
+      <a
+        class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none"
+      >
+        <svg
+          class="bi me-2"
+          width="40"
+          height="32"
+          role="img"
+          aria-label="Bootstrap"
+        >
+          <use xlink:href="#bootstrap" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</header>

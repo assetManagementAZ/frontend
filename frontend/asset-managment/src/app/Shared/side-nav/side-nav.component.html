@@ -1,0 +1,157 @@
+<link
+  rel="stylesheet"
+  href="/assets/font-awesome-4.7.0/css/font-awesome.min.css"
+/>
+
+<nav>
+  <div class="sidebar close" #sidebar>
+    <div class="logo-details">
+      <i class="fa fa-bars fa-3x" #sidebarBtn></i>
+      <span class="logo_name" style="color: black"> خوش آمدید</span>
+    </div>
+    <ul class="nav-links">
+      <li>
+        <a routerLink="/panel">
+          <i class="fa fa-home"></i>
+          <span class="link_name">خانه</span>
+        </a>
+        <ul class="sub-menu blank">
+          <li><a class="link_name" routerLink="/panel">خانه</a></li>
+        </ul>
+      </li>
+      <li *ngIf="userRole !== 'user'">
+        <div class="iocn-link">
+          <a routerLink="#">
+            <i class="fa fa-users"></i>
+            <span class="link_name"> کاربران</span>
+          </a>
+          <i class="fa fa-chevron-down arrow"></i>
+        </div>
+        <ul class="sub-menu">
+          <li><a class="link_name" routerLink="#"> کاربران</a></li>
+
+          <li><a routerLink="/users">کاربران سیستم </a></li>
+          <li><a routerLink="/buildingSupporters">پشتیبانان </a></li>
+        </ul>
+      </li>
+      <li *ngIf="userRole !== 'user' && userRole !== 'supporter'">
+        <div class="iocn-link">
+          <a routerLink="#">
+            <i class="fa fa-database"></i>
+            <span class="link_name">اطلاعات پایه </span>
+          </a>
+          <i class="fa fa-chevron-down arrow"></i>
+        </div>
+        <ul class="sub-menu">
+          <li>
+            <a class="link_name group_name" routerLink="#"
+              >اطلاعات پایه&#x2726;</a
+            >
+          </li>
+          <li><a routerLink="/buildings">ساختمان</a></li>
+          <li><a routerLink="/zones">حوزه</a></li>
+          <li>
+            <a class="group_name" routerLink="#"> بخش کیس &#x2726;</a>
+          </li>
+          <li><a routerLink="/op">سیستم عامل</a></li>
+          <li><a routerLink="/version">ورژن سیستم عامل</a></li>
+          <li><a routerLink="/software">نرم افزار</a></li>
+          <li><a routerLink="/computer"> کیس</a></li>
+          <li><a routerLink="/seal"> پلمپ </a></li>
+          <li>
+            <a class="group_name" routerLink="#"> بخش کالا &#x2726;</a>
+          </li>
+          <li><a routerLink="/feature">دسته ویژگی ها </a></li>
+          <li><a routerLink="/prfeature"> ویژگی کالا</a></li>
+          <li><a routerLink="/products/:category"> دسته کالا</a></li>
+          <li><a routerLink="/products"> کالا ها</a></li>
+          <li><a routerLink="/pfcOrder"> ترتیب کالا ها</a></li>
+
+          <li><a routerLink="/deliveredProducts"> کالا تحویلی</a></li>
+        </ul>
+      </li>
+      <li *ngIf="userRole !== 'user' && userRole !== 'supporter'">
+        <div class="iocn-link">
+          <a routerLink="#">
+            <i class="fa fa-product-hunt"></i>
+            <span class="link_name"> دارایی</span>
+          </a>
+          <i class="fa fa-chevron-down arrow"></i>
+        </div>
+        <ul class="sub-menu">
+          <li><a class="link_name" routerLink="#"> دارایی</a></li>
+          <li><a routerLink="/deliveredProducts"> کالا</a></li>
+          <li><a routerLink="/computer"> کیس</a></li>
+        </ul>
+      </li>
+      <li *ngIf="userRole !== 'admin'">
+        <div class="iocn-link">
+          <a routerLink="#">
+            <i class="fa fa-product-hunt"></i>
+            <span class="link_name"> دارایی</span>
+          </a>
+          <i class="fa fa-chevron-down arrow"></i>
+        </div>
+        <ul class="sub-menu">
+          <li><a class="link_name" routerLink="#"> دارایی</a></li>
+          <li><a routerLink="/usersDelivery"> کالا</a></li>
+          <li><a routerLink="/usersPc"> کامپیوتر</a></li>
+        </ul>
+      </li>
+      <li>
+        <div class="iocn-link">
+          <a routerLink="#">
+            <i class="fa fa-ticket"></i>
+            <span class="link_name">تیکت ها </span>
+          </a>
+          <i class="fa fa-chevron-down arrow"></i>
+        </div>
+        <ul class="sub-menu">
+          <li><a class="link_name" routerLink="#">تیکت ها</a></li>
+          <li><a routerLink="/ownTicketPage">تیکت ها شخصی </a></li>
+          <li *ngIf="userRole !== 'user'">
+            <a routerLink="/userTicketPage">تیکت ها کاربران</a>
+          </li>
+        </ul>
+      </li>
+      <!-- <li>
+        <a routerLink="#">
+          <i class="fa fa-cog"></i>
+          <span class="link_name">Setting</span>
+        </a>
+        <ul class="sub-menu blank">
+          <li><a class="link_name" routerLink="#">Setting</a></li>
+        </ul>
+      </li> -->
+      <li>
+        <div class="theme-change">
+          <a style="cursor: pointer" (click)="toggleTheme()">
+            <i
+              class="fa {{ isDarkMode ? 'fa-toggle-on' : 'fa-toggle-off' }}"
+            ></i>
+            تغییر پوسته
+          </a>
+        </div>
+        <div class="profile-details">
+          <div class="profile-content">
+            <img src="../../../assets/Images/avatar.png" alt="profileImg" />
+          </div>
+          <div class="name-job">
+            <div class="profile_name">
+              {{ userList[0]?.username }} {{ userList[0]?.userlastname }}
+            </div>
+            <div class="job">
+              {{ getUserRoleString(userList[0]?.userroleid) }}
+            </div>
+          </div>
+          <i class="fa fa-log-out"></i>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <section class="home-section">
+    <div class="home-content">
+      <!-- <i class="fa fa-bars fa-3x" #sidebarBtn></i> -->
+    </div>
+  </section>
+</nav>

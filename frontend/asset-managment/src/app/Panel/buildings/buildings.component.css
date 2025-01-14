@@ -1,0 +1,250 @@
+.address {
+  display: flex;
+  justify-content: right;
+  padding-right: 20px;
+  padding-bottom: 20px;
+  flex-direction: row-reverse;
+}
+.address a,
+.address span {
+  text-decoration: none;
+  color: black;
+  font-size: 14px;
+}
+
+.form1 {
+  padding-top: 15px;
+}
+input {
+  display: inline;
+  margin-top: 20px;
+
+  max-width: 250px;
+  border-color: black;
+  border-radius: 9px;
+  margin-left: 50px;
+}
+label {
+  display: inline-block;
+  padding: 25px 20px 0 10px;
+  width: 200px;
+  height: 65px;
+}
+.form-group {
+  display: flex;
+  flex-direction: row-reverse;
+  max-width: 650px;
+  height: 66px;
+}
+.btn.btn-primary,
+.btn.btn-success {
+  margin-bottom: 20px;
+}
+.col-md-6 {
+  width: 30%;
+}
+.row.main {
+  margin-top: 100px;
+  border: 6px solid;
+  border-image-slice: 1;
+  border-image-source: linear-gradient(
+    45deg,
+    #0dcaf0,
+    rgba(29, 25, 247, 0.636)
+  );
+  padding: 30px 0 0 0;
+  flex-direction: row-reverse;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.row {
+  justify-content: right;
+}
+.buttons2 {
+  margin-top: 20px;
+  margin-left: 50px;
+}
+.form-select {
+  word-wrap: normal;
+  margin-top: 20px;
+  width: 410px;
+  border-radius: 9px;
+  text-align: center;
+  padding: 0;
+}
+::ng-deep .ng-input {
+  padding-right: 30px;
+}
+::ng-deep .ng-input > input {
+  direction: rtl;
+}
+::ng-deep .ng-value-label.ng-star-inserted {
+  margin-left: 80px;
+}
+::ng-deep .ng-select .ng-select-container {
+  border-color: #000000;
+  border-radius: 9px;
+  height: 44px !important;
+}
+/* message componnent */
+.message-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px;
+  background-color: #000000;
+  color: #fff;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  margin-bottom: 240px;
+}
+
+.success {
+  color: rgb(5, 167, 5);
+}
+
+.error {
+  color: red;
+}
+option {
+  text-align: center;
+}
+.btn.btn-danger {
+  margin-bottom: 20px;
+  margin-left: 10px;
+}
+.mat-elevation-z8 {
+  box-shadow: none;
+}
+.mat-mdc-paginator {
+  display: flex;
+  justify-content: center;
+}
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  z-index: 1000; /* Ensure it's on top */
+}
+
+.choose-supporter-form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  padding: 20px;
+  background-color: #a9b2ff;
+  border-radius: 5px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+}
+
+.choose-supporter-form .form-group {
+  margin-bottom: 15px;
+}
+
+.choose-supporter-form .btn {
+  width: 100%;
+}
+.choose-supporter-form label {
+  width: 225px;
+  text-align: end;
+}
+.passButtons {
+  justify-content: center;
+  display: flex;
+  padding-top: 20px;
+}
+.supporter label {
+  display: inline-block;
+  padding: 25px 0 0;
+  width: 100px;
+  height: 65px;
+  text-align: right;
+}
+.building label {
+  display: inline-block;
+  padding: 25px 0 0 10px;
+  width: 120px;
+  height: 75px;
+}
+.building input {
+  display: inline;
+  margin-top: 10px;
+  /* margin-bottom: 10px; */
+  width: 460px;
+  margin-left: 0;
+  text-align: end;
+  border-color: #818181;
+}
+.floor label {
+  display: inline-block;
+  padding: 25px 0 0 10px;
+  width: 75px;
+  height: 65px;
+  text-align: end;
+}
+::ng-deep .cdk-overlay-container {
+  z-index: 9999 !important;
+}
+
+::ng-deep .cdk-overlay-connected-position-bounding-box {
+  z-index: 9999 !important;
+}
+.fontSize {
+  font-family: "Iran-Yekan-Light", sans-serif;
+}
+.customSelect {
+  width: 291px;
+  height: fit-content;
+  direction: ltr;
+}
+::ng-deep .customSelect .mat-mdc-text-field-wrapper {
+  background-color: #fff;
+}
+::ng-deep .mat-mdc-text-field-wrapper.mdc-text-field {
+  border-color: #000000;
+  /* background-color: #fff; */
+  border-radius: 9px;
+  height: 54px;
+}
+::ng-deep .mat-mdc-select-value {
+  text-align: center;
+}
+th {
+  color: #0d00ff;
+  font-size: 15px;
+}
+::placeholder {
+  text-align: center;
+}
+mat-paginator,
+table,
+thead {
+  background-color: #bac1ff40;
+}
+mat-form-field {
+  height: 90px;
+  direction: rtl;
+  width: 11%;
+  align-content: end;
+  flex-wrap: wrap;
+  display: flex;
+  justify-self: right;
+  /* margin-top: 60px; */
+}
+.secondary-Form-field {
+  margin-top: 65px;
+  margin-right: 10px;
+}
+mat-paginator ::ng-deep .mat-mdc-text-field-wrapper.mdc-text-field {
+  height: 45px;
+}
