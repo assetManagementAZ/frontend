@@ -26,6 +26,5 @@ header {
   }
 }
 .border-bottom {
-  /* border-bottom: var(--bs-border-width) var(--bs-border-style) #59595c !important; */
-  /* border-radius: 0 12px 12px 0%; */
+  border-bottom: var(--bs-border-width) var(--bs-border-style) #59595c !important;
 }
