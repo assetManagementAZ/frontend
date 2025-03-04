@@ -6,8 +6,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class DataService {
-  private baseUrl = 'http://172.16.16.138:8000';
-  // private baseUrl = 'http://localhost:8000';
+  // private baseUrl = 'http://172.16.16.138:8000';
+  private baseUrl = 'http://localhost:8000';
   constructor(private http: HttpClient) {}
 
   get(endpoint: string): Observable<HttpResponse<any>> {
