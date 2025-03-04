@@ -25,7 +25,6 @@ import { HeaderComponent } from '../../header/header.component';
   selector: 'as-seal-pc',
   standalone: true,
   imports: [
-    HeaderComponent,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
@@ -37,7 +36,6 @@ import { HeaderComponent } from '../../header/header.component';
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    RouterLink,
     RouterModule,
   ],
   templateUrl: './seal-pc.component.html',

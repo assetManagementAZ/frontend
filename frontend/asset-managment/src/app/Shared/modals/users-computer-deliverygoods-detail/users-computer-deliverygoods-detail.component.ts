@@ -27,7 +27,6 @@ import moment from 'jalali-moment';
   selector: 'as-users-computer-deliverygoods-detail',
   standalone: true,
   imports: [
-    HeaderComponent,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
@@ -39,7 +38,6 @@ import moment from 'jalali-moment';
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    RouterLink,
     RouterModule,
   ],
   templateUrl: './users-computer-deliverygoods-detail.component.html',

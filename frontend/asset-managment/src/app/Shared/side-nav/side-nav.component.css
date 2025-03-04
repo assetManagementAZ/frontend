@@ -25,6 +25,7 @@
   width: 100%;
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 .sidebar .logo-details i {
   font-size: 30px;

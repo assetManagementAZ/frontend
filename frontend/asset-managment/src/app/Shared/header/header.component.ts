@@ -13,14 +13,7 @@ import { ThemeService } from '../../Services/theme.service';
 @Component({
   selector: 'as-header',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    RouterLink,
-    RouterLinkActive,
-    RouterModule,
-    CommonModule,
-    MatIconModule,
-  ],
+  imports: [RouterLink, RouterModule, CommonModule, MatIconModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })

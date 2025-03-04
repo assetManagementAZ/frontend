@@ -27,7 +27,6 @@ import { ComputerDetailComponent } from '../computer-detail/computer-detail.comp
   selector: 'as-ticket-detail',
   standalone: true,
   imports: [
-    HeaderComponent,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
@@ -39,7 +38,6 @@ import { ComputerDetailComponent } from '../computer-detail/computer-detail.comp
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    RouterLink,
     RouterModule,
   ],
   templateUrl: './ticket-detail.component.html',

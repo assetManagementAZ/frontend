@@ -31,7 +31,6 @@ import { HeaderComponent } from '../../header/header.component';
   selector: 'as-delivered-goods-user',
   standalone: true,
   imports: [
-    HeaderComponent,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
@@ -43,7 +42,6 @@ import { HeaderComponent } from '../../header/header.component';
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    RouterLink,
     RouterModule,
   ],
   templateUrl: './delivered-goods-user.component.html',

@@ -32,7 +32,6 @@ import { MatIconModule } from '@angular/material/icon';
   selector: 'as-user-detail',
   standalone: true,
   imports: [
-    HeaderComponent,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,

@@ -26,7 +26,6 @@ import moment from 'jalali-moment';
   selector: 'as-repair-report',
   standalone: true,
   imports: [
-    HeaderComponent,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
@@ -38,7 +37,6 @@ import moment from 'jalali-moment';
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    RouterLink,
     RouterModule,
   ],
   templateUrl: './repair-report.component.html',

@@ -33,7 +33,6 @@ import { tap } from 'rxjs';
   selector: 'as-ticketing',
   standalone: true,
   imports: [
-    HeaderComponent,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
@@ -45,7 +44,6 @@ import { tap } from 'rxjs';
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    RouterLink,
     RouterModule,
     MatTabsModule,
   ],

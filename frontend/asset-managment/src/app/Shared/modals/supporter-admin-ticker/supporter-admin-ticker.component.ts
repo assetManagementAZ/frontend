@@ -40,7 +40,6 @@ import { NgSelectModule } from '@ng-select/ng-select';
   selector: 'as-supporter-admin-ticker',
   standalone: true,
   imports: [
-    HeaderComponent,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
@@ -52,7 +51,6 @@ import { NgSelectModule } from '@ng-select/ng-select';
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    RouterLink,
     RouterModule,
     MatTabsModule,
     MatListModule,

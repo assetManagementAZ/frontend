@@ -24,7 +24,6 @@ import { HeaderComponent } from '../../header/header.component';
   selector: 'as-default-attributes-dialog',
   standalone: true,
   imports: [
-    HeaderComponent,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
@@ -36,7 +35,6 @@ import { HeaderComponent } from '../../header/header.component';
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    RouterLink,
     RouterModule,
   ],
   templateUrl: './default-attributes-dialog.component.html',

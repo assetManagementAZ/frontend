@@ -25,7 +25,6 @@ import { SupporterAdminTickerComponent } from '../supporter-admin-ticker/support
   selector: 'as-users-property-delivered-goods',
   standalone: true,
   imports: [
-    HeaderComponent,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
@@ -37,7 +36,6 @@ import { SupporterAdminTickerComponent } from '../supporter-admin-ticker/support
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    RouterLink,
     RouterModule,
   ],
   templateUrl: './users-property-delivered-goods.component.html',

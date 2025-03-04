@@ -10,7 +10,7 @@ import { SideNavComponent } from '../Shared/side-nav/side-nav.component';
 @Component({
   selector: 'as-panel',
   standalone: true,
-  imports: [HeaderComponent, RouterModule, CommonModule, SideNavComponent],
+  imports: [HeaderComponent, RouterModule, CommonModule],
   templateUrl: './panel.component.html',
   styleUrl: './panel.component.css',
 })

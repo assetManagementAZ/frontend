@@ -33,7 +33,6 @@ import moment from 'jalali-moment';
   selector: 'as-users-computer-detail',
   standalone: true,
   imports: [
-    HeaderComponent,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
@@ -45,7 +44,6 @@ import moment from 'jalali-moment';
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    RouterLink,
     RouterModule,
   ],
   templateUrl: './users-computer-detail.component.html',

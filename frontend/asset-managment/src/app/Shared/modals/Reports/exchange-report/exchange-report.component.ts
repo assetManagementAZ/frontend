@@ -25,7 +25,6 @@ import { OutboundReportComponent } from '../outbound-report/outbound-report.comp
   selector: 'as-exchange-report',
   standalone: true,
   imports: [
-    HeaderComponent,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
@@ -37,7 +36,6 @@ import { OutboundReportComponent } from '../outbound-report/outbound-report.comp
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    RouterLink,
     RouterModule,
   ],
   templateUrl: './exchange-report.component.html',

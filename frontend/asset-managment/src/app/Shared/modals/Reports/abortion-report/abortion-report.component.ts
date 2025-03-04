@@ -25,7 +25,6 @@ import { ModalsComponent } from '../../modals.component';
   selector: 'as-abortion-report',
   standalone: true,
   imports: [
-    HeaderComponent,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
@@ -37,7 +36,6 @@ import { ModalsComponent } from '../../modals.component';
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    RouterLink,
     RouterModule,
   ],
   templateUrl: './abortion-report.component.html',

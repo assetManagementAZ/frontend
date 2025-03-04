@@ -32,7 +32,6 @@ import { NgSelectModule } from '@ng-select/ng-select';
   selector: 'as-install-report',
   standalone: true,
   imports: [
-    HeaderComponent,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
@@ -44,7 +43,6 @@ import { NgSelectModule } from '@ng-select/ng-select';
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    RouterLink,
     RouterModule,
     NgSelectModule,
   ],

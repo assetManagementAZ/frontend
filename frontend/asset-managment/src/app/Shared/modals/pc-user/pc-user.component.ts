@@ -31,7 +31,6 @@ import { NgSelectModule } from '@ng-select/ng-select';
   selector: 'as-pc-user',
   standalone: true,
   imports: [
-    HeaderComponent,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
@@ -43,7 +42,6 @@ import { NgSelectModule } from '@ng-select/ng-select';
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    RouterLink,
     RouterModule,
     NgSelectModule,
   ],

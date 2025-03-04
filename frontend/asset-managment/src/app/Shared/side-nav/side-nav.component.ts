@@ -22,21 +22,13 @@ import { DataService } from '../../Services/data-service.service';
 @Component({
   selector: 'as-side-nav',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    RouterLink,
-    RouterLinkActive,
-    RouterModule,
-    CommonModule,
-    MatIconModule,
-  ],
+  imports: [RouterLink, RouterModule, CommonModule, MatIconModule],
+  providers: [ThemeService, AuthService, DataService],
   templateUrl: './side-nav.component.html',
-  styleUrl: './side-nav.component.scss',
+  styleUrl: './side-nav.component.css',
 })
 export class SideNavComponent implements AfterViewInit {
   isDarkMode: boolean;
-  authService = inject(AuthService);
-  router = inject(Router);
   userRole: string;
   userList: any[] = [];
   @ViewChild('sidebar', { static: false }) sidebar!: ElementRef; // Reference to sidebar
@@ -47,7 +39,7 @@ export class SideNavComponent implements AfterViewInit {
     private dataService: DataService
   ) {
     this.isDarkMode = this.themeService.isDarkMode();
-    this.userRole = this.authService.getUserRole();
+    this.userRole = this.authservice.getUserRole();
   }
   toggleTheme() {
     this.isDarkMode = !this.isDarkMode;

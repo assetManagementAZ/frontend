@@ -24,7 +24,6 @@ import { DeliveredGoodsComputerComponent } from '../delivered-goods-computer/del
   selector: 'as-user-property-computer-goods',
   standalone: true,
   imports: [
-    HeaderComponent,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
@@ -36,7 +35,6 @@ import { DeliveredGoodsComputerComponent } from '../delivered-goods-computer/del
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    RouterLink,
     RouterModule,
   ],
   templateUrl: './user-property-computer-goods.component.html',
