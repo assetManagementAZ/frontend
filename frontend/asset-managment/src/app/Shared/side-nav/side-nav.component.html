@@ -7,7 +7,7 @@
   <div class="sidebar close" #sidebar>
     <div class="logo-details">
       <i class="fa fa-bars fa-3x" #sidebarBtn></i>
-      <span class="logo_name" style="color: black"> خوش آمدید</span>
+      <span class="logo_name"> خوش آمدید </span>
     </div>
     <ul class="nav-links">
       <li>
@@ -125,7 +125,7 @@
       </li> -->
       <li>
         <div class="theme-change">
-          <a style="cursor: pointer" (click)="toggleTheme()">
+          <a style="cursor: pointer" class="text-white" (click)="toggleTheme()">
             <i
               class="fa {{ isDarkMode ? 'fa-toggle-on' : 'fa-toggle-off' }}"
             ></i>
