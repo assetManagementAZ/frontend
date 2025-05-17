@@ -14,11 +14,11 @@
   z-index: 9999999;
   transition: all 0.5s ease;
   transform: translateX(0);
-  background-color: #09aeff;
+  background: var(--primary-gradient);
+  box-shadow: var(--card-shadow);
 }
 .sidebar.close {
   width: 78px;
-  background-color: #09aeff;
 }
 .sidebar .logo-details {
   height: 60px;
@@ -26,18 +26,19 @@
   display: flex;
   align-items: center;
   cursor: pointer;
+  padding: 0 20px;
 }
 .sidebar .logo-details i {
   font-size: 30px;
-  color: #11101d;
+  color: var(--surface-color);
   height: 50px;
-  min-width: 78px;
+  min-width: 38px;
   text-align: center;
   line-height: 50px;
 }
 .sidebar .logo-details .logo_name {
   font-size: 22px;
-  color: #fff;
+  color: var(--surface-color);
   font-weight: 600;
   transition: 0.3s ease;
   transition-delay: 0.1s;
@@ -74,11 +75,11 @@
   content: "";
   width: 4px;
   height: 100%;
-  background: #93181a;
+  background: var(--surface-color);
   opacity: 0;
   transition: all 0.25s ease-in-out;
   border-top-right-radius: 5px;
-  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 .sidebar .nav-links li.active:before,
 .sidebar .nav-links li:hover:before {
@@ -97,7 +98,7 @@
   min-width: 78px;
   text-align: center;
   line-height: 50px;
-  color: #11101d;
+  color: var(--surface-color);
   font-size: 20px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -105,7 +106,8 @@
 
 .sidebar .nav-links li.active i,
 .sidebar .nav-links li:hover i {
-  color: #93181a !important;
+  color: var(--surface-color) !important;
+  transform: scale(1.1);
 }
 .sidebar .nav-links li.showMenu i.arrow {
   transform: rotate(+90deg);
@@ -122,20 +124,21 @@
 .sidebar .nav-links li .sub-menu li .group_name {
   font-size: 18px;
   font-weight: 600;
-  color: #11101d;
-  transition: all 0.4 ease;
+  color: var(--surface-color);
+  transition: all 0.4s ease;
   pointer-events: none;
   opacity: inherit;
 }
 .sidebar .nav-links li a .link_name {
   font-size: 16px;
   font-weight: 400;
-  color: #11101d;
+  color: var(--surface-color);
   transition: all 0.4s ease;
 }
 .sidebar .nav-links li.active a .link_name,
 .sidebar .nav-links li:hover a .link_name {
-  color: #93181a !important;
+  color: var(--surface-color) !important;
+  font-weight: 500;
 }
 .sidebar.close .nav-links li a .link_name {
   opacity: 0;
@@ -144,8 +147,10 @@
 .sidebar .nav-links li .sub-menu {
   padding: 6px 6px 14px 80px;
   margin-top: -10px;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
   display: none;
+  border-radius: 0 0 0 12px;
 }
 .sidebar .nav-links li .sub-menu li {
   padding: 0 6px 5px 0px;
@@ -158,11 +163,11 @@
 }
 .sidebar .nav-links li .sub-menu a,
 .sidebar .nav-links li .sub-menu2 a {
-  color: #1d1b31;
+  color: var(--surface-color);
   font-size: 15px;
   padding: 5px 0;
   white-space: nowrap;
-  opacity: 0.6;
+  opacity: 0.8;
   transition: all 0.3s ease;
 }
 .sidebar .nav-links li .sub-menu a:hover {
@@ -180,6 +185,8 @@
   display: block;
   pointer-events: none;
   transition: 0s;
+  background: var(--primary-gradient);
+  box-shadow: var(--card-shadow);
 }
 .sidebar.close .nav-links li:hover .sub-menu {
   top: 0;
@@ -216,12 +223,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #1d1b31;
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
   padding: 12px 0;
   transition: all 0.5s ease;
-}
-.sidebar.close .profile-details {
-  background: none;
 }
 .sidebar.close .profile-details {
   width: 78px;
@@ -236,7 +241,7 @@
   object-fit: cover;
   border-radius: 16px;
   margin: 0 14px 0 12px;
-  background: #1d1b31;
+  background: var(--surface-color);
   transition: all 0.5s ease;
 }
 .sidebar.close .profile-details img {
@@ -244,13 +249,13 @@
 }
 .sidebar .profile-details .profile_name,
 .sidebar .profile-details .job {
-  color: #fff;
+  color: var(--surface-color);
   font-size: 16px;
   font-weight: 400;
   white-space: nowrap;
 }
 .sidebar .profile-details .job {
-  color: #fff;
+  color: var(--surface-color);
   font-size: 14px;
   font-weight: 300;
   opacity: 0.5;
@@ -318,4 +323,23 @@
 
 .sidebar.open ~ .overlay {
   display: block;
+}
+
+/* Dark Theme Support */
+.dark-theme .sidebar {
+  background: var(--surface-color);
+}
+
+.dark-theme .sidebar .nav-links li a .link_name,
+.dark-theme .sidebar .nav-links li .sub-menu li .group_name {
+  color: var(--text-color);
+}
+
+.dark-theme .sidebar .nav-links li.active a .link_name,
+.dark-theme .sidebar .nav-links li:hover a .link_name {
+  color: var(--primary-color) !important;
+}
+
+.dark-theme .sidebar .nav-links li .sub-menu {
+  background: rgba(0, 0, 0, 0.1);
 }

@@ -25,7 +25,6 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { RouterLink, RouterModule } from '@angular/router';
-import { HeaderComponent } from '../../header/header.component';
 
 @Component({
   selector: 'as-delivered-goods-user',

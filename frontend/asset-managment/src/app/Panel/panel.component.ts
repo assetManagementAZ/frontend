@@ -3,14 +3,15 @@ import { AuthService } from '../Services/auth.service';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from '../Shared/header/header.component';
+
 import { DataService } from '../Services/data-service.service';
-import { SideNavComponent } from '../Shared/side-nav/side-nav.component';
+
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'as-panel',
   standalone: true,
-  imports: [HeaderComponent, RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, MatIconModule],
   templateUrl: './panel.component.html',
   styleUrl: './panel.component.css',
 })

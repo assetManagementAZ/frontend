@@ -17,7 +17,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterModule } from '@angular/router';
-import { HeaderComponent } from '../../header/header.component';
 import { DataService } from '../../../Services/data-service.service';
 import { UsersComputerDetailComponent } from '../users-computer-detail/users-computer-detail.component';
 import { UsersPropertyComponent } from '../users-property/users-property.component';

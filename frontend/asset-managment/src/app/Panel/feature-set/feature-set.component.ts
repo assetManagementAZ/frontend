@@ -1,4 +1,3 @@
-import { HeaderComponent } from '../../Shared/header/header.component';
 import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -26,7 +25,6 @@ import moment from 'jalali-moment';
   selector: 'as-feature-set',
   standalone: true,
   imports: [
-    HeaderComponent,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,

@@ -8,14 +8,12 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterModule } from '@angular/router';
-import { HeaderComponent } from '../header/header.component';
 import { DataService } from '../../Services/data-service.service';
 
 @Component({
   selector: 'as-user-profile',
   standalone: true,
   imports: [
-    HeaderComponent,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,

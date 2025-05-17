@@ -1,10 +1,38 @@
-<as-header></as-header>
-<div class="address">
-  <span> / </span>
-  <a routerLink="/panel">صفحه اصلی</a>
+<div class="panel-container">
+  <div class="breadcrumb">
+    <span>/</span>
+    <a routerLink="/panel">صفحه اصلی</a>
+  </div>
+
+  <div class="welcome-card">
+    <div class="welcome-content">
+      <h1>به پنل مدیریت خوش آمدید</h1>
+      <p class="role-text">
+        شما به عنوان
+        <span class="role-badge">{{ role }}</span>
+        وارد پنل خود شدید
+      </p>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- User Management Section -->
+    <div class="dashboard-section">
+      <h2 class="section-title">مدیریت کاربران</h2>
+      <div class="dashboard-cards">
+        <div class="dashboard-card" routerLink="/users">
+          <mat-icon>people</mat-icon>
+          <h3>مدیریت کاربران</h3>
+        </div>
+        <div class="dashboard-card" routerLink="/usersPc">
+          <mat-icon>computer</mat-icon>
+          <h3>کامپیوترهای کاربران</h3>
+        </div>
+        <div class="dashboard-card" routerLink="/usersDelivery">
+          <mat-icon>inventory_2</mat-icon>
+          <h3>محصولات تحویلی</h3>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<h1>
-  شما به عنوان
-  <span>{{ role }}</span>
-  وارد پنل خود شدید
-</h1>

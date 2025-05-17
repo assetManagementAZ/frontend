@@ -9,14 +9,13 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { HeaderComponent } from '../../Shared/header/header.component';
 import { DataService } from '../../Services/data-service.service';
 import { tap } from 'rxjs';
 
 @Component({
   selector: 'as-profile',
   standalone: true,
-  imports: [HeaderComponent, RouterModule, ReactiveFormsModule, CommonModule],
+  imports: [RouterModule, ReactiveFormsModule, CommonModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })

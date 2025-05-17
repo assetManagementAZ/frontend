@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { HeaderComponent } from '../../Shared/header/header.component';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { DataService } from '../../Services/data-service.service';
@@ -9,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { FormsModule } from '@angular/forms';
+
 import {
   FormGroup,
   FormBuilder,
@@ -42,7 +42,6 @@ export const myCustomTooltipDefaults: MatTooltipDefaultOptions = {
   selector: 'as-users',
   standalone: true,
   imports: [
-    HeaderComponent,
     MatFormFieldModule,
     ReactiveFormsModule,
     MatInputModule,

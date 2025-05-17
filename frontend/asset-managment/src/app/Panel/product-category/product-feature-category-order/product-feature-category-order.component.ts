@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { HeaderComponent } from '../../../Shared/header/header.component';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { DataService } from '../../../Services/data-service.service';
@@ -26,7 +25,6 @@ import { HttpErrorResponse } from '@angular/common/http';
   selector: 'as-product-feature-category-order',
   standalone: true,
   imports: [
-    HeaderComponent,
     MatFormFieldModule,
     ReactiveFormsModule,
     MatInputModule,

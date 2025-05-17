@@ -1,5 +1,9 @@
+@import "tailwindcss/preflight";
+@tailwind utilities;
+
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
+
 @font-face {
   font-family: "Iran-Yekan-Regular";
   src: url("/assets/Fonts/iranyekanwebregularfanum.ttf");
@@ -15,6 +19,17 @@
   src: url("/assets/Fonts/iranyekanweblightfanum.ttf");
 }
 
+:root {
+  --primary-gradient: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%);
+  --secondary-gradient: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+  --surface-color: #ffffff;
+  --border-color: rgba(99, 102, 241, 0.1);
+  --text-color: #1f2937;
+  --hover-color: rgba(99, 102, 241, 0.1);
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -24,12 +39,15 @@
 
 body {
   height: 100%;
-  background-color: #e4e9f7 !important;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  background-attachment: fixed;
 }
+
 body {
   margin: 0;
   font-family: Iran-Yekan-Regular, "Helvetica Neue", sans-serif;
 }
+
 .dialog-container,
 .mat-mdc-dialog-surface.mdc-dialog__surface,
 .mdc-tab__text-label,
@@ -39,26 +57,46 @@ body {
 .userPc-form,
 .software-form,
 .sealPc-form {
-  background-color: #e4e9f7 !important;
-  color: #000000 !important;
+  background-color: var(--surface-color) !important;
+  color: var(--text-color) !important;
+  box-shadow: var(--card-shadow);
+  border-radius: 12px;
 }
+
 .mdc-data-table__table {
   background-color: inherit !important;
 }
+
 .mat-mdc-paginator {
   background-color: inherit !important;
 }
+
 .space {
   height: 100px;
-  background-color: #e4e9f7;
+  background: transparent;
 }
+
 .mat-elevation-z8 {
   margin: 11px;
-  border: 6px solid;
-  border-radius: 20px;
-  border-image: linear-gradient(45deg, #0dcaf0, rgba(29, 25, 247, 0.636)) 1;
-  padding: 10px;
+  border: none;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  padding: 20px;
+  background: var(--surface-color);
+  position: relative;
+  overflow: hidden;
 }
+
+.mat-elevation-z8::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary-gradient);
+}
+
 .filters,
 .change-password-form,
 .choose-supporter-form,
@@ -69,85 +107,113 @@ body {
 .mat-mdc-dialog-surface {
   margin: 11px;
   margin-top: 75px;
-  border: 6px solid;
-  border-radius: 20px;
-  border-image: linear-gradient(45deg, #0dcaf0, rgba(29, 25, 247, 0.636)) 1;
-  padding: 10px;
+  border: none;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  padding: 20px;
+  background: var(--surface-color);
+  position: relative;
+  overflow: hidden;
 }
+
+.filters::before,
+.change-password-form::before,
+.choose-supporter-form::before,
+.userPc-form::before,
+.software-form::before,
+.sealPc-form::before,
+.userDeliveryGoods-form::before,
+.mat-mdc-dialog-surface::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary-gradient);
+}
+
 .filters .col-md-4 {
   display: flex;
   flex-direction: row-reverse;
   align-self: center;
   width: 23%;
 }
+
 .filters .row {
   flex-direction: row-reverse;
   justify-content: space-between !important;
 }
+
 .filters {
   select {
     height: 40px;
     width: 200px;
     margin-top: 17px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 0 12px;
+    background-color: var(--surface-color);
   }
   input {
     height: 40px;
-    border-color: aliceblue;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
     direction: rtl;
+    padding: 0 12px;
+    background-color: var(--surface-color);
   }
 }
+
 .filters .col-md-4.bt {
   .btn.btn-primary,
   .btn.btn-danger {
     margin: 0;
     margin-left: 10px;
+    border-radius: 8px;
+    padding: 8px 16px;
   }
 }
+
 /* Dark Theme Styles */
 .dark-theme {
-  background-color: rgb(89, 89, 92) !important;
-  color: #ffffff !important;
+  --surface-color: #1f2937;
+  --text-color: #f3f4f6;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --hover-color: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+  color: var(--text-color) !important;
 }
 
 .dark-theme {
-  /* header,
-  .sidebar,
-  .sidebar .sub-menu, */
   .dialog-container,
   p#warning,
   .help-content,
   .help-content > h2,
   .mdc-tab__text-label {
-    background-color: rgb(89, 89, 92) !important;
-    color: white !important;
+    background-color: var(--surface-color) !important;
+    color: var(--text-color) !important;
   }
 }
-/* .dark-theme {
-  .sidebar i,
-  .sidebar a,
-  .sidebar span {
-    color: white !important;
-  }
-  .sidebar .nav-links li.active i,
-  .sidebar .nav-links li:hover i {
-    color: #000000;
-  }
-} */
+
 .dark-theme {
   .mat-mdc-table {
     tr {
-      color: rgb(255, 255, 255) !important;
+      color: var(--text-color) !important;
     }
     th {
-      color: black !important;
+      color: var(--text-color) !important;
+      background-color: rgba(255, 255, 255, 0.05) !important;
     }
   }
 }
+
 .dark-theme {
   .mdc-tab-indicator > span {
-    border-color: black !important;
+    border-color: var(--text-color) !important;
   }
 }
+
 .dark-theme {
   .choose-supporter-form,
   .change-password-form,
@@ -157,9 +223,10 @@ body {
   .userDeliveryGoods-form,
   .mat-mdc-dialog-surface.mdc-dialog__surface,
   .space {
-    background-color: rgb(89, 89, 92) !important;
+    background-color: var(--surface-color) !important;
   }
 }
+
 .app-wrapper {
   display: flex;
   height: 100vh;
