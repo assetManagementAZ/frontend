@@ -1,58 +1,134 @@
-<div class="address">
-  <a routerLink="/panel">صفحه اصلی </a>
-  <span>&nbsp;/&nbsp;</span>
-
-  <a routerLink="/user"> کاربران</a>
+<div class="modern-address-bar">
+  <a routerLink="/panel" class="address-link">صفحه اصلی</a>
+  <span class="separator">/</span>
+  <a routerLink="/user" class="address-link">کاربران</a>
 </div>
-<div class="buttons">
-  <button
-    class="btn btn-primary rounded-pill px-3"
-    style="float: right; margin-right: 10px"
-    (click)="toggleView('form')"
+<div class="buttons flex justify-end pr-4">
+  <div class="bg-white p-1 rounded-xl shadow-lg inline-block">
+    <button
+      class="bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-103 flex items-center space-x-3"
+      (click)="toggleView('form')"
+    >
+      <span class="text-lg">ایجاد کاربر جدید</span>
+    </button>
+  </div>
+</div>
+<div
+  class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 space-y-4 mb-60"
+  *ngIf="showMessage"
+>
+  <!-- Success Message -->
+  <div
+    *ngIf="successMessage"
+    class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-xl shadow-lg flex items-center space-x-3 animate-fade-in-up transition-all duration-300 hover:shadow-xl cursor-pointer max-w-md"
   >
-    ایجاد کاربر جدید
-  </button>
-</div>
-<div class="message-container" *ngIf="showMessage">
-  <div class="success" *ngIf="successMessage">{{ successMessage }}</div>
-  <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 flex-shrink-0"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M5 13l4 4L19 7"
+      />
+    </svg>
+    <span class="text-sm font-medium">{{ successMessage }}</span>
+  </div>
+
+  <!-- Error Message -->
+  <div
+    *ngIf="errorMessage"
+    class="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-4 rounded-xl shadow-lg flex items-center space-x-3 animate-fade-in-up transition-all duration-300 hover:shadow-xl cursor-pointer max-w-md"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 flex-shrink-0"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M6 18L18 6M6 6l12 12"
+      />
+    </svg>
+    <span class="text-sm font-medium">{{ errorMessage }}</span>
+  </div>
 </div>
 
-<div class="change-password-form" *ngIf="showChangePasswordForm">
-  <form [formGroup]="changePasswordForm" (ngSubmit)="onSubmitChangePassword()">
-    <div class="form-group">
-      <label for="userpersonalid">کد پرسنلی</label>
-      <input
-        type="text"
-        id="userpersonalid"
-        class="form-control"
-        formControlName="userpersonalid"
-        readonly
-        style="text-align: center"
-      />
-    </div>
-    <div class="form-group">
-      <label for="new_password">رمز عبور جدید</label>
-      <input
-        type="text"
-        id="new_password"
-        class="form-control"
-        formControlName="new_password"
-        required
-        placeholder="حداقل 8 رقم"
-      />
-    </div>
-    <div class="passButtons">
-      <button type="submit" class="btn btn-primary">تایید</button>
-      <button
-        type="button"
-        class="btn btn-danger"
-        (click)="closeChangePasswordForm()"
-      >
-        بستن
-      </button>
-    </div>
-  </form>
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center bg-gray-40 bg-opacity-90 backdrop-blur-sm"
+  *ngIf="showChangePasswordForm"
+>
+  <div
+    class="w-full max-w-md p-8 bg-white rounded-2xl shadow-2xl transform transition-all"
+  >
+    <form
+      [formGroup]="changePasswordForm"
+      (ngSubmit)="onSubmitChangePassword()"
+      class="space-y-6"
+    >
+      <!-- Personal ID -->
+      <div class="space-y-2">
+        <label
+          for="userpersonalid"
+          class="block text-sm font-medium text-gray-700 ml-36"
+        >
+          کد پرسنلی
+        </label>
+        <input
+          style="margin-left: 65px"
+          type="text"
+          id="userpersonalid"
+          class="w-full px-4 py-3 mt-1 bg-gray-50 text-gray-600 text-center rounded-xl border border-gray-200 cursor-not-allowed"
+          formControlName="userpersonalid"
+          readonly
+        />
+      </div>
+
+      <!-- New Password -->
+      <div class="space-y-2">
+        <label
+          for="new_password"
+          class="block text-sm ml-34 font-medium text-gray-700 text-center self-center"
+        >
+          رمز عبور جدید
+        </label>
+        <input
+          style="margin-left: 65px"
+          type="text"
+          id="new_password"
+          class="w-full mt-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all placeholder-gray-400 text-center"
+          formControlName="new_password"
+          required
+          placeholder="حداقل 8 کاراکتر"
+        />
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex gap-4 justify-center pt-4">
+        <button
+          type="submit"
+          class="px-8 py-2.5 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 shadow-md hover:shadow-lg transition-all"
+        >
+          تایید
+        </button>
+        <button
+          type="button"
+          class="px-8 py-2.5 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 shadow-md hover:shadow-lg transition-all"
+          (click)="closeChangePasswordForm()"
+        >
+          بستن
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <div *ngIf="currentStep === 1">
@@ -315,27 +391,19 @@
 </div>
 
 <!-- Users Table -->
-<div class="filters">
-  <!-- <mat-form-field class="secondary-Form-field">
-    <input matInput (keyup)="applyFilter($event)" placeholder="فیلتر" />
-  </mat-form-field> -->
-
-  <div class="row">
-    <div class="col-md-4">
-      <label for="searchInput" class="form-label">:کاربر</label>
-      <input
-        type="text"
-        id="searchInput"
-        class="form-control"
-        placeholder="جست و جو"
-        [(ngModel)]="searchTerm"
-      />
-    </div>
-    <div class="col-md-4">
-      <label for="userRoleFilter" class="form-label"> :سطح کاربری</label>
+<div class="filters bg-white p-6 rounded-2xl shadow-lg mb-8">
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6" dir="rtl">
+    <!-- سطح کاربری (User Role) -->
+    <div class="space-y-2">
+      <label
+        for="userRoleFilter"
+        class="block text-sm font-medium text-gray-700 text-right"
+      >
+        سطح کاربری
+      </label>
       <select
         id="userRoleFilter"
-        class="form-select"
+        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all appearance-none bg-select-arrow"
         [(ngModel)]="selectedRole"
       >
         <option value="">همه</option>
@@ -344,39 +412,76 @@
         <option value="3">کاربر عادی</option>
       </select>
     </div>
-    <div class="col-md-4">
-      <label for="isActiveFilter" class="form-label"> :وضعیت </label>
-      <select id="isActiveFilter" class="form-select" [(ngModel)]="isActive">
+
+    <!-- وضعیت (Status) -->
+    <div class="space-y-2">
+      <label
+        for="isActiveFilter"
+        class="block text-sm font-medium text-gray-700 text-right"
+      >
+        وضعیت
+      </label>
+      <select
+        id="isActiveFilter"
+        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all appearance-none bg-select-arrow"
+        [(ngModel)]="isActive"
+      >
         <option value="">همه</option>
         <option value="1">فعال</option>
         <option value="2">غیر فعال</option>
       </select>
     </div>
 
-    <div class="col-md-4 bt">
-      <button class="btn btn-primary" (click)="applyFilters()">جست و جو</button>
-      <button class="btn btn-danger" (click)="resetFilters()">
+    <!-- جست و جو کاربر (User Search) -->
+    <div class="">
+      <div class="relative mt-2">
+        <input
+          type="text"
+          id="searchInput"
+          class="w-full mt-2 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all pl-11"
+          placeholder="جست و جو"
+          [(ngModel)]="searchTerm"
+        />
+        <svg
+          class="h-5 w-5 absolute right-1 top-4.5 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          />
+        </svg>
+      </div>
+    </div>
+
+    <!-- دکمه ها (Buttons) -->
+    <div class="flex items-end mb-2 gap-3 md:flex-col lg:flex-row">
+      <button
+        class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white px-6 py-2.5 rounded-lg font-medium text-sm shadow-sm hover:shadow-md transition-all duration-300"
+        (click)="applyFilters()"
+      >
+        جست و جو
+      </button>
+      <button
+        class="w-full bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white px-6 py-2.5 rounded-lg font-medium text-sm shadow-sm hover:shadow-md transition-all duration-300"
+        (click)="resetFilters()"
+      >
         تنظیم مجدد
       </button>
     </div>
   </div>
 </div>
-<div class="mat-elevation-z8" *ngIf="showUsersTable">
-  <!-- <mat-form-field class="filter-form-field">
-    <mat-label>فیلتر</mat-label>
-    <input
-      matInput
-      (keyup)="applyFilter($event)"
-      placeholder="جستجو..."
-      #input
-    />
-  </mat-form-field> -->
+<div class="mat-elevation-z8 modern-table-container" *ngIf="showUsersTable">
   <table
     mat-table
     [dataSource]="filteredUsersDataSource"
     matSort
     [dir]="'rtl'"
-    class="full-width-table"
+    class="full-width-table modern-table"
   >
     <!-- User ID Column -->
     <ng-container matColumnDef="userid">
@@ -419,7 +524,7 @@
             row.usersupportid !== null ? 'پشتیبان' : 'کاربر عادی'
           }}"
           matTooltipPosition="right"
-          mat-raised-button
+          class="user-name-badge"
           >{{ row.username }} {{ row.userlastname }}</span
         >
       </td>
@@ -549,13 +654,15 @@
         وضعیت
       </th>
       <td mat-cell *matCellDef="let row">
-        {{ getIsActiveString(row.is_active) }}
+        <span class="status-badge {{ row.is_active ? 'active' : 'inactive' }}">
+          {{ getIsActiveString(row.is_active) }}
+        </span>
       </td>
     </ng-container>
     <ng-container matColumnDef="viewDetail">
       <th mat-header-cell *matHeaderCellDef class="sticky-header">اطلاعات</th>
       <td mat-cell *matCellDef="let row">
-        <button class="btn btn-info" (click)="viewDetail(row.userid)">
+        <button class="modern-btn info-btn" (click)="viewDetail(row.userid)">
           مشاهده
         </button>
       </td>
@@ -563,7 +670,10 @@
     <ng-container matColumnDef="viewProperty">
       <th mat-header-cell *matHeaderCellDef class="sticky-header">دارایی</th>
       <td mat-cell *matCellDef="let row">
-        <button class="btn btn-info" (click)="viewProperty(row.userpersonalid)">
+        <button
+          class="modern-btn info-btn"
+          (click)="viewProperty(row.userpersonalid)"
+        >
           مشاهده
         </button>
       </td>
@@ -574,14 +684,16 @@
         بخش کاربری
       </th>
       <td mat-cell *matCellDef="let user">
-        <button class="btn btn-primary" (click)="editUser(user)">ویرایش</button>
+        <button class="modern-btn primary-btn" (click)="editUser(user)">
+          ویرایش
+        </button>
       </td>
     </ng-container>
     <!-- Edit User button column -->
     <ng-container matColumnDef="workActions">
       <th mat-header-cell *matHeaderCellDef class="sticky-header">بخش کاری</th>
       <td mat-cell *matCellDef="let user">
-        <button class="btn btn-primary" (click)="editWorkUser(user)">
+        <button class="modern-btn primary-btn" (click)="editWorkUser(user)">
           ویرایش
         </button>
       </td>
@@ -593,8 +705,9 @@
       </th>
       <td mat-cell *matCellDef="let user">
         <button
-          mat-button
-          class="btn btn-primary"
+          class="modern-btn toggle-btn {{
+            user.is_active ? 'active' : 'inactive'
+          }}"
           (click)="toggleUserStatus(user.userpersonalid, user.is_active)"
         >
           {{ user.is_active ? "غیر فعال" : "فعال" }}
@@ -607,7 +720,10 @@
         تغییر رمز عبور
       </th>
       <td mat-cell *matCellDef="let user">
-        <button class="btn btn-primary" (click)="openChangePasswordForm(user)">
+        <button
+          class="modern-btn primary-btn"
+          (click)="openChangePasswordForm(user)"
+        >
           ویرایش
         </button>
       </td>
@@ -616,15 +732,19 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
-
-  <mat-paginator
-    [pageSizeOptions]="[5, 10, 25, 100]"
-    aria-label="Select page of buildings"
-  ></mat-paginator>
-  <div
-    class="backdrop"
-    *ngIf="showChangePasswordForm"
-    (click)="closeChangePasswordForm()"
-  ></div>
 </div>
+<mat-paginator
+  [pageSizeOptions]="[5, 10, 25, 100]"
+  aria-label="Select page of buildings"
+  showFirstLastButtons
+  #paginator
+>
+  ></mat-paginator
+>
+<!-- <div
+  class="backdrop"
+  *ngIf="showChangePasswordForm"
+  (click)="closeChangePasswordForm()"
+></div> -->
+
 <div class="space"></div>

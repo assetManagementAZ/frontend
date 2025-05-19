@@ -7,6 +7,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSort, MatSortModule } from '@angular/material/sort';
+
 import { FormsModule } from '@angular/forms';
 
 import {
@@ -33,6 +34,7 @@ import {
   MatTooltipDefaultOptions,
   MatTooltipModule,
 } from '@angular/material/tooltip';
+
 export const myCustomTooltipDefaults: MatTooltipDefaultOptions = {
   showDelay: 700,
   hideDelay: 0,
@@ -49,6 +51,7 @@ export const myCustomTooltipDefaults: MatTooltipDefaultOptions = {
     MatSortModule,
     MatDialogModule,
     MatPaginatorModule,
+
     CommonModule,
     RouterLink,
     RouterModule,
@@ -115,7 +118,9 @@ export class UsersComponent implements OnInit {
     private dialog: MatDialog,
     private router: Router
   ) {}
-
+  ngAfterViewInit() {
+    this.paginator._intl.itemsPerPageLabel = 'مورد در هر صفحه';
+  }
   ngOnInit(): void {
     this.userAuth();
     this.DisplayedColumns();

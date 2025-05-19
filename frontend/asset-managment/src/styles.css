@@ -106,7 +106,7 @@ body {
 .userDeliveryGoods-form,
 .mat-mdc-dialog-surface {
   margin: 11px;
-  margin-top: 75px;
+  margin-top: 20px;
   border: none;
   border-radius: 12px;
   box-shadow: var(--card-shadow);
