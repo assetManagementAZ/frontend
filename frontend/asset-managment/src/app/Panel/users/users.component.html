@@ -131,263 +131,457 @@
   </div>
 </div>
 
-<div *ngIf="currentStep === 1">
-  <!-- First step form -->
-  <form
-    class="form1"
-    *ngIf="showUsersForm"
-    [formGroup]="firstStepForm"
-    (ngSubmit)="onSubmitFirstStep()"
-  >
-    <div class="container1">
-      <!-- Form fields for first step -->
-      <div class="row" style="margin-top: 40px; flex-direction: row-reverse">
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="userpersonalid">کد پرسنلی</label>
-            <input
-              type="text"
-              id="userpersonalid"
-              class="form-control"
-              formControlName="userpersonalid"
-              placeholder="اجباری"
-            />
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="username">نام </label>
-            <input
-              dir="rtl"
-              type="text"
-              id="username"
-              class="form-control"
-              formControlName="username"
-              placeholder="اجباری"
-            />
-          </div>
+<div
+  class="fixed inset-0 z-50 overflow-y-auto"
+  aria-labelledby="modal-title"
+  role="dialog"
+  aria-modal="true"
+  *ngIf="showUsersForm"
+>
+  <!-- Backdrop with subtle blur -->
+  <div
+    class="fixed inset-0 bg-gray-900 bg-opacity-75 backdrop-blur-sm transition-opacity"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Modal container with centered alignment -->
+  <div class="flex items-center justify-center min-h-screen px-4 text-center">
+    <div
+      class="relative inline-block w-full max-w-2xl my-8 overflow-hidden text-right align-middle transition-all transform bg-white shadow-xl rounded-2xl"
+    >
+      <!-- Progress indicator with animated steps -->
+      <div class="px-8 pt-8" style="direction: rtl">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-bold text-gray-900">ثبت کاربر جدید</h3>
+          <span class="text-sm font-medium text-blue-600"
+            >مرحله {{ currentStep }} از {{ 2 }}</span
+          >
         </div>
 
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="userlastname ">نام خانوادگی</label>
-            <input
-              dir="rtl"
-              type="text"
-              id="userlastname"
-              class="form-control"
-              formControlName="userlastname"
-              placeholder="اجباری"
-            />
+        <!-- Modern progress bar with steps -->
+        <div class="relative pt-1" style="direction: rtl">
+          <div class="flex mb-2 items-center justify-between">
+            <div class="flex-auto">
+              <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  class="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-500 ease-out"
+                  [style.width.%]="progressPercentage"
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-between text-xs text-gray-500">
+            <span
+              [class.font-bold]="currentStep === 1"
+              [class.text-blue-600]="currentStep === 1"
+              >اطلاعات شخصی</span
+            >
+            <span
+              [class.font-bold]="currentStep === 2"
+              [class.text-blue-600]="currentStep === 2"
+              >اطلاعات کاری</span
+            >
           </div>
         </div>
       </div>
 
-      <div class="row" style="flex-direction: row-reverse">
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="userphonenumber">تلفن همراه</label>
-            <!-- <p-inputMask
-              type="txt"
-              id="userphonenumber"
-              formControlName="userphonenumber"
-              class="form-control"
-              placeholder="(041) 3-355-6531"
-            /> -->
-            <input
-              maxlength="11"
-              type="txt"
-              id="userphonenumber"
-              class="form-control"
-              formControlName="userphonenumber"
-              placeholder="0914-840-5234"
-            />
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="userlandlinephonenumber">تلفن محل کار</label>
-            <input
-              maxlength="11"
-              type="text"
-              id="userlandlinephonenumber"
-              class="form-control"
-              formControlName="userlandlinephonenumber"
-              placeholder="041-33351121"
-              pattern="^0[1-8]{2}[0-9]{8}$"
-            />
-          </div>
-        </div>
-        <div *ngIf="!this.isEditing" class="col-md-6">
-          <div class="form-group">
-            <label style="width: 120px" for="userroleid">سطح کاربری</label>
-            <select
-              id="userroleid"
-              class="select1"
-              formControlName="userroleid"
-              placeholder="اجباری"
-            >
+      <!-- Form content with smooth transitions -->
+      <div class="px-8 py-6">
+        <!-- First Step -->
+        <form
+          *ngIf="currentStep === 1"
+          [formGroup]="firstStepForm"
+          (ngSubmit)="onSubmitFirstStep()"
+        >
+          <div class="space-y-6" style="direction: rtl">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Personal ID -->
+              <div>
+                <label
+                  for="userpersonalid"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  کد پرسنلی
+                  <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  dir="ltr"
+                  id="userpersonalid"
+                  formControlName="userpersonalid"
+                  class="block w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  placeholder="مثال: 123456"
+                />
+              </div>
+
+              <!-- Name -->
+              <div>
+                <label
+                  for="username"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  نام
+                  <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="username"
+                  formControlName="username"
+                  dir="rtl"
+                  class="block w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  placeholder="نام کاربر را وارد کنید"
+                />
+              </div>
+
+              <!-- Lastname -->
+              <div>
+                <label
+                  for="userlastname"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  نام خانوادگی
+                  <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="userlastname"
+                  formControlName="userlastname"
+                  dir="rtl"
+                  class="block w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  placeholder="نام خانوادگی کاربر را وارد کنید"
+                />
+              </div>
+
+              <!-- Mobile -->
+              <div>
+                <label
+                  for="userphonenumber"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  تلفن همراه
+                  <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  dir="ltr"
+                  id="userphonenumber"
+                  formControlName="userphonenumber"
+                  maxlength="11"
+                  class="block w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  [class.border-red-500]="
+                    firstStepForm.get('userphonenumber')?.invalid &&
+                    firstStepForm.get('userphonenumber')?.touched
+                  "
+                  placeholder="مثال: 09123456789"
+                />
+                <div
+                  *ngIf="
+                    firstStepForm.get('userphonenumber')?.invalid &&
+                    firstStepForm.get('userphonenumber')?.touched
+                  "
+                  class="text-red-500 text-xs mt-1"
+                >
+                  شماره موبایل باید 11 رقم بوده و با 09 شروع شود
+                </div>
+              </div>
+
+              <!-- Landline -->
+              <div>
+                <label
+                  for="userlandlinephonenumber"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  تلفن محل کار
+                </label>
+                <input
+                  type="text"
+                  dir="ltr"
+                  id="userlandlinephonenumber"
+                  formControlName="userlandlinephonenumber"
+                  maxlength="11"
+                  class="block w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  [class.border-red-500]="
+                    firstStepForm.get('userlandlinephonenumber')?.invalid &&
+                    firstStepForm.get('userlandlinephonenumber')?.touched
+                  "
+                  placeholder="مثال: 04133351121"
+                />
+                <div
+                  *ngIf="
+                    firstStepForm.get('userlandlinephonenumber')?.invalid &&
+                    firstStepForm.get('userlandlinephonenumber')?.touched
+                  "
+                  class="text-red-500 text-xs mt-1"
+                >
+                  شماره تلفن ثابت باید 11 رقم بوده و با 0 شروع شود
+                </div>
+              </div>
+
+              <!-- User Role -->
+              <div *ngIf="!isEditing">
+                <label
+                  for="userroleid"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  سطح کاربری
+                  <span class="text-red-500">*</span>
+                </label>
+                <select
+                  id="userroleid"
+                  formControlName="userroleid"
+                  class="block w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                >
+                  <option value="">انتخاب کنید</option>
+                  <option value="3">کاربر عادی</option>
+                  <option *ngIf="!isSupporter" value="2">پشتیبان</option>
+                </select>
+              </div>
+
+              <!-- Supporter ID -->
+              <div
+                *ngIf="!(isEditing || isSupporter || ifSupporter)"
+                class="col-span-2"
               >
-              <option selected>انتخاب کنید</option>
-              <option value="3">کاربر عادی</option>
-              <option *ngIf="!isSupporter" value="2">پشتیبان</option>
-            </select>
+                <label
+                  for="supporterid"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  کد کاربری پشتیبان
+                </label>
+                <input
+                  type="text"
+                  dir="ltr"
+                  id="supporterid"
+                  formControlName="supporterid"
+                  class="block w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  placeholder="کد پشتیبان مربوطه را وارد کنید"
+                />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <div *ngIf="!(this.isEditing || this.isSupporter)" class="row">
-        <div class="col-md-6" *ngIf="!ifSupporter">
-          <div class="form-group">
-            <label for="supporterid">کد کاربری پشتیبان</label>
-            <input
-              type="text"
-              id="supporterid"
-              class="form-control"
-              formControlName="supporterid"
-            />
+        </form>
+
+        <!-- Second Step -->
+        <form
+          *ngIf="currentStep === 2"
+          [formGroup]="secondStepForm"
+          (ngSubmit)="onSubmitSecondStep()"
+        >
+          <div class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Area -->
+              <div>
+                <label
+                  for="areaId"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  حوزه
+                  <span class="text-red-500">*</span>
+                </label>
+                <ng-select
+                  id="areaId"
+                  formControlName="areaId"
+                  notFoundText="اطلاعاتی یافت نشد"
+                  class="border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <ng-option
+                    *ngFor="let area of areaList"
+                    [value]="area.areaid"
+                  >
+                    {{ area.areaname }}
+                  </ng-option>
+                </ng-select>
+              </div>
+
+              <!-- Building -->
+              <div>
+                <label
+                  for="buildingId"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  ساختمان
+                  <span class="text-red-500">*</span>
+                </label>
+                <ng-select
+                  id="buildingId"
+                  formControlName="buildingId"
+                  notFoundText="اطلاعاتی یافت نشد"
+                  class="border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <ng-option
+                    *ngFor="let building of buildingList"
+                    [value]="building.buildingid"
+                  >
+                    {{ building.buildingname }}
+                  </ng-option>
+                </ng-select>
+              </div>
+
+              <!-- Official Position -->
+              <div>
+                <label
+                  for="userofficial"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  سمت
+                  <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="userofficial"
+                  formControlName="userofficial"
+                  dir="rtl"
+                  class="block w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  placeholder="سمت سازمانی کاربر"
+                />
+              </div>
+
+              <!-- Room Number -->
+              <div>
+                <label
+                  for="roomnumber"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  شماره اتاق
+                  <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="roomnumber"
+                  formControlName="roomnumber"
+                  class="block w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  placeholder="شماره اتاق کاربر"
+                />
+              </div>
+            </div>
           </div>
-        </div>
+        </form>
       </div>
 
-      <button
-        type="submit"
-        class="btn btn-primary"
-        *ngIf="!this.isEditing"
-        style="margin-left: 100px"
+      <!-- Action buttons with better spacing and visual hierarchy -->
+      <div
+        class="px-8 py-4 bg-gray-50 flex flex-col sm:flex-row-reverse sm:justify-between space-y-3 sm:space-y-0"
       >
-        مرحله بعد
-      </button>
-      <button
-        type="submit"
-        class="btn btn-primary"
-        *ngIf="this.isEditing"
-        style="margin-left: 100px"
-      >
-        ویرایش
-      </button>
-      <button type="button" class="btn btn-danger" (click)="closeForm()">
-        بستن
-      </button>
-    </div>
-  </form>
-</div>
-<div *ngIf="currentStep === 2">
-  <!-- Second step form -->
-  <form
-    class="form2"
-    *ngIf="showUsersForm"
-    [formGroup]="secondStepForm"
-    (ngSubmit)="onSubmitSecondStep()"
-  >
-    <!-- Form fields for second step -->
-    <div class="container1">
-      <div class="row" style="margin-top: 40px">
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="areaId"> حوزه</label>
-            <ng-select
-              notFoundText="اطلاعاتی بدست نیامد"
-              id="areaId"
-              class="select1"
-              formControlName="areaId"
+        <div
+          class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3"
+        >
+          <!-- Next/Submit Button -->
+          <button
+            *ngIf="currentStep === 1"
+            type="button"
+            (click)="onSubmitFirstStep()"
+            class="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 inline mr-2 rotate-180"
+              viewBox="0 0 20 20"
+              fill="currentColor"
             >
-              <ng-option *ngFor="let area of areaList" [value]="area.areaid">
-                {{ area.areaname }}
-              </ng-option>
-            </ng-select>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="buildingId"> ساختمان</label>
-            <ng-select
-              notFoundText="اطلاعاتی بدست نیامد"
-              id="buildingId"
-              class="select1"
-              formControlName="buildingId"
+              <path
+                fill-rule="evenodd"
+                d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            مرحله بعد
+          </button>
+
+          <!-- Submit Button -->
+          <button
+            *ngIf="currentStep === 2"
+            type="button"
+            (click)="onSubmitSecondStep()"
+            class="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-[1.02]"
+          >
+            ثبت نهایی
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 inline mr-1"
+              viewBox="0 0 20 20"
+              fill="currentColor"
             >
-              <ng-option
-                *ngFor="let building of buildingList"
-                [value]="building.buildingid"
-              >
-                {{ building.buildingname }}
-              </ng-option>
-            </ng-select>
-          </div>
+              <path
+                fill-rule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+
+          <!-- Add Another Workplace -->
+          <button
+            *ngIf="currentStep === 2"
+            type="button"
+            (click)="resetFormFields()"
+            class="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-[1.02]"
+          >
+            افزودن محل کار جدید
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 inline mr-1"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
         </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="userId">کد پرسنلی</label>
-            <input
-              type="text"
-              id="userId"
-              class="form-control"
-              formControlName="userpersonalid"
-              readonly
-            />
-          </div>
+
+        <!-- Back/Close Buttons -->
+        <div
+          class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3"
+        >
+          <!-- Back Button -->
+          <button
+            *ngIf="currentStep === 2"
+            type="button"
+            (click)="currentStep = 1"
+            class="w-full sm:w-auto px-6 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all duration-300"
+          >
+            بازگشت
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 inline mr-1"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+
+          <!-- Close Button -->
+          <button
+            type="button"
+            (click)="close()"
+            class="w-full sm:w-auto px-6 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:bg-red-500 hover:border-red-500 hover:text-red-600 hover:shadow-red-100 hover:shadow-sm flex items-center justify-center gap-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            انصراف
+          </button>
         </div>
       </div>
-
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="userofficial">سمت</label>
-            <input
-              dir="rtl"
-              type="text"
-              id="userofficial"
-              class="form-control"
-              formControlName="userofficial"
-            />
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="roomnumber">شماره اتاق</label>
-            <input
-              maxlength="11"
-              type="txt"
-              id="roomnumber"
-              class="form-control"
-              formControlName="roomnumber"
-            />
-          </div>
-        </div>
-      </div>
-      <!--  col-md-6   -->
-
-      <!--  row   -->
-      <button
-        type="button"
-        class="btn btn-success"
-        (click)="resetFormFields()"
-        style="margin-left: 10px"
-      >
-        اضافه کردن محل کار بعدی
-      </button>
-      <button
-        type="submit"
-        class="btn btn-primary"
-        *ngIf="!this.isEditing"
-        style="margin-left: 10px"
-      >
-        ثبت
-      </button>
-
-      <button
-        type="submit"
-        class="btn btn-primary"
-        *ngIf="this.isEditing"
-        style="margin-left: 100px"
-      >
-        ویرایش
-      </button>
-      <button type="button" class="btn btn-danger" (click)="closeForm()">
-        بستن
-      </button>
     </div>
-  </form>
+  </div>
 </div>
 
 <!-- Users Table -->
@@ -397,7 +591,7 @@
     <div class="space-y-2">
       <label
         for="userRoleFilter"
-        class="block text-sm font-medium text-gray-700 text-right"
+        class="inline-block p-3 text-sm font-medium text-gray-700 text-right"
       >
         سطح کاربری
       </label>
@@ -417,7 +611,7 @@
     <div class="space-y-2">
       <label
         for="isActiveFilter"
-        class="block text-sm font-medium text-gray-700 text-right"
+        class="inline-block p-2 text-sm font-medium text-gray-700 text-right"
       >
         وضعیت
       </label>
@@ -434,16 +628,16 @@
 
     <!-- جست و جو کاربر (User Search) -->
     <div class="">
-      <div class="relative mt-2">
+      <div class="relative mt-3">
         <input
           type="text"
           id="searchInput"
-          class="w-full mt-2 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all pl-11"
+          class="w-70 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all pl-11"
           placeholder="جست و جو"
           [(ngModel)]="searchTerm"
         />
         <svg
-          class="h-5 w-5 absolute right-1 top-4.5 text-gray-400"
+          class="h-5 w-5 absolute right-1 top-3 text-gray-400"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

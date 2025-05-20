@@ -15,6 +15,9 @@ import {
   FormBuilder,
   Validators,
   ReactiveFormsModule,
+  ValidatorFn,
+  AbstractControl,
+  ValidationErrors,
 } from '@angular/forms';
 import { AuthService } from '../../Services/auth.service';
 import { first, tap } from 'rxjs';
@@ -40,6 +43,31 @@ export const myCustomTooltipDefaults: MatTooltipDefaultOptions = {
   hideDelay: 0,
   touchendHideDelay: 1000,
 };
+
+function mobileNumberValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    if (!value) return null;
+
+    if (value.length !== 11 || !value.startsWith('09')) {
+      return { invalidMobile: true };
+    }
+    return null;
+  };
+}
+
+function landlineNumberValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    if (!value) return null;
+
+    if (value.length !== 11 || !value.startsWith('0')) {
+      return { invalidLandline: true };
+    }
+    return null;
+  };
+}
+
 @Component({
   selector: 'as-users',
   standalone: true,
@@ -67,7 +95,7 @@ export const myCustomTooltipDefaults: MatTooltipDefaultOptions = {
   styleUrl: './users.component.css',
 })
 export class UsersComponent implements OnInit {
-  currentStep = 1;
+  currentStep: number = 1;
   changePasswordForm!: FormGroup;
   showChangePasswordForm = false;
   isSupporter = false;
@@ -126,15 +154,39 @@ export class UsersComponent implements OnInit {
     this.DisplayedColumns();
     this.fetchUsers();
     this.showUsersTable = true;
+    this.showUsersForm = false;
     this.firstStepForm = this.fb.group({
       userpersonalid: ['', Validators.required],
       username: ['', Validators.required],
       userlastname: ['', Validators.required],
-      userphonenumber: ['', Validators.required],
-      userlandlinephonenumber: [''],
+      userphonenumber: ['', [Validators.required, mobileNumberValidator()]],
+      userlandlinephonenumber: ['', landlineNumberValidator()],
       userroleid: [''],
       supporterid: [''],
     });
+
+    // Subscribe to mobile number changes
+    this.firstStepForm
+      .get('userphonenumber')
+      ?.valueChanges.subscribe((value) => {
+        if (value && (value.length !== 11 || !value.startsWith('09'))) {
+          this.errorMessage = 'شماره موبایل باید 11 رقم بوده و با 09 شروع شود';
+          this.successMessage = '';
+          this.showMessages();
+        }
+      });
+
+    // Subscribe to landline number changes
+    this.firstStepForm
+      .get('userlandlinephonenumber')
+      ?.valueChanges.subscribe((value) => {
+        if (value && (value.length !== 11 || !value.startsWith('0'))) {
+          this.errorMessage =
+            'شماره تلفن ثابت باید 11 رقم بوده و با 0 شروع شود';
+          this.successMessage = '';
+          this.showMessages();
+        }
+      });
 
     this.secondStepForm = this.fb.group({
       userpersonalid: [''],
@@ -213,12 +265,36 @@ export class UsersComponent implements OnInit {
   toggleView(view: 'form' | 'table'): void {
     if (view === 'form') {
       this.showUsersForm = true;
+      this.currentStep = 1;
+      this.firstStepForm.reset();
+      this.secondStepForm.reset();
     } else if (view === 'table') {
       this.fetchUsers();
     }
-
     this.showUsersTable = true;
   }
+
+  submitUserData(userData: any): void {
+    const endpoint = 'accounts/user/';
+    this.dataService.post(endpoint, userData).subscribe({
+      next: (response: any) => {
+        this.successMessage = 'کاربر با موفقیت ایجاد شد';
+        this.showMessage = true;
+        setTimeout(() => {
+          this.showMessage = false;
+        }, 3000);
+        this.fetchUsers();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.errorMessage = 'خطا در ایجاد کاربر';
+        this.showMessage = true;
+        setTimeout(() => {
+          this.showMessage = false;
+        }, 3000);
+      },
+    });
+  }
+
   openUsersForm(): void {
     this.showUsersForm = true;
   }
@@ -743,5 +819,18 @@ export class UsersComponent implements OnInit {
     this.isActive = '';
 
     this.filteredUsersDataSource = this.usersDataSource;
+  }
+
+  get progressPercentage(): number {
+    return (this.currentStep / 2) * 100;
+  }
+
+  close(): void {
+    this.showUsersForm = false;
+    this.currentStep = 1;
+    this.firstStepForm.reset();
+    this.secondStepForm.reset();
+    this.isEditing = false;
+    this.ngOnDestroy();
   }
 }

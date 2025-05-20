@@ -61,7 +61,7 @@ table {
     font-size: 13px;
   }
 }
-.form1,
+/* .form1,
 .form2 {
   padding-top: 15px;
 }
@@ -80,6 +80,7 @@ label {
   width: 120px;
   height: 65px;
 }
+
 .form-group {
   display: flex;
   flex-direction: row-reverse;
@@ -112,7 +113,7 @@ label {
   width: 250px;
   border-radius: 9px;
   text-align: center;
-}
+} */
 ::ng-deep .ng-input {
   padding-right: 30px;
 }
@@ -179,7 +180,7 @@ option {
   display: flex;
   justify-content: center;
 }
-.container1 {
+/* .container1 {
   border: 6px solid;
   border-image-slice: 1;
   border-image-source: linear-gradient(
@@ -191,7 +192,7 @@ option {
   margin-top: 100px;
   margin-left: 13px;
   margin-right: 13px;
-}
+} */
 ::placeholder {
   text-align: center;
 }
