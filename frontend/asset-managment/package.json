@@ -23,13 +23,17 @@
     "@ng-select/ng-select": "^14.0.0",
     "@popperjs/core": "^2.11.8",
     "@tailwindcss/postcss": "^4.0.9",
+    "@types/file-saver": "^2.0.7",
+    "@types/xlsx": "^0.0.35",
     "bootstrap": "^5.3.3",
+    "file-saver": "^2.0.5",
     "jalali-moment": "^3.3.11",
     "jquery": "^3.7.1",
     "ngx-bootstrap": "^19.0.2",
     "ngx-pagination": "^6.0.3",
     "rxjs": "^7.4.0",
     "tslib": "^2.3.0",
+    "xlsx": "^0.18.5",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {

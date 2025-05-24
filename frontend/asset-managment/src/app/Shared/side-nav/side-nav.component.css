@@ -166,14 +166,25 @@
 .sidebar .nav-links li .sub-menu2 a {
   color: var(--surface-color);
   font-size: 15px;
-  padding: 5px 0;
+  padding: 8px 12px;
   white-space: nowrap;
   opacity: 0.8;
   transition: all 0.3s ease;
+  border-radius: 6px;
+  margin: 2px 0;
 }
-.sidebar .nav-links li .sub-menu a:hover {
+.sidebar .nav-links li .sub-menu a:hover:not(.link_name) {
   opacity: 1;
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+  padding-left: 15px;
+  color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+.link_name {
+  transition: all 0.3s ease;
+}
+
 .sidebar.close .nav-links li .sub-menu,
 .sidebar.close .nav-links li .sub-menu2 {
   position: absolute;

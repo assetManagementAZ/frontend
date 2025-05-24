@@ -19,6 +19,10 @@ export class PanelComponent implements OnInit {
   router = inject(Router);
   role: string;
   userRole: string;
+  activeUsersCount: number = 0;
+  totalUsersCount: number = 0;
+  userCountChange: number = 0;
+
   constructor(
     private dataService: DataService,
     private authService: AuthService
@@ -34,5 +38,32 @@ export class PanelComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.fetchUserStatistics();
+  }
+
+  fetchUserStatistics(): void {
+    const endpoint = 'accounts/user/';
+    this.dataService.get(endpoint).subscribe((response: any) => {
+      if (response && response.body) {
+        // Filter out duplicates based on userpersonalid
+        const uniqueUsers = response.body.filter(
+          (value: { userpersonalid: any }, index: any, self: any[]) =>
+            self.findIndex(
+              (v: { userpersonalid: any }) =>
+                v.userpersonalid === value.userpersonalid
+            ) === index
+        );
+
+        this.totalUsersCount = uniqueUsers.length;
+        this.activeUsersCount = uniqueUsers.filter(
+          (user: any) => user.is_active === 1
+        ).length;
+
+        // Calculate percentage change (mock data for now)
+        // In a real application, you would compare with previous month's data
+        this.userCountChange = 12; // This should be calculated based on actual data
+      }
+    });
+  }
 }

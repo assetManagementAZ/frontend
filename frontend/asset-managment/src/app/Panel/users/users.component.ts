@@ -37,6 +37,9 @@ import {
   MatTooltipDefaultOptions,
   MatTooltipModule,
 } from '@angular/material/tooltip';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import { ExportExcelComponent } from '../../Shared/modals/export-excel/export-excel.component';
 
 export const myCustomTooltipDefaults: MatTooltipDefaultOptions = {
   showDelay: 700,
@@ -123,6 +126,7 @@ export class UsersComponent implements OnInit {
   isActive: string = '';
   searchTerm: string = '';
   displayedColumns: string[] = [
+    'rowNumber',
     'userid',
     'user',
     'is_active',
@@ -318,7 +322,7 @@ export class UsersComponent implements OnInit {
                 v.userpersonalid === value.userpersonalid
             ) === index
         );
-        console.log(filteredUsers);
+
         this.usersDataSource = new MatTableDataSource(filteredUsers);
         this.filteredUsersDataSource = new MatTableDataSource(filteredUsers);
         this.filteredUsersDataSource.paginator = this.paginator;
@@ -353,33 +357,59 @@ export class UsersComponent implements OnInit {
 
     if (this.firstStepForm.valid) {
       const formValue = this.firstStepForm.value;
-      if (this.isEditing) {
-        formValue.userpersonalid = parseInt(formValue.userpersonalid, 10);
-      } else {
-        formValue.userpersonalid = parseInt(formValue.userpersonalid, 10);
-        formValue.userroleid = parseInt(formValue.userroleid, 10);
-      }
 
       let endpoint: string;
       let httpMethod: 'post' | 'put';
+      let formData: any;
+
       if (this.isEditing) {
         endpoint = `accounts/change/subuser/profile/`;
         httpMethod = 'put';
+
+        // For editing mode, match exactly with ChangeSubUserInfoSerializer
+        formData = {
+          userpersonalid: parseInt(formValue.userpersonalid, 10),
+          username: formValue.username || undefined,
+          userlastname: formValue.userlastname || undefined,
+          userphonenumber: formValue.userphonenumber || undefined,
+          userlandlinephonenumber:
+            formValue.userlandlinephonenumber || undefined,
+        };
+
+        // Remove undefined values to match serializer's optional fields
+        formData = Object.fromEntries(
+          Object.entries(formData).filter(([_, value]) => value !== undefined)
+        );
       } else {
         endpoint = 'accounts/user/';
         httpMethod = 'post';
-      }
-      const filteredFormValue = Object.fromEntries(
-        Object.entries(formValue)
-          .map(([key, value]) => [key, value ?? ''])
-          .filter(([key, value]) => {
-            return (
-              !(key === 'userroleid' || key === 'supporterid') || value !== ''
-            );
-          })
-      );
 
-      this.dataService[httpMethod](endpoint, filteredFormValue)
+        // For creation mode, keep existing logic
+        formData = {
+          userpersonalid: parseInt(formValue.userpersonalid, 10),
+          username: formValue.username,
+          userlastname: formValue.userlastname,
+          userphonenumber: formValue.userphonenumber,
+          userlandlinephonenumber: formValue.userlandlinephonenumber,
+          userroleid: parseInt(formValue.userroleid, 10),
+          supporterid: formValue.supporterid
+            ? parseInt(formValue.supporterid, 10)
+            : undefined,
+        };
+
+        // Filter out empty values for creation
+        formData = Object.fromEntries(
+          Object.entries(formData)
+            .map(([key, value]) => [key, value ?? ''])
+            .filter(([key, value]) => {
+              return (
+                !(key === 'userroleid' || key === 'supporterid') || value !== ''
+              );
+            })
+        );
+      }
+
+      this.dataService[httpMethod](endpoint, formData)
         .pipe(
           tap({
             next: (response) => {
@@ -468,31 +498,60 @@ export class UsersComponent implements OnInit {
     if (this.secondStepForm.valid) {
       const secondFormValue = this.secondStepForm.value;
 
-      secondFormValue.areaId = parseInt(secondFormValue.areaId, 10);
-      secondFormValue.buildingId = parseInt(secondFormValue.buildingId, 10);
-      secondFormValue.roomnumber = parseInt(secondFormValue.roomnumber, 10);
-
       let endpoint: string;
       let httpMethod: 'post' | 'put';
+      let formData: any;
+
       if (this.isEditing) {
         endpoint = `accounts/user/working/locations/`;
         httpMethod = 'put';
+
+        formData = {
+          userpersonalid: parseInt(secondFormValue.userpersonalid, 10),
+          areaId: secondFormValue.areaId
+            ? parseInt(secondFormValue.areaId, 10)
+            : undefined,
+          buildingId: secondFormValue.buildingId
+            ? parseInt(secondFormValue.buildingId, 10)
+            : undefined,
+          userofficial: secondFormValue.userofficial || undefined,
+          roomnumber: secondFormValue.roomnumber
+            ? parseInt(secondFormValue.roomnumber, 10)
+            : undefined,
+        };
+
+        formData = Object.fromEntries(
+          Object.entries(formData).filter(([_, value]) => value !== undefined)
+        );
       } else {
         endpoint = 'accounts/user/working/locations/';
         httpMethod = 'post';
+
+        formData = {
+          userpersonalid: parseInt(secondFormValue.userpersonalid, 10),
+          areaId: parseInt(secondFormValue.areaId, 10),
+          buildingId: parseInt(secondFormValue.buildingId, 10),
+          userofficial: secondFormValue.userofficial,
+          roomnumber: parseInt(secondFormValue.roomnumber, 10),
+        };
       }
 
-      this.dataService[httpMethod](endpoint, secondFormValue)
+      this.dataService[httpMethod](endpoint, formData)
         .pipe(
           tap({
             next: (response) => {
               if (response.status === 201) {
-                this.successMessage = 'ایجاد کاربر با موفقیت انجام شد ';
+                this.successMessage = 'ایجاد کاربر با موفقیت انجام شد';
                 this.errorMessage = '';
                 this.showMessages();
+                this.showUsersForm = false;
+                this.isEditing = false;
+                this.firstStepForm.reset();
+                this.secondStepForm.reset();
+                this.currentStep = 1;
                 this.fetchUsers();
               } else if (response.status === 200) {
-                this.successMessage = 'ویرایش بخش کاری با موفقیت انجام شد ';
+                this.successMessage = 'ویرایش بخش کاری با موفقیت انجام شد';
                 this.errorMessage = '';
                 this.showMessages();
                 this.showUsersForm = false;
@@ -510,11 +569,19 @@ export class UsersComponent implements OnInit {
               }
             },
             error: (error: HttpErrorResponse) => {
-              console.error(
-                'Error submitting first step:',
-                error.error['non_field_errors']
-              );
-              this.errorMessage = error.error['non_field_errors'];
+              console.error('Error submitting second step:', error);
+              console.error('Request data:', formData);
+              console.error('Error details:', error.error);
+
+              if (error.status === 500) {
+                this.errorMessage = 'خطای سرور. لطفا با پشتیبانی تماس بگیرید.';
+              } else if (error.error && error.error['non_field_errors']) {
+                this.errorMessage = error.error['non_field_errors'];
+              } else {
+                this.errorMessage =
+                  'خطا در ثبت اطلاعات. لطفا دوباره تلاش کنید.';
+              }
+
               this.successMessage = '';
               this.showMessages();
             },
@@ -832,5 +899,54 @@ export class UsersComponent implements OnInit {
     this.secondStepForm.reset();
     this.isEditing = false;
     this.ngOnDestroy();
+  }
+
+  getRowNumber(index: number): number {
+    if (this.paginator) {
+      return this.paginator.pageIndex * this.paginator.pageSize + index + 1;
+    }
+    return index + 1;
+  }
+
+  exportUsersToExcel(): void {
+    const dialogRef = this.dialog.open(ExportExcelComponent, {
+      width: '800px',
+      data: { users: this.usersDataSource.data },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const users = this.usersDataSource.data;
+        const exportData = users.map((user, idx) => {
+          const row: any = {};
+          result.forEach((col: any) => {
+            if (col.key === 'rowNumber') {
+              row[col.label] = idx + 1;
+            } else if (col.key === 'userroleid') {
+              row[col.label] = this.getUserRoleString(user[col.key]);
+            } else if (col.key === 'is_active') {
+              row[col.label] = this.getIsActiveString(user[col.key]);
+            } else {
+              row[col.label] = user[col.key];
+            }
+          });
+          return row;
+        });
+
+        const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
+        const workbook: XLSX.WorkBook = {
+          Sheets: { Users: worksheet },
+          SheetNames: ['Users'],
+        };
+        const excelBuffer: any = XLSX.write(workbook, {
+          bookType: 'xlsx',
+          type: 'array',
+        });
+        const blob: Blob = new Blob([excelBuffer], {
+          type: 'application/octet-stream',
+        });
+        saveAs(blob, 'users.xlsx');
+      }
+    });
   }
 }

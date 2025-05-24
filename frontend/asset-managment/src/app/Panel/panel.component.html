@@ -1,9 +1,4 @@
 <div class="panel-container">
-  <div class="breadcrumb">
-    <span>/</span>
-    <a routerLink="/panel">صفحه اصلی</a>
-  </div>
-
   <div class="welcome-card">
     <div class="welcome-content">
       <h1>به پنل مدیریت خوش آمدید</h1>
@@ -15,7 +10,81 @@
     </div>
   </div>
 
+  <!-- Statistics Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">
+        <mat-icon>people</mat-icon>
+      </div>
+      <div class="stat-content">
+        <h3>کاربران فعال</h3>
+        <p class="stat-number">{{ activeUsersCount }}</p>
+        <span
+          class="stat-trend"
+          [class.positive]="userCountChange > 0"
+          [class.negative]="userCountChange < 0"
+        >
+          {{ userCountChange > 0 ? "+" : "" }}{{ userCountChange }}% از ماه
+          گذشته
+        </span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <mat-icon>computer</mat-icon>
+      </div>
+      <div class="stat-content">
+        <h3>کامپیوترها</h3>
+        <p class="stat-number">85</p>
+        <span class="stat-trend positive">+5% از ماه گذشته</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <mat-icon>inventory_2</mat-icon>
+      </div>
+      <div class="stat-content">
+        <h3>محصولات تحویلی</h3>
+        <p class="stat-number">234</p>
+        <span class="stat-trend negative">-3% از ماه گذشته</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <mat-icon>support</mat-icon>
+      </div>
+      <div class="stat-content">
+        <h3>تیکت‌های باز</h3>
+        <p class="stat-number">12</p>
+        <span class="stat-trend positive">+8% از ماه گذشته</span>
+      </div>
+    </div>
+  </div>
+
   <div class="dashboard-grid">
+    <!-- Quick Actions -->
+    <div class="dashboard-section">
+      <h2 class="section-title">عملیات سریع</h2>
+      <div class="quick-actions">
+        <button class="action-button" routerLink="/users">
+          <mat-icon>person_add</mat-icon>
+          <span>افزودن کاربر</span>
+        </button>
+        <button class="action-button" routerLink="/computer">
+          <mat-icon>add_circle</mat-icon>
+          <span>ثبت کامپیوتر</span>
+        </button>
+        <button class="action-button" routerLink="/ownTicketPage">
+          <mat-icon>add_alert</mat-icon>
+          <span>ایجاد تیکت</span>
+        </button>
+        <button class="action-button" routerLink="/deliveredProducts">
+          <mat-icon>add_shopping_cart</mat-icon>
+          <span>ثبت محصول</span>
+        </button>
+      </div>
+    </div>
+
     <!-- User Management Section -->
     <div class="dashboard-section">
       <h2 class="section-title">مدیریت کاربران</h2>
@@ -31,6 +100,43 @@
         <div class="dashboard-card" routerLink="/usersDelivery">
           <mat-icon>inventory_2</mat-icon>
           <h3>محصولات تحویلی</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="dashboard-section">
+      <h2 class="section-title">فعالیت‌های اخیر</h2>
+      <div class="activity-list">
+        <div class="activity-item">
+          <div class="activity-icon">
+            <mat-icon>person</mat-icon>
+          </div>
+          <div class="activity-content">
+            <h4>کاربر جدید ثبت شد</h4>
+            <p>علی محمدی به سیستم اضافه شد</p>
+            <span class="activity-time">2 ساعت پیش</span>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon">
+            <mat-icon>computer</mat-icon>
+          </div>
+          <div class="activity-content">
+            <h4>کامپیوتر جدید ثبت شد</h4>
+            <p>کامپیوتر جدید به کاربر محمد رضایی اختصاص داده شد</p>
+            <span class="activity-time">5 ساعت پیش</span>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon">
+            <mat-icon>support</mat-icon>
+          </div>
+          <div class="activity-content">
+            <h4>تیکت جدید ایجاد شد</h4>
+            <p>تیکت جدید توسط کاربر سارا احمدی ایجاد شد</p>
+            <span class="activity-time">1 روز پیش</span>
+          </div>
         </div>
       </div>
     </div>

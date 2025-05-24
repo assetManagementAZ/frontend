@@ -294,61 +294,148 @@ mat-form-field {
 
 /* Modern Button Styles */
 .modern-btn {
-  border: none;
-  border-radius: 6px;
   padding: 8px 16px;
-  font-size: 0.8rem;
+  border-radius: 8px;
   font-weight: 500;
-  cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 80px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
 
-.modern-btn:active {
-  transform: translateY(1px);
+.modern-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
 }
 
+.modern-btn:hover::before {
+  transform: translateX(0);
+}
+
+.modern-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Primary button styles */
 .primary-btn {
-  background-color: #4a6cf7;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
   color: white;
 }
 
 .primary-btn:hover {
-  background-color: #3a5ce4;
-  box-shadow: 0 4px 8px rgba(74, 108, 247, 0.3);
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
 }
 
+/* Info button styles */
 .info-btn {
-  background-color: #00bcd4;
+  background: linear-gradient(135deg, #10b981, #059669);
   color: white;
 }
 
 .info-btn:hover {
-  background-color: #00acc1;
-  box-shadow: 0 4px 8px rgba(0, 188, 212, 0.3);
+  background: linear-gradient(135deg, #059669, #047857);
 }
 
+/* Toggle button styles */
 .toggle-btn {
-  background-color: #f5f5f5;
-  color: #555;
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  color: white;
 }
 
 .toggle-btn.active {
-  background-color: #4caf50;
-  color: white;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
 }
 
 .toggle-btn.inactive {
-  background-color: #f44336;
-  color: white;
+  background: linear-gradient(135deg, #10b981, #059669);
 }
 
 .toggle-btn:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  filter: brightness(1.1);
+}
+
+/* Add a subtle pulse animation for active buttons */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  }
+}
+
+.modern-btn:active {
+  transform: scale(0.95);
+  animation: pulse 0.5s;
+}
+
+/* Add a ripple effect on click */
+.modern-btn::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%);
+  transform-origin: 50% 50%;
+}
+
+.modern-btn:focus:not(:active)::after {
+  animation: ripple 1s ease-out;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(20, 20);
+    opacity: 0;
+  }
+}
+
+/* Add a subtle glow effect on hover */
+.modern-btn:hover {
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+}
+
+/* Add a smooth transition for all properties */
+.modern-btn {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Add a subtle border animation on hover */
+.modern-btn::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.modern-btn:hover::before {
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 /* Status Badge */
@@ -372,11 +459,21 @@ mat-form-field {
 
 /* User Name Badge */
 .user-name-badge {
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 6px 12px;
+  border-radius: 6px;
   background-color: rgba(102, 126, 234, 0.1);
   color: #4a6cf7;
   font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+  position: relative;
+}
+
+.user-name-badge:hover {
+  background-color: rgba(102, 126, 234, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(74, 108, 247, 0.2);
 }
 
 /* Pagination Styles */
@@ -427,4 +524,32 @@ mat-form-field {
   border-color: #000000;
   border-radius: 9px;
   height: 44px !important;
+}
+
+/* Custom Tooltip Styles */
+::ng-deep .custom-tooltip {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
+  color: white !important;
+  font-size: 0.875rem !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  max-width: none !important;
+  white-space: nowrap !important;
+  font-weight: 500 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+::ng-deep .custom-tooltip::before {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  transform: rotate(45deg);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
