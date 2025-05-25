@@ -832,7 +832,11 @@ export class UsersComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.editWorkUser(result);
+        if (result.type === 'editUser') {
+          this.editUser(result.data);
+        } else {
+          this.editWorkUser(result);
+        }
       }
     });
   }

@@ -1,61 +1,150 @@
-<div class="dialog-container">
-  <div class="dialog-header">
-    <button mat-icon-button (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
-  <div class="dialog-content">
-    <table class="rwd-table">
-      <tr>
-        <th>کامپیوتر ها</th>
-        <th>کالا ها</th>
-      </tr>
+<!-- Modern Glassmorphism Modal -->
+<div
+  class="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center p-4 z-50 transition-opacity duration-300"
+>
+  <div
+    class="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden w-full max-w-md transform transition-all duration-300 ease-out"
+    [@modalAnimation]
+  >
+    <!-- Header with gradient border -->
+    <div class="border-b border-gray-100/50 relative">
+      <div
+        class="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 opacity-10"
+      ></div>
+      <div class="relative px-6 py-4 flex justify-between items-center">
+        <h3
+          class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 ml-[33%]"
+        >
+          دارایی های کاربر
+        </h3>
+        <button
+          mat-icon-button
+          (click)="closeDialog()"
+          class="text-gray-400 hover:text-gray-600 transition-colors duration-200 hover:bg-gray-100/50 rounded-full p-1"
+        >
+          <mat-icon class="text-lg">close</mat-icon>
+        </button>
+      </div>
+    </div>
 
-      <tr>
-        <td>
-          <button
-            class="btn btn-info"
-            (click)="viewComputers(this.data.userpersonalid)"
+    <!-- Content -->
+    <div dir="rtl" class="p-6 space-y-4">
+      <!-- Computers Card -->
+      <div
+        class="group relative overflow-hidden bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:border-blue-100 active:scale-[0.98]"
+        (click)="viewComputers(this.data.userpersonalid)"
+      >
+        <div
+          class="absolute inset-0 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        ></div>
+        <div
+          class="relative gap-2 flex items-center p-5 space-x-4 space-x-reverse"
+        >
+          <div
+            class="bg-gradient-to-br from-blue-500 to-indigo-600 p-3 rounded-xl shadow-sm flex-shrink-0"
           >
-            مشاهده
-          </button>
-        </td>
-        <td>
-          <button
-            class="btn btn-info"
-            (click)="viewDeliveredGoods(this.data.userpersonalid)"
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-7 w-7 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              />
+            </svg>
+          </div>
+          <div>
+            <h4 class="text-lg font-semibold text-gray-800 mr-4">
+              کامپیوتر ها
+            </h4>
+            <!-- <p class="text-sm text-gray-500 mt-1">
+              مشاهده لیست کامپیوترهای اختصاص داده شده
+            </p> -->
+          </div>
+          <div
+            class="mr-auto text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
           >
-            مشاهده
-          </button>
-        </td>
-      </tr>
-    </table>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
 
-    <!-- <table
-      mat-table
-      [dataSource]="dataSource"
-      matSort
-      [dir]="'rtl'"
-      class="full-width-table test"
+      <!-- Goods Card -->
+      <div
+        class="group mt-3 relative overflow-hidden bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:border-green-100 active:scale-[0.98]"
+        (click)="viewDeliveredGoods(this.data.userpersonalid)"
+      >
+        <div
+          class="absolute inset-0 bg-gradient-to-r from-green-50/50 to-emerald-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        ></div>
+        <div class="relative flex items-center p-5 space-x-4 space-x-reverse">
+          <div
+            class="bg-gradient-to-br from-green-500 to-emerald-600 p-3 rounded-xl shadow-sm flex-shrink-0"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-7 w-7 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+              />
+            </svg>
+          </div>
+          <div>
+            <h4 class="text-lg font-semibold text-gray-800 mr-4">کالا ها</h4>
+            <!-- <p class="text-sm text-gray-500 mt-1">
+              مشاهده لیست کالاهای تحویل داده شده
+            </p> -->
+          </div>
+          <div
+            class="mr-auto text-green-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div
+      class="px-6 py-3 bg-gray-50/50 border-t border-gray-100/50 text-center"
     >
-      <ng-container matColumnDef="deliveredgoods">
-        <th mat-header-cell *matHeaderCellDef>کالا ها</th>
-        <td mat-cell *matCellDef="let row">
-          <button class="btn btn-info" (click)="viewDeliveredGoods()">
-            مشاهده
-          </button>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="computers">
-        <th mat-header-cell *matHeaderCellDef>کامپیوتر ها</th>
-        <td mat-cell *matCellDef="let row">
-          <button class="btn btn-info" (click)="viewComputers()">مشاهده</button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table> -->
+      <p class="text-xs text-gray-400 hover:text-blue-600">
+        برای مشاهده جزئیات بر روی آیتم مورد نظر کلیک کنید
+      </p>
+    </div>
   </div>
 </div>

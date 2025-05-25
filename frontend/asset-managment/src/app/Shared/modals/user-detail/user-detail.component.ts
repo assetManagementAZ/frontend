@@ -28,6 +28,21 @@ import { RouterLink, RouterModule } from '@angular/router';
 import { PcUserComponent } from '../../../Shared/modals/pc-user/pc-user.component';
 import { MatIconModule } from '@angular/material/icon';
 
+interface User {
+  userid: number;
+  userpersonalid: number;
+  username: string;
+  userlastname: string;
+  userphonenumber: string;
+  userlandlinephonenumber: string;
+  userroleid: number;
+  usersupportid: number;
+  areaname: string;
+  buildingname: string;
+  userofficial: string;
+  roomnumber: string;
+}
+
 @Component({
   selector: 'as-user-detail',
   standalone: true,
@@ -51,26 +66,13 @@ import { MatIconModule } from '@angular/material/icon';
 export class UserDetailComponent implements OnInit {
   filteredData: any[] = [];
   displayedColumns: string[] = [];
-  // displayedColumns: string[] = [
-  //   'userid',
-  //   'userpersonalid',
-  //   'username',
-  //   'userlastname',
-  //   'userphonenumber',
-  //   'userlandlinephonenumber',
-  //   'userroleid',
-  //   'userspporter',
-  //   'buildingname',
-  //   'areaname',
-  //   'userofficial',
-  //   'roomnumber',
-  //   'workActions',
-  // ];
   userDataSource!: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   userList: any[] = [];
   showEditButton: boolean = false;
+  user: User | null = null;
+
   constructor(
     public dialogRef: MatDialogRef<UserDetailComponent>,
     @Inject(MAT_DIALOG_DATA)
@@ -81,11 +83,13 @@ export class UserDetailComponent implements OnInit {
     private dataservice: DataService,
     private dialog: MatDialog
   ) {}
+
   ngOnInit(): void {
     this.showEditButton = this.data.showEditButton ?? false;
     this.setupDisplayedColumns();
     this.getDetail();
   }
+
   setupDisplayedColumns(): void {
     this.displayedColumns = [
       'userid',
@@ -106,6 +110,7 @@ export class UserDetailComponent implements OnInit {
       this.displayedColumns.push('workActions');
     }
   }
+
   getDetail(): void {
     const endpoint = `accounts/user/`;
     this.dataservice.get(endpoint).subscribe((response: any) => {
@@ -113,11 +118,12 @@ export class UserDetailComponent implements OnInit {
         this.filteredData = response.body.filter(
           (item: any) => item.userid === this.data.userid
         );
-
+        this.user = this.filteredData[0] || null;
         this.userDataSource = new MatTableDataSource(this.filteredData);
       }
     });
   }
+
   getUserRoleString(userRoleId: number): string {
     switch (userRoleId) {
       case 2:
@@ -128,9 +134,15 @@ export class UserDetailComponent implements OnInit {
         return 'کاربر';
     }
   }
+
   editWorkUser(userData: any): void {
-    this.dialogRef.close(userData); // Close the dialog and send the user data
+    this.dialogRef.close(userData);
   }
+
+  editUser(userData: any): void {
+    this.dialogRef.close({ type: 'editUser', data: userData });
+  }
+
   closeDialog(): void {
     this.dialogRef.close();
   }

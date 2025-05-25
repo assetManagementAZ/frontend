@@ -1,105 +1,269 @@
-<div id="dialog-container" class="dialog-container">
-  <div class="dialog-header">
-    <button mat-icon-button (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
-  <div class="dialog-content">
-    <div class="mat-elevation-z8">
-      <table
-        mat-table
-        [dataSource]="userDataSource"
-        matSort
-        [dir]="'rtl'"
-        class="full-width-table"
+<!-- Modern Glassmorphism Modal with RTL Support -->
+<div class="fixed inset-0 z-50 overflow-y-auto" dir="rtl">
+  <div class="flex items-center justify-center min-h-screen p-4">
+    <!-- Backdrop -->
+    <div
+      class="fixed inset-0 bg-gradient-to-br from-blue-900/30 to-indigo-900/20 backdrop-blur-sm transition-opacity"
+    ></div>
+
+    <!-- Modal Container -->
+    <div class="relative w-full max-w-2xl mx-auto transform transition-all">
+      <!-- Glass Card -->
+      <div
+        class="bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-white/20"
       >
-        <!-- User ID Column -->
-        <ng-container matColumnDef="userid">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>کد کاربری</th>
-          <td mat-cell *matCellDef="let user">{{ user.userid }}</td>
-        </ng-container>
-
-        <!-- User PersonalId Column -->
-        <ng-container matColumnDef="userpersonalid">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>کد پرسنلی</th>
-          <td mat-cell *matCellDef="let row">{{ row.userpersonalid }}</td>
-        </ng-container>
-        <!-- User Name Column -->
-        <ng-container matColumnDef="username">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>نام</th>
-          <td mat-cell *matCellDef="let row">
-            {{ row.username }}
-          </td>
-        </ng-container>
-
-        <!-- User Last Name Column -->
-        <ng-container matColumnDef="userlastname">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>
-            نام خانوادگی
-          </th>
-          <td mat-cell *matCellDef="let row">{{ row.userlastname }}</td>
-        </ng-container>
-
-        <!-- User Phone Number Count Column -->
-        <ng-container matColumnDef="userphonenumber">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>تلفن همراه</th>
-          <td mat-cell *matCellDef="let row">{{ row.userphonenumber }}</td>
-        </ng-container>
-        <!-- User Landline Phone Number Count Column -->
-        <ng-container matColumnDef="userlandlinephonenumber">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>
-            تلفن محل کار
-          </th>
-          <td mat-cell *matCellDef="let row">
-            {{ row.userlandlinephonenumber }}
-          </td>
-        </ng-container>
-        <!-- User Role Column -->
-        <ng-container matColumnDef="userroleid">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>سطح کاربری</th>
-          <td mat-cell *matCellDef="let row">
-            {{ getUserRoleString(row.userroleid) }}
-          </td>
-        </ng-container>
-        <!-- User Supporter id Column -->
-        <ng-container matColumnDef="userspporter">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>کد پشتیبان</th>
-          <td mat-cell *matCellDef="let row">{{ row.usersupportid }}</td>
-        </ng-container>
-        <!-- User Area Name  Column -->
-        <ng-container matColumnDef="areaname">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>حوزه</th>
-          <td mat-cell *matCellDef="let row">{{ row.areaname }}</td>
-        </ng-container>
-        <!-- User Building Name  Column -->
-        <ng-container matColumnDef="buildingname">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>ساختمان</th>
-          <td mat-cell *matCellDef="let row">{{ row.buildingname }}</td>
-        </ng-container>
-        <!-- User Official t Column -->
-        <ng-container matColumnDef="userofficial">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>سمت</th>
-          <td mat-cell *matCellDef="let row">{{ row.userofficial }}</td>
-        </ng-container>
-        <!-- User Room Number t Column -->
-        <ng-container matColumnDef="roomnumber">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>اتاق</th>
-          <td mat-cell *matCellDef="let row">{{ row.roomnumber }}</td>
-        </ng-container>
-        <!-- Edit User button column -->
-        <ng-container matColumnDef="workActions">
-          <th mat-header-cell *matHeaderCellDef class="sticky-header">
-            بخش کاری
-          </th>
-          <td mat-cell *matCellDef="let user">
-            <button class="btn btn-primary" (click)="editWorkUser(user)">
-              ویرایش
+        <!-- Header with Gradient Accent -->
+        <div class="relative bg-gradient-to-l from-blue-600 to-indigo-700 p-5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3 space-x-reverse">
+              <div class="p-2 rounded-full bg-white/10 backdrop-blur-sm">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold text-white">جزئیات کاربر</h3>
+            </div>
+            <button
+              (click)="closeDialog()"
+              class="p-1 rounded-full hover:bg-white/20 transition-colors duration-200 text-white/80 hover:text-white"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
             </button>
-          </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6">
+          <div class="grid grid-cols-1.5 gap-6">
+            <!-- Personal Information Card -->
+            <div
+              class="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-sm border border-gray-100 overflow-hidden"
+            >
+              <div class="border-b border-gray-100/50 px-5 py-3 bg-gray-50">
+                <h4
+                  class="text-lg font-semibold text-gray-800 flex items-center"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 text-blue-500 ml-2"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  اطلاعات شخصی
+                </h4>
+              </div>
+              <div class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs"
+                >
+                  <p class="text-xs font-medium text-blue-600 mb-1">
+                    کد کاربری
+                  </p>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{ user?.userid }}
+                  </p>
+                </div>
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs"
+                >
+                  <p class="text-xs font-medium text-blue-600 mb-1">
+                    کد پرسنلی
+                  </p>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{ user?.userpersonalid }}
+                  </p>
+                </div>
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs"
+                >
+                  <p class="text-xs font-medium text-blue-600 mb-1">نام</p>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{ user?.username }}
+                  </p>
+                </div>
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs"
+                >
+                  <p class="text-xs font-medium text-blue-600 mb-1">
+                    نام خانوادگی
+                  </p>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{ user?.userlastname }}
+                  </p>
+                </div>
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs"
+                >
+                  <p class="text-xs font-medium text-blue-600 mb-1">
+                    تلفن همراه
+                  </p>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{ user?.userphonenumber }}
+                  </p>
+                </div>
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs"
+                >
+                  <p class="text-xs font-medium text-blue-600 mb-1">
+                    تلفن محل کار
+                  </p>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{ user?.userlandlinephonenumber }}
+                  </p>
+                </div>
+                <button
+                  (click)="editUser(user)"
+                  class="px-2 py-2 bg-gradient-to-l from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 shadow-sm hover:shadow-md flex mb-3 w-[50%] justify-center mr-[79%]"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 ml-2"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                    />
+                  </svg>
+                  ویرایش
+                </button>
+              </div>
+            </div>
+
+            <!-- Work Information Card -->
+            <div
+              class="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-sm border border-gray-100 overflow-hidden"
+            >
+              <div class="border-b border-gray-100/50 px-5 py-3 bg-gray-50">
+                <h4
+                  class="text-lg font-semibold text-gray-800 flex items-center"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 text-green-500 ml-2"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z"
+                      clip-rule="evenodd"
+                    />
+                    <path
+                      d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"
+                    />
+                  </svg>
+                  اطلاعات کاری
+                </h4>
+              </div>
+              <div class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs"
+                >
+                  <p class="text-xs font-medium text-green-600 mb-1">
+                    سطح کاربری
+                  </p>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{
+                      user && user.userroleid
+                        ? getUserRoleString(user.userroleid)
+                        : ""
+                    }}
+                  </p>
+                </div>
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs"
+                >
+                  <p class="text-xs font-medium text-green-600 mb-1">
+                    کد پشتیبان
+                  </p>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{ user?.usersupportid }}
+                  </p>
+                </div>
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs"
+                >
+                  <p class="text-xs font-medium text-green-600 mb-1">حوزه</p>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{ user?.areaname }}
+                  </p>
+                </div>
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs"
+                >
+                  <p class="text-xs font-medium text-green-600 mb-1">ساختمان</p>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{ user?.buildingname }}
+                  </p>
+                </div>
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs"
+                >
+                  <p class="text-xs font-medium text-green-600 mb-1">سمت</p>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{ user?.userofficial }}
+                  </p>
+                </div>
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs"
+                >
+                  <p class="text-xs font-medium text-green-600 mb-1">اتاق</p>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{ user?.roomnumber }}
+                  </p>
+                </div>
+              </div>
+              <button
+                (click)="editWorkUser(user)"
+                class="px-2 py-2 bg-gradient-to-l from-green-500 to-emerald-600 text-white rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300 shadow-sm hover:shadow-md flex mb-3 w-[23%] justify-center mr-[37%]"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 ml-2"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                  />
+                </svg>
+                ویرایش
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
