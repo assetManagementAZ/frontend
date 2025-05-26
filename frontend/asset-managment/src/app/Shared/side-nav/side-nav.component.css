@@ -355,3 +355,7 @@
 .dark-theme .sidebar .nav-links li .sub-menu {
   background: rgba(0, 0, 0, 0.1);
 }
+
+nav.hidden {
+  display: none;
+}

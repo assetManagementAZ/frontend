@@ -1,92 +1,222 @@
-<div class="dialog-container">
-  <div class="dialog-header">
-    <button mat-icon-button (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
-  <div class="dialog-content mat-elevation-z8">
-    <table
-      mat-table
-      [dataSource]="DataSource"
-      matSort
-      [dir]="'rtl'"
-      class="full-width-table test"
-    >
-      <ng-container matColumnDef="computerpropertynumber">
-        <th mat-header-cell *matHeaderCellDef>شماره اموال</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.computerpropertynumber }}
-        </td>
-      </ng-container>
+<!-- Modern Glassmorphism Modal with RTL Support -->
+<div class="fixed inset-0 z-50 overflow-y-auto" dir="rtl">
+  <div class="flex items-center justify-center min-h-screen p-4">
+    <!-- Backdrop -->
+    <div
+      class="fixed inset-0 bg-gradient-to-br from-blue-900/30 to-indigo-900/20 backdrop-blur-sm transition-opacity"
+    ></div>
 
-      <ng-container matColumnDef="computername">
-        <th mat-header-cell *matHeaderCellDef>نام</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.computername }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="computermodel">
-        <th mat-header-cell *matHeaderCellDef>مدل</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.computermodel }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="operationsystemname">
-        <th mat-header-cell *matHeaderCellDef>سیستم عامل</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.operationsystemversionid.operationsystemname }}
-        </td>
-      </ng-container>
-      <!-- computerip Column -->
-      <ng-container matColumnDef="computerip">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>IP</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.computerip }}
-        </td>
-      </ng-container>
-      <!-- computermacaddress Column -->
-      <ng-container matColumnDef="computermacaddress">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>MAC</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.computermacaddress }}
-        </td>
-      </ng-container>
-      <!-- operationsystemversionname Column -->
-      <ng-container matColumnDef="operationsystemversionname">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>ورژن</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.operationsystemversionid.operationsystemversionname }}
-        </td>
-      </ng-container>
-      <!-- Status Column -->
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>مالکیت</th>
-        <td mat-cell *matCellDef="let row">
-          {{ getPersonalStatus(row.computerispersonal) }}
-        </td>
-      </ng-container>
-      <!-- Is Abortion Column -->
-      <ng-container matColumnDef="abortion">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>وضعیت اسقاط</th>
-        <td mat-cell *matCellDef="let row">
-          {{ getAbortion(row.isAbortion) }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="viewGoods">
-        <th mat-header-cell *matHeaderCellDef class="sticky-header">
-          کالا ها داخل کیس
-        </th>
-        <td mat-cell *matCellDef="let row">
-          <button
-            class="btn btn-info"
-            (click)="viewGoods(row.computerpropertynumber)"
+    <!-- Modal Container -->
+    <div class="relative w-full max-w-6xl mx-auto transform transition-all">
+      <!-- Glass Card -->
+      <div
+        class="bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-white/20"
+      >
+        <!-- Header with Gradient Accent -->
+        <div class="relative bg-[image:var(--primary-gradient)] p-5">
+          <div dir="ltr" class="flex items-center justify-between">
+            <div class="flex items-center space-x-3 space-x-reverse ml-[45%]">
+              <h3 class="text-xl font-bold text-white">
+                اطلاعات کامپیوترهای کاربر
+              </h3>
+            </div>
+            <button
+              (click)="closeDialog()"
+              class="p-1 rounded-full hover:bg-white/20 transition-colors duration-200 text-white/80 hover:text-white"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6">
+          <div
+            class="bg-white/80 rounded-xl shadow-sm border border-gray-100 overflow-hidden"
           >
-            مشاهده
-          </button>
-        </td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
+            <table
+              mat-table
+              [dataSource]="DataSource"
+              matSort
+              [dir]="'rtl'"
+              class="full-width-table modern-table"
+            >
+              <ng-container matColumnDef="computerpropertynumber">
+                <th mat-header-cell *matHeaderCellDef class="sticky-header">
+                  شماره اموال
+                </th>
+                <td mat-cell *matCellDef="let row" class="p-4">
+                  {{ row.computerpropertynumber }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="computername">
+                <th mat-header-cell *matHeaderCellDef class="sticky-header">
+                  نام
+                </th>
+                <td mat-cell *matCellDef="let row" class="p-4">
+                  {{ row.computername }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="computermodel">
+                <th mat-header-cell *matHeaderCellDef class="sticky-header">
+                  مدل
+                </th>
+                <td mat-cell *matCellDef="let row" class="p-4">
+                  {{ row.computermodel }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="operationsystemname">
+                <th mat-header-cell *matHeaderCellDef class="sticky-header">
+                  سیستم عامل
+                </th>
+                <td mat-cell *matCellDef="let row" class="p-4">
+                  {{ row.operationsystemversionid.operationsystemname }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="computerip">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sticky-header"
+                >
+                  IP
+                </th>
+                <td mat-cell *matCellDef="let row" class="p-4">
+                  {{ row.computerip }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="computermacaddress">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sticky-header"
+                >
+                  MAC
+                </th>
+                <td mat-cell *matCellDef="let row" class="p-4">
+                  {{ row.computermacaddress }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="operationsystemversionname">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sticky-header"
+                >
+                  ورژن
+                </th>
+                <td mat-cell *matCellDef="let row" class="p-4">
+                  {{ row.operationsystemversionid.operationsystemversionname }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="status">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sticky-header"
+                >
+                  مالکیت
+                </th>
+                <td mat-cell *matCellDef="let row" class="p-4">
+                  <span
+                    class="px-3 py-1 rounded-full text-sm"
+                    [ngClass]="{
+                      'bg-green-100 text-green-800': !row.computerispersonal,
+                      'bg-blue-100 text-blue-800': row.computerispersonal
+                    }"
+                  >
+                    {{ getPersonalStatus(row.computerispersonal) }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="abortion">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sticky-header"
+                >
+                  وضعیت اسقاط
+                </th>
+                <td mat-cell *matCellDef="let row" class="p-4">
+                  <span
+                    class="px-3 py-1 rounded-full text-sm"
+                    [ngClass]="{
+                      'bg-green-100 text-green-800': !row.isAbortion,
+                      'bg-red-100 text-red-800': row.isAbortion
+                    }"
+                  >
+                    {{ getAbortion(row.isAbortion) }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="viewGoods">
+                <th mat-header-cell *matHeaderCellDef class="sticky-header">
+                  کالا ها داخل کیس
+                </th>
+                <td mat-cell *matCellDef="let row" class="p-4">
+                  <button
+                    class="px-4 py-2 bg-gradient-to-l from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 shadow-sm hover:shadow-md flex items-center justify-center gap-2"
+                    (click)="viewGoods(row.computerpropertynumber)"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                      <path
+                        fill-rule="evenodd"
+                        d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    مشاهده
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr
+                mat-header-row
+                *matHeaderRowDef="displayedColumns"
+                class="bg-gray-50"
+              ></tr>
+              <tr
+                mat-row
+                *matRowDef="let row; columns: displayedColumns"
+                class="hover:bg-gray-50 transition-colors"
+              ></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

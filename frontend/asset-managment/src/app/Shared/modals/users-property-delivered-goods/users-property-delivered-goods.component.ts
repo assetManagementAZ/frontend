@@ -39,7 +39,7 @@ import { SupporterAdminTickerComponent } from '../supporter-admin-ticker/support
     RouterModule,
   ],
   templateUrl: './users-property-delivered-goods.component.html',
-  styleUrl: './users-property-delivered-goods.component.css',
+  styleUrl: './users-property-delivered-goods.component.scss',
 })
 export class UsersPropertyDeliveredGoodsComponent implements OnInit {
   myUserDeliveryGoods: any[] = [];

@@ -58,6 +58,10 @@ export class UserPropertyComputerGoodsComponent implements OnInit {
   successMessage: string = '';
   errorMessage: string = '';
   showMessage = false;
+  currentComputerIndex: number = 0;
+  totalComputers: number = 0;
+  currentComputer: any = null;
+
   constructor(
     public dialogRef: MatDialogRef<DeliveredGoodsComputerComponent>,
     @Inject(MAT_DIALOG_DATA)
@@ -67,6 +71,7 @@ export class UserPropertyComputerGoodsComponent implements OnInit {
     private dataservice: DataService,
     private dialog: MatDialog
   ) {}
+
   ngOnInit(): void {
     const endpoint = `asset/subuser-owned-properties/`;
     this.dataservice.get(endpoint).subscribe((response: any) => {
@@ -76,11 +81,34 @@ export class UserPropertyComputerGoodsComponent implements OnInit {
           (item: any) =>
             item.computerpropertynumber === this.data.computerpropertynumber
         );
-        this.flattenDeliveryGoods(this.filteredData);
-        this.dataSource = new MatTableDataSource(this.allDeliveryGoods);
+        this.totalComputers = this.filteredData.length;
+        this.updateCurrentComputer();
       }
     });
   }
+
+  updateCurrentComputer(): void {
+    if (this.filteredData.length > 0) {
+      this.currentComputer = this.filteredData[this.currentComputerIndex];
+      this.flattenDeliveryGoods([this.currentComputer]);
+      this.dataSource = new MatTableDataSource(this.allDeliveryGoods);
+    }
+  }
+
+  nextComputer(): void {
+    if (this.currentComputerIndex < this.totalComputers - 1) {
+      this.currentComputerIndex++;
+      this.updateCurrentComputer();
+    }
+  }
+
+  previousComputer(): void {
+    if (this.currentComputerIndex > 0) {
+      this.currentComputerIndex--;
+      this.updateCurrentComputer();
+    }
+  }
+
   flattenDeliveryGoods(computers: any[]): void {
     this.allDeliveryGoods = computers.reduce((acc: any[], computer: any) => {
       if (computer.relateddeliveredgoods) {
@@ -89,12 +117,14 @@ export class UserPropertyComputerGoodsComponent implements OnInit {
       return acc;
     }, []);
   }
+
   showMessages(): void {
     this.showMessage = true;
     setTimeout(() => {
       this.showMessage = false;
     }, 3000);
   }
+
   getIsPartinsideComputer(ispartinsidecomputer: number): string {
     switch (ispartinsidecomputer) {
       case 1:
@@ -105,6 +135,7 @@ export class UserPropertyComputerGoodsComponent implements OnInit {
         return 'نامشخص';
     }
   }
+
   getIsAllowedToSendOut(isallowedtosendout: number): string {
     switch (isallowedtosendout) {
       case 1:
@@ -115,6 +146,7 @@ export class UserPropertyComputerGoodsComponent implements OnInit {
         return 'نامشخص';
     }
   }
+
   getIsAllowedToBeAborted(isallowedtobeaborted: number): string {
     switch (isallowedtobeaborted) {
       case 1:
@@ -136,6 +168,7 @@ export class UserPropertyComputerGoodsComponent implements OnInit {
         return 'نامشخص';
     }
   }
+
   getIsPossibleToRepair(ispossibletorepair: number): string {
     switch (ispossibletorepair) {
       case 1:
@@ -146,6 +179,7 @@ export class UserPropertyComputerGoodsComponent implements OnInit {
         return 'نامشخص';
     }
   }
+
   getAbortion(isAbortion: boolean): string {
     switch (isAbortion) {
       case false:
@@ -156,6 +190,7 @@ export class UserPropertyComputerGoodsComponent implements OnInit {
         return 'نامشخص';
     }
   }
+
   closeDialog(): void {
     this.dialogRef.close();
   }

@@ -7,32 +7,16 @@
     ></div>
 
     <!-- Modal Container -->
-    <div class="relative w-full max-w-2xl mx-auto transform transition-all">
+    <div class="relative w-full max-w-6xl mx-auto transform transition-all">
       <!-- Glass Card -->
       <div
         class="bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-white/20"
       >
         <!-- Header with Gradient Accent -->
-        <div class="relative bg-gradient-to-l from-blue-600 to-indigo-700 p-5">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-3 space-x-reverse">
-              <div class="p-2 rounded-full bg-white/10 backdrop-blur-sm">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
-              </div>
-              <h3 class="text-xl font-bold text-white">جزئیات کاربر</h3>
+        <div class="relative bg-[image:var(--primary-gradient)] p-5">
+          <div dir="ltr" class="flex items-center justify-between">
+            <div class="flex items-center space-x-3 space-x-reverse ml-[45%]">
+              <h3 class="text-xl font-bold text-white">اطلاعات کاربر</h3>
             </div>
             <button
               (click)="closeDialog()"
@@ -58,7 +42,7 @@
 
         <!-- Content -->
         <div class="p-6">
-          <div class="grid grid-cols-1.5 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Personal Information Card -->
             <div
               class="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-sm border border-gray-100 overflow-hidden"
@@ -165,26 +149,83 @@
               class="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-sm border border-gray-100 overflow-hidden"
             >
               <div class="border-b border-gray-100/50 px-5 py-3 bg-gray-50">
-                <h4
-                  class="text-lg font-semibold text-gray-800 flex items-center"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5 text-green-500 ml-2"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+                <div class="flex items-center justify-between">
+                  <h4
+                    class="text-lg font-semibold text-gray-800 flex items-center"
                   >
-                    <path
-                      fill-rule="evenodd"
-                      d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z"
-                      clip-rule="evenodd"
-                    />
-                    <path
-                      d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"
-                    />
-                  </svg>
-                  اطلاعات کاری
-                </h4>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5 text-green-500 ml-2"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z"
+                        clip-rule="evenodd"
+                      />
+                      <path
+                        d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"
+                      />
+                    </svg>
+                    اطلاعات کاری
+                  </h4>
+                  <!-- Work Detail Navigation -->
+                  <div
+                    class="flex items-center space-x-2 space-x-reverse"
+                    *ngIf="totalWorkDetails > 1"
+                  >
+                    <button
+                      (click)="previousWorkDetail()"
+                      [disabled]="currentWorkDetailIndex === 0"
+                      class="p-2 rounded-lg bg-white/80 hover:bg-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                      [class.text-gray-400]="currentWorkDetailIndex === 0"
+                      [class.text-blue-600]="currentWorkDetailIndex > 0"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                    <span class="text-sm font-medium text-gray-600">
+                      {{ currentWorkDetailIndex + 1 }} از {{ totalWorkDetails }}
+                    </span>
+                    <button
+                      (click)="nextWorkDetail()"
+                      [disabled]="
+                        currentWorkDetailIndex === totalWorkDetails - 1
+                      "
+                      class="p-2 rounded-lg bg-white/80 hover:bg-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                      [class.text-gray-400]="
+                        currentWorkDetailIndex === totalWorkDetails - 1
+                      "
+                      [class.text-blue-600]="
+                        currentWorkDetailIndex < totalWorkDetails - 1
+                      "
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
               </div>
               <div class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div
@@ -207,16 +248,19 @@
                   <p class="text-xs font-medium text-green-600 mb-1">
                     کد پشتیبان
                   </p>
-                  <p class="font-medium text-gray-800 text-sm">
+                  <p
+                    *ngIf="user?.usersupportid"
+                    class="font-medium text-gray-800 text-sm cursor-pointer hover:text-blue-600 transition-colors duration-200"
+                    (click)="viewSupporterDetails(user!.usersupportid)"
+                    title="برای مشاهده اطلاعات پشتیبان کلیک کنید"
+                  >
                     {{ user?.usersupportid }}
                   </p>
-                </div>
-                <div
-                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs"
-                >
-                  <p class="text-xs font-medium text-green-600 mb-1">حوزه</p>
-                  <p class="font-medium text-gray-800 text-sm">
-                    {{ user?.areaname }}
+                  <p
+                    *ngIf="!user?.usersupportid"
+                    class="font-medium text-gray-400 text-sm"
+                  >
+                    -
                   </p>
                 </div>
                 <div
@@ -227,6 +271,15 @@
                     {{ user?.buildingname }}
                   </p>
                 </div>
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs"
+                >
+                  <p class="text-xs font-medium text-green-600 mb-1">حوزه</p>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{ user?.areaname }}
+                  </p>
+                </div>
+
                 <div
                   class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs"
                 >

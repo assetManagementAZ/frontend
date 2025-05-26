@@ -41,7 +41,7 @@ import { SupporterAdminTickerComponent } from '../supporter-admin-ticker/support
     RouterModule,
   ],
   templateUrl: './users-property-computers.component.html',
-  styleUrl: './users-property-computers.component.css',
+  styleUrl: './users-property-computers.component.scss',
 })
 export class UsersPropertyComputersComponent implements OnInit {
   myUserComputers: any[] = [];

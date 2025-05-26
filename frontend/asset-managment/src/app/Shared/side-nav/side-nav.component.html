@@ -3,7 +3,7 @@
   href="/assets/font-awesome-4.7.0/css/font-awesome.min.css"
 />
 
-<nav>
+<nav [class.hidden]="isFormOpen$ | async">
   <div class="sidebar close" #sidebar>
     <div class="logo-details">
       <i class="fa fa-bars fa-3x" #sidebarBtn></i>

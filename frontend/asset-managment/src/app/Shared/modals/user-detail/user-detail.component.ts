@@ -72,6 +72,8 @@ export class UserDetailComponent implements OnInit {
   userList: any[] = [];
   showEditButton: boolean = false;
   user: User | null = null;
+  currentWorkDetailIndex: number = 0;
+  totalWorkDetails: number = 0;
 
   constructor(
     public dialogRef: MatDialogRef<UserDetailComponent>,
@@ -118,10 +120,31 @@ export class UserDetailComponent implements OnInit {
         this.filteredData = response.body.filter(
           (item: any) => item.userid === this.data.userid
         );
-        this.user = this.filteredData[0] || null;
+        this.totalWorkDetails = this.filteredData.length;
+        this.updateCurrentWorkDetail();
         this.userDataSource = new MatTableDataSource(this.filteredData);
       }
     });
+  }
+
+  updateCurrentWorkDetail(): void {
+    if (this.filteredData.length > 0) {
+      this.user = this.filteredData[this.currentWorkDetailIndex] || null;
+    }
+  }
+
+  nextWorkDetail(): void {
+    if (this.currentWorkDetailIndex < this.totalWorkDetails - 1) {
+      this.currentWorkDetailIndex++;
+      this.updateCurrentWorkDetail();
+    }
+  }
+
+  previousWorkDetail(): void {
+    if (this.currentWorkDetailIndex > 0) {
+      this.currentWorkDetailIndex--;
+      this.updateCurrentWorkDetail();
+    }
   }
 
   getUserRoleString(userRoleId: number): string {
@@ -132,6 +155,25 @@ export class UserDetailComponent implements OnInit {
         return 'کاربر عادی';
       default:
         return 'کاربر';
+    }
+  }
+
+  viewSupporterDetails(supporterId: number): void {
+    if (supporterId) {
+      const endpoint = `accounts/user/`;
+      this.dataservice.get(endpoint).subscribe((response: any) => {
+        if (response && response.body) {
+          const supporter = response.body.find(
+            (item: any) => item.userid === supporterId
+          );
+          if (supporter) {
+            this.dialog.open(UserDetailComponent, {
+              width: '80%',
+              data: { userid: supporterId, showEditButton: false },
+            });
+          }
+        }
+      });
     }
   }
 

@@ -7,13 +7,13 @@
     [@modalAnimation]
   >
     <!-- Header with gradient border -->
-    <div class="border-b border-gray-100/50 relative">
+    <div class="bg-[image:var(--primary-gradient)] relative">
       <div
-        class="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 opacity-10"
+        class="absolute inset-0 bg-[image:var(--primary-gradient)] opacity-10"
       ></div>
       <div class="relative px-6 py-4 flex justify-between items-center">
         <h3
-          class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 ml-[33%]"
+          class="text-xl font-bold bg-clip-text text-transparent bg-white ml-[33%]"
         >
           دارایی های کاربر
         </h3>
@@ -31,7 +31,7 @@
     <div dir="rtl" class="p-6 space-y-4">
       <!-- Computers Card -->
       <div
-        class="group relative overflow-hidden bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:border-blue-100 active:scale-[0.98]"
+        class="group relative overflow-hidden bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:border-blue-100 active:scale-[0.98] hover:scale-[1.05]"
         (click)="viewComputers(this.data.userpersonalid)"
       >
         <div
@@ -87,7 +87,7 @@
 
       <!-- Goods Card -->
       <div
-        class="group mt-3 relative overflow-hidden bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:border-green-100 active:scale-[0.98]"
+        class="group mt-3 relative overflow-hidden bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:border-green-100 active:scale-[0.98] hover:scale-[1.05]"
         (click)="viewDeliveredGoods(this.data.userpersonalid)"
       >
         <div

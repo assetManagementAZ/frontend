@@ -6,6 +6,7 @@ import {
   Renderer2,
   ViewChild,
   inject,
+  OnInit,
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import {
@@ -18,6 +19,7 @@ import {
 import { ThemeService } from '../../Services/theme.service';
 import { AuthService } from '../../Services/auth.service';
 import { DataService } from '../../Services/data-service.service';
+import { SideNavService } from '../../Services/side-nav.service';
 
 @Component({
   selector: 'as-side-nav',
@@ -27,29 +29,47 @@ import { DataService } from '../../Services/data-service.service';
   templateUrl: './side-nav.component.html',
   styleUrl: './side-nav.component.css',
 })
-export class SideNavComponent implements AfterViewInit {
+export class SideNavComponent implements AfterViewInit, OnInit {
   isDarkMode: boolean;
   userRole: string;
   userList: any[] = [];
-  @ViewChild('sidebar', { static: false }) sidebar!: ElementRef; // Reference to sidebar
-  @ViewChild('sidebarBtn', { static: false }) sidebarBtn!: ElementRef; // Reference to sidebar button
+  isVisible$ = this.sideNavService.isVisible$;
+  isFormOpen$ = this.sideNavService.isFormOpen$;
+  @ViewChild('sidebar', { static: false }) sidebar!: ElementRef;
+  @ViewChild('sidebarBtn', { static: false }) sidebarBtn!: ElementRef;
+
   constructor(
     private themeService: ThemeService,
     private authservice: AuthService,
-    private dataService: DataService
+    private dataService: DataService,
+    private sideNavService: SideNavService
   ) {
     this.isDarkMode = this.themeService.isDarkMode();
     this.userRole = this.authservice.getUserRole();
   }
+
+  ngOnInit() {
+    this.sideNavService.isVisible$.subscribe((isVisible) => {
+      if (this.sidebar) {
+        if (isVisible) {
+          this.sidebar.nativeElement.classList.remove('close');
+        } else {
+          this.sidebar.nativeElement.classList.add('close');
+        }
+      }
+    });
+  }
+
   toggleTheme() {
     this.isDarkMode = !this.isDarkMode;
     this.themeService.setDarkMode(this.isDarkMode);
   }
+
   ngAfterViewInit() {
     this.sidebarFunc();
     this.profile();
-    console.log(this.userList);
   }
+
   sidebarFunc(): void {
     const sidebar = this.sidebar.nativeElement;
 
@@ -62,18 +82,17 @@ export class SideNavComponent implements AfterViewInit {
         const arrowParent = target.closest('.iocn-link')?.parentElement;
         if (arrowParent) {
           arrowParent.classList.toggle('showMenu');
-        } else {
-          console.error('Arrow parent not found');
         }
       }
     });
 
     if (this.sidebarBtn.nativeElement && this.sidebar.nativeElement) {
       this.sidebarBtn.nativeElement.addEventListener('click', () => {
-        this.sidebar.nativeElement.classList.toggle('close');
+        this.sideNavService.toggle();
       });
     }
   }
+
   profile(): void {
     const endpoint = 'user/profile/';
     this.dataService.get(endpoint).subscribe((response: any) => {
@@ -82,6 +101,7 @@ export class SideNavComponent implements AfterViewInit {
       }
     });
   }
+
   getUserRoleString(userRoleId: number): string {
     switch (userRoleId) {
       case 2:

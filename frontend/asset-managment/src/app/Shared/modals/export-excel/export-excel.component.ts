@@ -30,21 +30,24 @@ import { MatIconModule } from '@angular/material/icon';
         >
           <!-- Header -->
           <div
-            class="px-8 pt-6 pb-4 border-b border-gray-100 bg-gradient-to-r from-blue-600 to-blue-500 text-center"
+            class="px-8 pt-6 pb-4 border-b border-gray-100 bg-[image:var(--primary-gradient)] text-center"
           >
-            <div class="flex items-center justify-between text-center">
-              <h3 class="text-center text-2xl font-bold text-white mr-[37%]">
+            <div
+              dir="ltr"
+              class="flex items-center justify-between text-center"
+            >
+              <h3 class="text-center text-2xl font-bold text-white ml-[37%]">
                 تنظیمات خروجی اکسل
               </h3>
               <button
                 (click)="onCancel()"
-                class="text-white hover:text-blue-100"
+                class="text-white hover:text-blue-500"
               >
                 <mat-icon>close</mat-icon>
               </button>
             </div>
             <p class="mt-2 text-sm text-blue-100">
-              ستون‌های مورد نظر برای خروجی را انتخاب نمایید
+              ستون‌ های مورد نظر برای خروجی را انتخاب نمایید
             </p>
           </div>
 

@@ -40,6 +40,7 @@ import {
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { ExportExcelComponent } from '../../Shared/modals/export-excel/export-excel.component';
+import { SideNavService } from '../../Services/side-nav.service';
 
 export const myCustomTooltipDefaults: MatTooltipDefaultOptions = {
   showDelay: 700,
@@ -125,6 +126,7 @@ export class UsersComponent implements OnInit {
   selectedRole: string = '';
   isActive: string = '';
   searchTerm: string = '';
+  showPassword = false;
   displayedColumns: string[] = [
     'rowNumber',
     'userid',
@@ -134,7 +136,7 @@ export class UsersComponent implements OnInit {
     'viewProperty',
     'toggle',
     'userpass',
-    'actions',
+    // 'actions',
     // 'workActions',
   ];
 
@@ -148,7 +150,8 @@ export class UsersComponent implements OnInit {
     private dataService: DataService,
     private authService: AuthService,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private sideNavService: SideNavService
   ) {}
   ngAfterViewInit() {
     this.paginator._intl.itemsPerPageLabel = 'مورد در هر صفحه';
@@ -272,8 +275,10 @@ export class UsersComponent implements OnInit {
       this.currentStep = 1;
       this.firstStepForm.reset();
       this.secondStepForm.reset();
+      this.sideNavService.openForm();
     } else if (view === 'table') {
       this.fetchUsers();
+      this.sideNavService.closeForm();
     }
     this.showUsersTable = true;
   }
@@ -301,6 +306,7 @@ export class UsersComponent implements OnInit {
 
   openUsersForm(): void {
     this.showUsersForm = true;
+    this.sideNavService.openForm();
   }
 
   closeUsersForm(): void {
@@ -309,6 +315,7 @@ export class UsersComponent implements OnInit {
     this.showUsersForm = false;
     this.currentStep = 1;
     this.ngOnDestroy();
+    this.sideNavService.closeForm();
   }
   fetchUsers(): void {
     const endpoint = 'accounts/user/';
@@ -326,8 +333,8 @@ export class UsersComponent implements OnInit {
         this.usersDataSource = new MatTableDataSource(filteredUsers);
         this.filteredUsersDataSource = new MatTableDataSource(filteredUsers);
         this.filteredUsersDataSource.paginator = this.paginator;
-        this.usersDataSource.paginator = this.paginator;
-        this.usersDataSource.sortingDataAccessor = (item, property) => {
+
+        this.filteredUsersDataSource.sortingDataAccessor = (item, property) => {
           switch (property) {
             case 'userid':
               return item.userid;
@@ -339,7 +346,9 @@ export class UsersComponent implements OnInit {
               return item[property];
           }
         };
-        this.usersDataSource.sort = this.sort;
+
+        this.filteredUsersDataSource.sort = this.sort;
+        this.filteredUsersDataSource.paginator = this.paginator;
       }
     });
   }
@@ -664,6 +673,7 @@ export class UsersComponent implements OnInit {
     this.currentStep = 1;
     this.firstStepForm.reset();
     this.secondStepForm.reset();
+    this.sideNavService.closeForm();
   }
 
   getIsActiveString(isActive: number): string {
@@ -777,10 +787,12 @@ export class UsersComponent implements OnInit {
       userpersonalid: user.userpersonalid,
     });
     this.showChangePasswordForm = true;
+    this.sideNavService.openForm();
   }
   closeChangePasswordForm(): void {
     this.changePasswordForm.reset();
     this.showChangePasswordForm = false;
+    this.sideNavService.closeForm();
   }
 
   onSubmitChangePassword(): void {
@@ -829,6 +841,7 @@ export class UsersComponent implements OnInit {
       disableClose: true,
     };
     const dialogRef = this.dialog.open(UserDetailComponent, config);
+    this.sideNavService.openForm();
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
@@ -838,6 +851,7 @@ export class UsersComponent implements OnInit {
           this.editWorkUser(result);
         }
       }
+      this.sideNavService.closeForm();
     });
   }
   viewProperty(userpersonalid: number): void {
@@ -846,8 +860,11 @@ export class UsersComponent implements OnInit {
       disableClose: true,
     };
     const dialogRef = this.dialog.open(UsersPropertyComponent, config);
+    this.sideNavService.openForm();
 
-    dialogRef.afterClosed().subscribe((result) => {});
+    dialogRef.afterClosed().subscribe(() => {
+      this.sideNavService.closeForm();
+    });
   }
   // applyFilter(event: Event) {
   //   const filterValue = (event.target as HTMLInputElement).value;
@@ -903,11 +920,12 @@ export class UsersComponent implements OnInit {
     this.secondStepForm.reset();
     this.isEditing = false;
     this.ngOnDestroy();
+    this.sideNavService.closeForm();
   }
 
   getRowNumber(index: number): number {
     if (this.paginator) {
-      return this.paginator.pageIndex * this.paginator.pageSize + index + 1;
+      return index + 1 + this.paginator.pageIndex * this.paginator.pageSize;
     }
     return index + 1;
   }
@@ -917,8 +935,10 @@ export class UsersComponent implements OnInit {
       width: '800px',
       data: { users: this.usersDataSource.data },
     });
+    this.sideNavService.openForm();
 
     dialogRef.afterClosed().subscribe((result) => {
+      this.sideNavService.closeForm();
       if (result) {
         const users = this.usersDataSource.data;
         const exportData = users.map((user, idx) => {
@@ -952,5 +972,8 @@ export class UsersComponent implements OnInit {
         saveAs(blob, 'users.xlsx');
       }
     });
+  }
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 }
