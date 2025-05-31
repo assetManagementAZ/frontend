@@ -1,147 +1,375 @@
-<div class="address">
-  <a routerLink="/panel">صفحه اصلی </a>
-  <span>&nbsp;/&nbsp;</span>
+<!-- Modern Address Bar -->
+<div class="modern-address-bar">
+  <a routerLink="/panel" class="address-link">صفحه اصلی</a>
+  <span class="separator">/</span>
+  <a routerLink="/buildingSupporters" class="address-link">پشتیبانان</a>
+</div>
 
-  <a routerLink="/buildingSupporters"> پشتیبانان</a>
+<div
+  class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 space-y-4 mb-60"
+  *ngIf="showMessage"
+>
+  <!-- Success Message -->
+  <div
+    *ngIf="successMessage"
+    class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-xl shadow-lg flex items-center space-x-3 animate-fade-in-up transition-all duration-300 hover:shadow-xl cursor-pointer max-w-md"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 flex-shrink-0"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M5 13l4 4L19 7"
+      />
+    </svg>
+    <span class="text-sm font-medium">{{ successMessage }}</span>
+  </div>
+
+  <!-- Error Message -->
+  <div
+    *ngIf="errorMessage"
+    class="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-4 rounded-xl shadow-lg flex items-center space-x-3 animate-fade-in-up transition-all duration-300 hover:shadow-xl cursor-pointer max-w-md"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 flex-shrink-0"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M6 18L18 6M6 6l12 12"
+      />
+    </svg>
+    <span class="text-sm font-medium">{{ errorMessage }}</span>
+  </div>
 </div>
-<div class="message-container" *ngIf="showMessage">
-  <div class="success" *ngIf="successMessage">{{ successMessage }}</div>
-  <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
-</div>
-<div class="choose-supporter-form" *ngIf="showChooseSupporterForm">
-  <form [formGroup]="editSupporterForm" (ngSubmit)="onSubmitChooseSupporter()">
-    <div class="form-group sub building">
-      <label hidden for="buildingid">ساختمان</label>
-      <input
-        hidden
-        type="txt"
-        id="buildingid"
-        class="form-control"
-        formControlName="buildingid"
-      />
-    </div>
-    <div class="form-group sub supporter">
-      <label for="old_supportername">پشتیبان فعلی</label>
-      <input
-        type="text"
-        id="old_supportername"
-        class="form-control"
-        formControlName="old_supportername"
-        readonly
-      />
-      <input
-        type="text"
-        id="old_supporterpersonalId"
-        class="form-control"
-        formControlName="old_supporterpersonalId"
-        readonly
-        hidden
-      />
-    </div>
-    <div class="form-group sub supporter">
-      <label for="new_supporterpersobalId">پشتیبان جدید</label>
-      <select
-        class="form-select"
-        id="new_supporterpersobalId"
-        formControlName="new_supporterpersobalId"
+<!-- Choose Supporter Form -->
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/30"
+  *ngIf="showChooseSupporterForm"
+  dir="rtl"
+>
+  <div class="w-full max-w-md transform transition-all">
+    <!-- Glass Card Container -->
+    <div
+      class="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden border border-white/20"
+    >
+      <!-- Form Header with Gradient -->
+      <div dir="ltr" class="bg-[image:var(--primary-gradient)] p-5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3 flex-row-reverse ml-[30%]">
+            <h3 class="text-xl font-bold text-white">تغییر پشتیبان</h3>
+          </div>
+          <button
+            (click)="closeForm()"
+            class="p-1 rounded-full hover:bg-white/20 transition-colors duration-200 text-white/80 hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Form Content -->
+      <form
+        [formGroup]="editSupporterForm"
+        (ngSubmit)="onSubmitChooseSupporter()"
+        class="p-6 space-y-6"
       >
-        <option value="">انتخاب کنید</option>
-        <ng-container *ngFor="let userArray of userList; let index = index">
-          <option *ngFor="let user of userArray" [value]="user.userpersonalid">
-            {{ user.username }} {{ user.userlastname }}
-          </option>
-        </ng-container>
-      </select>
-    </div>
+        <input hidden type="txt" id="buildingid" formControlName="buildingid" />
+        <input hidden type="txt" id="floor" formControlName="floor" />
 
-    <div class="form-group sub floor">
-      <label hidden for="floor">طبقه</label>
-      <input
-        hidden
-        type="txt"
-        id="floor"
-        class="form-control"
-        formControlName="floor"
-      />
+        <!-- Current Supporter -->
+        <div class="space-y-2">
+          <label
+            for="old_supportername"
+            class="block text-sm font-medium text-gray-700 text-right"
+            >پشتیبان فعلی</label
+          >
+          <div class="relative mt-2">
+            <input
+              type="text"
+              id="old_supportername"
+              class="w-full px-4 py-3 pr-12 bg-gray-50 text-gray-700 rounded-xl border border-gray-200 focus:ring-blue-500 focus:border-blue-500 transition-all"
+              formControlName="old_supportername"
+              readonly
+            />
+            <div class="absolute left-3 top-3 text-gray-400 mt-1.5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+            </div>
+            <input
+              type="text"
+              id="old_supporterpersonalId"
+              class="hidden"
+              formControlName="old_supporterpersonalId"
+              readonly
+            />
+          </div>
+        </div>
+
+        <!-- New Supporter -->
+        <div class="space-y-2">
+          <label
+            for="new_supporterpersobalId"
+            class="block text-sm font-medium text-gray-700 text-right"
+            >پشتیبان جدید</label
+          >
+          <div class="relative mt-2">
+            <select
+              id="new_supporterpersobalId"
+              formControlName="new_supporterpersobalId"
+              class="w-full px-4 py-3 pr-12 bg-gray-50 text-gray-700 rounded-xl border border-gray-200 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            >
+              <option value="">انتخاب کنید</option>
+              <ng-container
+                *ngFor="let userArray of userList; let index = index"
+              >
+                <option
+                  *ngFor="let user of userArray"
+                  [value]="user.userpersonalid"
+                >
+                  {{ user.username }} {{ user.userlastname }}
+                </option>
+              </ng-container>
+            </select>
+          </div>
+        </div>
+
+        <!-- Form Buttons -->
+        <div class="flex gap-4 pt-4 justify-between">
+          <button
+            type="submit"
+            class="w-[35%] px-4 py-3 bg-gradient-to-l from-blue-600 to-blue-500 text-white rounded-xl font-medium hover:from-blue-700 hover:to-blue-600 shadow-md hover:shadow-lg transition-all flex items-center justify-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 ml-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            تایید
+          </button>
+          <button
+            type="button"
+            (click)="closeForm()"
+            class="w-full sm:w-auto px-6 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:bg-red-500 hover:border-red-500 hover:text-red-600 hover:shadow-red-100 hover:shadow-sm flex items-center justify-center gap-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            انصراف
+          </button>
+        </div>
+      </form>
     </div>
-    <div class="passButtons">
-      <button type="submit" class="btn btn-primary">تایید</button>
-      <button type="button" class="btn btn-danger" (click)="closeForm()">
-        بستن
-      </button>
-    </div>
-  </form>
+  </div>
 </div>
-<mat-form-field class="secondary-Form-field">
-  <input matInput (keyup)="applyFilter($event)" placeholder="فیلتر" />
-</mat-form-field>
-<div class="mat-elevation-z8">
+
+<!-- Search Filter -->
+<div
+  class="filters w-1/4 bg-white p-6 rounded-2xl shadow-lg mb-8 justify-self-start"
+>
+  <div class="relative">
+    <input
+      type="text"
+      (keyup)="applyFilter($event)"
+      placeholder="جست و جو"
+      class="w-full px-4 py-3 pl-11 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+    />
+    <svg
+      class="h-5 w-5 absolute right-3 top-3.5 text-gray-400"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+      />
+    </svg>
+  </div>
+</div>
+
+<!-- Modern Table -->
+<div class="mat-elevation-z8 modern-table-container">
   <table
     mat-table
     [dataSource]="supportersDataSource"
     matSort
     [dir]="'rtl'"
-    class="full-width-table"
+    class="full-width-table modern-table"
   >
     <!-- User ID Column -->
     <ng-container matColumnDef="userid">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>کد کاربری</th>
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        کد کاربری
+      </th>
       <td mat-cell *matCellDef="let row">{{ row.userid }}</td>
     </ng-container>
 
     <!-- User Personal Id Column -->
     <ng-container matColumnDef="userpersonalid">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>کد پرسنلی</th>
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        کد پرسنلی
+      </th>
       <td mat-cell *matCellDef="let row">{{ row.userpersonalid }}</td>
     </ng-container>
 
     <!-- User Name Column -->
     <ng-container matColumnDef="username">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>نام</th>
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        نام
+      </th>
       <td mat-cell *matCellDef="let row">{{ row.username }}</td>
     </ng-container>
 
     <!-- User Last Name Column -->
     <ng-container matColumnDef="userlastname">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>نام خانوادگی</th>
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        نام خانوادگی
+      </th>
       <td mat-cell *matCellDef="let row">{{ row.userlastname }}</td>
     </ng-container>
 
     <!-- Building Name Column -->
     <ng-container matColumnDef="buildingname">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>ساختمان</th>
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        ساختمان
+      </th>
       <td mat-cell *matCellDef="let row">{{ row.buildingname }}</td>
     </ng-container>
+
     <!-- Building ID Column -->
     <ng-container matColumnDef="buildingid">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>کد ساختمان</th>
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        کد ساختمان
+      </th>
       <td mat-cell *matCellDef="let row">
         {{ getBuildingId(row.buildingname) }}
       </td>
     </ng-container>
-    <!-- Availible Floor Column -->
+
+    <!-- Available Floor Column -->
     <ng-container matColumnDef="availablefloor">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>طبقه در اختیار</th>
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        طبقه در اختیار
+      </th>
       <td mat-cell *matCellDef="let row">{{ row.availablefloor }}</td>
     </ng-container>
-    <!-- Edit  Column -->
+
+    <!-- Edit Column -->
     <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>ویرایش</th>
+      <th mat-header-cell *matHeaderCellDef class="sticky-header">ویرایش</th>
       <td mat-cell *matCellDef="let supporter">
-        <button class="btn btn-primary" (click)="editSupporter(supporter)">
+        <button
+          class="modern-btn primary-btn"
+          (click)="editSupporter(supporter)"
+        >
           ویرایش
         </button>
       </td>
     </ng-container>
+
     <!-- Delete Button Column -->
     <ng-container matColumnDef="delete">
-      <th mat-header-cell *matHeaderCellDef>حذف</th>
+      <th mat-header-cell *matHeaderCellDef class="sticky-header">حذف</th>
       <td mat-cell *matCellDef="let supporter">
-        <button class="btn btn-danger" (click)="deleteSupporter(supporter)">
+        <button
+          class="modern-btn danger-btn"
+          (click)="deleteSupporter(supporter)"
+        >
           حذف
         </button>
       </td>
     </ng-container>
+
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr
       mat-row
@@ -158,14 +386,8 @@
 
   <mat-paginator
     [pageSizeOptions]="[5, 10, 25, 100]"
-    aria-label="Select page of buildings"
-    [showFirstLastButtons]="true"
-    [pageSize]="10"
-    [pageIndex]="0"
+    showFirstLastButtons
   ></mat-paginator>
-  <div
-    class="backdrop"
-    *ngIf="showChooseSupporterForm"
-    (click)="closeForm()"
-  ></div>
 </div>
+
+<div class="space"></div>

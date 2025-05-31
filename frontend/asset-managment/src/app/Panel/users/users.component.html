@@ -6,7 +6,7 @@
 <div class="buttons flex justify-end pr-4">
   <div class="bg-white p-1 rounded-xl shadow-lg inline-block mr-2">
     <button
-      class="bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-103 flex items-center space-x-3"
+      class="bg-gradient-to-r from-green-500 to-green-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-103 items-center py-4 px-2"
       (click)="exportUsersToExcel()"
     >
       <span class="text-lg">خروجی اکسل</span>
@@ -14,7 +14,7 @@
   </div>
   <div class="bg-white p-1 rounded-xl shadow-lg inline-block">
     <button
-      class="bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-103 flex items-center space-x-3"
+      class="bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold py-4 px-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-103 flex items-center"
       (click)="toggleView('form')"
     >
       <span class="text-lg">ایجاد کاربر جدید</span>
@@ -22,7 +22,7 @@
   </div>
 </div>
 <div
-  class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 space-y-4 mb-60"
+  class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[9999] space-y-4 mb-60"
   *ngIf="showMessage"
 >
   <!-- Success Message -->
@@ -865,7 +865,7 @@
         کاربر
       </th>
       <td mat-cell *matCellDef="let row">
-        <span class="user-name-badge"
+        <span class="name-badge"
           >{{ row.username }} {{ row.userlastname }}</span
         >
       </td>

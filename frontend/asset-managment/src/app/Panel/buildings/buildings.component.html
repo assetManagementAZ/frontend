@@ -1,285 +1,665 @@
-<div class="address">
-  <a routerLink="/panel">صفحه اصلی </a>
-  <span>&nbsp;/&nbsp;</span>
-
-  <a routerLink="/buildings"> ساختمان ها</a>
+<div class="modern-address-bar">
+  <a routerLink="/panel" class="address-link">صفحه اصلی</a>
+  <span class="separator">/</span>
+  <a routerLink="/buildings" class="address-link">ساختمان ها</a>
 </div>
-<div class="buttons">
-  <button
-    class="btn btn-primary rounded-pill px-3"
-    style="float: right; margin-right: 10px"
-    (click)="toggleView('form')"
-  >
-    ایجاد ساختمان جدید
-  </button>
-</div>
-<div class="message-container" *ngIf="showMessage">
-  <div class="success" *ngIf="successMessage">{{ successMessage }}</div>
-  <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
-</div>
-<div class="choose-supporter-form" *ngIf="showChooseSupporterForm">
-  <form
-    [formGroup]="chooseSupporterForm"
-    (ngSubmit)="onSubmitChooseSupporter()"
-  >
-    <div class="form-group supporter">
-      <label for="userpersonalid">پشتیبان</label>
-      <ng-select
-        notFoundText="اطلاعاتی بدست نیامد"
-        class="form-select"
-        id="userpersonalid"
-        formControlName="userpersonalid"
-      >
-        <ng-option value="">انتخاب کنید</ng-option>
-        <ng-container *ngFor="let userArray of userList; let index = index">
-          <ng-option
-            *ngFor="let user of userArray"
-            [value]="user.userpersonalid"
-          >
-            {{ user.username }} {{ user.userlastname }}
-          </ng-option>
-        </ng-container>
-      </ng-select>
-    </div>
-    <div class="form-group building">
-      <label style="text-align: end; width: 75px" for="buildingid"
-        >ساختمان</label
-      >
-      <input
-        style="text-align: center; max-width: none; height: 44px"
-        type="text"
-        id="buildingid"
-        class="form-control"
-        formControlName="buildingid"
-        readonly
-        required
-      />
-    </div>
-    <div class="form-group floor">
-      <label for="floor">طبقه</label>
-      <form [formGroup]="chooseSupporterForm">
-        <!-- Other form fields -->
-        <mat-form-field
-          class="customSelect"
-          appearance="outline"
-          floatLabel="always"
-        >
-          <mat-select
-            placeholder="انتخاب کنید"
-            formControlName="floor"
-            multiple
-            disableOptionCentering
-          >
-            <mat-option
-              class="fontSize"
-              *ngFor="let floor of floorOptions"
-              [value]="floor"
-              >{{ floor }}</mat-option
-            >
-            <mat-option class="fontSize" value="all">همه</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </form>
-    </div>
-    <div class="passButtons">
-      <button type="submit" class="btn btn-primary">تایید</button>
-      <button
-        type="button"
-        class="btn btn-danger"
-        (click)="closeChooseSupporterForm()"
-      >
-        بستن
-      </button>
-    </div>
-  </form>
-</div>
-<!-- Building Form -->
-<div>
-  <form
-    class="form1"
-    *ngIf="showBuildingForm"
-    [formGroup]="buildingForm"
-    (ngSubmit)="onSubmitBuildingForm()"
-  >
-    <div class="row main">
-      <div class="col-md-6">
-        <div class="form-group">
-          <label for="buildingname">نام </label>
-          <input
-            dir="rtl"
-            type="text"
-            id="buildingname"
-            class="form-control"
-            formControlName="buildingname"
-            required
-            placeholder="حداقل 4 حرف"
-          />
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="form-group">
-          <label for="buildingabbrivationname">نام اختصاری </label>
-          <input
-            dir="rtl"
-            type="text"
-            id="buildingabbrivationname"
-            class="form-control"
-            formControlName="buildingabbrivationname"
-          />
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="form-group">
-          <label for="buildingfloorcount">تعداد طبقات </label>
-          <input
-            type="text"
-            id="buildingfloorcount"
-            class="form-control"
-            formControlName="buildingfloorcount"
-          />
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <div class="form-group">
-          <label for="buildingroomcount">تعداد اتاق</label>
-          <input
-            type="text"
-            id="buildingroomcount"
-            class="form-control"
-            formControlName="buildingroomcount"
-          />
-        </div>
-      </div>
-      <div class="buttons2">
-        <button
-          type="submit"
-          class="btn btn-primary"
-          style="margin-left: 100px"
-        >
-          {{ this.isEditing ? "ویرایش" : "ثبت" }}
-        </button>
-        <button
-          type="button"
-          class="btn btn-danger"
-          (click)="closeBuildingForm()"
-        >
-          بستن
-        </button>
-      </div>
-    </div>
-  </form>
-
-  <!-- Buildings Table -->
-  <mat-form-field class="secondary-Form-field">
-    <input matInput (keyup)="applyFilter($event)" placeholder="فیلتر" />
-  </mat-form-field>
-  <div class="mat-elevation-z8" *ngIf="showBuildingsTable">
-    <!-- <mat-form-field>
-      <mat-label>فیلتر</mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="فنی" #input />
-    </mat-form-field> -->
-    <table
-      mat-table
-      [dataSource]="buildingsDataSource"
-      matSort
-      [dir]="'rtl'"
-      class="full-width-table"
+<div class="buttons flex justify-end pr-4">
+  <div class="bg-white p-1 rounded-xl shadow-lg inline-block">
+    <button
+      class="bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold py-4 px-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-103 flex items-center"
+      (click)="toggleView('form')"
     >
-      <!-- Building ID Column -->
-      <ng-container matColumnDef="buildingid">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>کد</th>
-        <td mat-cell *matCellDef="let row">{{ row.buildingid }}</td>
-      </ng-container>
-
-      <!-- Building Name Column -->
-      <ng-container matColumnDef="buildingname">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>نام</th>
-        <td mat-cell *matCellDef="let row">{{ row.buildingname }}</td>
-      </ng-container>
-
-      <!-- Building Abbreviation Column -->
-      <ng-container matColumnDef="buildingabbrivationname">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>نام اختصاری</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.buildingabbrivationname }}
-        </td>
-      </ng-container>
-
-      <!-- Building Floor Count Column -->
-      <ng-container matColumnDef="buildingfloorcount">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>تعداد طبقات</th>
-        <td mat-cell *matCellDef="let row">{{ row.buildingfloorcount }}</td>
-      </ng-container>
-
-      <!-- Building Room Count Column -->
-      <ng-container matColumnDef="buildingroomcount">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>تعداد اتاق</th>
-        <td mat-cell *matCellDef="let row">{{ row.buildingroomcount }}</td>
-      </ng-container>
-      <!-- Building buildingcreatetime  Column -->
-      <ng-container matColumnDef="buildingcreatetime">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>تاریخ ایجاد</th>
-        <td mat-cell *matCellDef="let row">
-          {{ convertDate(row.buildingupdatetime) }}
-        </td>
-      </ng-container>
-      <!-- Building buildingupdatetime Column -->
-      <ng-container matColumnDef="buildingupdatetime">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>تاریخ ویرایش</th>
-        <td mat-cell *matCellDef="let row">
-          {{ convertDate(row.buildingupdatetime) }}
-        </td>
-      </ng-container>
-      <!-- Edit button column -->
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>ویرایش</th>
-        <td mat-cell *matCellDef="let row">
-          <button
-            class="btn btn-primary"
-            (click)="editBuilding(row.buildingid)"
-          >
-            ویرایش
-          </button>
-        </td>
-      </ng-container>
-      <!-- Delete Button Column -->
-      <ng-container matColumnDef="delete">
-        <th mat-header-cell *matHeaderCellDef>حذف</th>
-        <td mat-cell *matCellDef="let row">
-          <button
-            class="btn btn-danger"
-            (click)="deleteBuilding(row.buildingid)"
-          >
-            حذف
-          </button>
-        </td>
-      </ng-container>
-      <!-- Supporter Button Column -->
-      <ng-container matColumnDef="selectSupporter">
-        <th mat-header-cell *matHeaderCellDef>پشتیبان</th>
-        <td mat-cell *matCellDef="let row">
-          <button
-            class="btn btn-success"
-            (click)="openChooseSupporterForm(row.buildingid)"
-          >
-            انتخاب
-          </button>
-        </td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-
-    <mat-paginator
-      class="paginator"
-      [pageSizeOptions]="[5, 10, 25, 100]"
-      aria-label="Select page of buildings"
-    ></mat-paginator>
-    <div
-      class="backdrop"
-      *ngIf="showChooseSupporterForm"
-      (click)="closeChooseSupporterForm()"
-    ></div>
+      <span class="text-lg">ایجاد ساختمان جدید</span>
+    </button>
   </div>
 </div>
+
+<div
+  class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[9999] space-y-4 mb-60"
+  *ngIf="showMessage"
+>
+  <!-- Success Message -->
+  <div
+    *ngIf="successMessage"
+    class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-xl shadow-lg flex items-center space-x-3 animate-fade-in-up transition-all duration-300 hover:shadow-xl cursor-pointer max-w-md"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 flex-shrink-0"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M5 13l4 4L19 7"
+      />
+    </svg>
+    <span class="text-sm font-medium">{{ successMessage }}</span>
+  </div>
+
+  <!-- Error Message -->
+  <div
+    *ngIf="errorMessage"
+    class="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-4 rounded-xl shadow-lg flex items-center space-x-3 animate-fade-in-up transition-all duration-300 hover:shadow-xl cursor-pointer max-w-md"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 flex-shrink-0"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M6 18L18 6M6 6l12 12"
+      />
+    </svg>
+    <span class="text-sm font-medium">{{ errorMessage }}</span>
+  </div>
+</div>
+<!-- Building Form Modal -->
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/30"
+  *ngIf="showBuildingForm"
+  dir="rtl"
+>
+  <div class="w-full max-w-2xl transform transition-all">
+    <!-- Glass Card Container -->
+    <div
+      class="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden border border-white/20"
+    >
+      <!-- Form Header with Gradient -->
+      <div dir="ltr" class="bg-[image:var(--primary-gradient)] p-5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3 flex-row-reverse ml-[37%]">
+            <h3 class="text-xl font-bold text-white">
+              {{ isEditing ? "ویرایش ساختمان" : "ثبت ساختمان " }}
+            </h3>
+          </div>
+          <button
+            (click)="closeBuildingForm()"
+            class="p-1 rounded-full hover:bg-white/20 transition-colors duration-200 text-white/80 hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Form Content -->
+      <form
+        [formGroup]="buildingForm"
+        (ngSubmit)="onSubmitBuildingForm()"
+        class="p-6 space-y-6"
+      >
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Building Name -->
+          <div class="space-y-2">
+            <label
+              for="buildingname"
+              class="block text-sm font-medium text-gray-700 text-right"
+            >
+              نام ساختمان
+              <span class="text-red-500">*</span>
+            </label>
+            <div class="relative mt-2">
+              <input
+                type="text"
+                id="buildingname"
+                dir="rtl"
+                class="w-full px-4 py-3 bg-gray-50 text-gray-700 rounded-xl border border-gray-200 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                formControlName="buildingname"
+                required
+                placeholder="حداقل 4 حرف"
+              />
+              <div class="absolute left-3 top-3 text-gray-400 mt-1.5">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Abbreviation Name -->
+          <div class="space-y-2">
+            <label
+              for="buildingabbrivationname"
+              class="block text-sm font-medium text-gray-700 text-right"
+            >
+              نام اختصاری
+              <span class="text-red-500">*</span>
+            </label>
+            <div class="relative mt-2">
+              <input
+                type="text"
+                id="buildingabbrivationname"
+                dir="rtl"
+                class="w-full px-4 py-3 bg-gray-50 text-gray-700 rounded-xl border border-gray-200 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                formControlName="buildingabbrivationname"
+                placeholder="حداقل 2 حرف"
+              />
+              <div class="absolute left-3 top-3 text-gray-400 mt-1.5">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floor Count -->
+          <div class="space-y-2">
+            <label
+              for="buildingfloorcount"
+              class="block text-sm font-medium text-gray-700 text-right"
+            >
+              تعداد طبقات
+              <span class="text-red-500">*</span>
+            </label>
+            <div class="relative mt-2">
+              <input
+                type="text"
+                id="buildingfloorcount"
+                class="w-full px-4 py-3 bg-gray-50 text-gray-700 rounded-xl border border-gray-200 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                formControlName="buildingfloorcount"
+                placeholder="حداقل 1 طبقه"
+              />
+              <div class="absolute left-3 top-3 text-gray-400 mt-1.5">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Room Count -->
+          <div class="space-y-2">
+            <label
+              for="buildingroomcount"
+              class="block text-sm font-medium text-gray-700 text-right"
+            >
+              تعداد اتاق
+              <span class="text-red-500">*</span>
+            </label>
+            <div class="relative mt-2">
+              <input
+                type="text"
+                id="buildingroomcount"
+                class="w-full px-4 py-3 bg-gray-50 text-gray-700 rounded-xl border border-gray-200 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                formControlName="buildingroomcount"
+                placeholder="حداقل 1 اتاق"
+              />
+              <div class="absolute left-3 top-3 text-gray-400 mt-1.5">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Buttons -->
+        <div class="flex gap-4 pt-4 justify-between">
+          <button
+            type="submit"
+            class="w-[35%] px-4 py-3 bg-gradient-to-l from-blue-600 to-blue-500 text-white rounded-xl font-medium hover:from-blue-700 hover:to-blue-600 shadow-md hover:shadow-lg transition-all flex items-center justify-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 ml-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            {{ isEditing ? "ویرایش" : "ثبت" }}
+          </button>
+          <button
+            type="button"
+            (click)="closeBuildingForm()"
+            class="w-full sm:w-auto px-6 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:bg-red-500 hover:border-red-500 hover:text-red-600 hover:shadow-red-100 hover:shadow-sm flex items-center justify-center gap-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            انصراف
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Choose Supporter Form -->
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/30"
+  *ngIf="showChooseSupporterForm"
+  dir="rtl"
+>
+  <div class="w-full max-w-md transform transition-all">
+    <!-- Glass Card Container -->
+    <div
+      class="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden border border-white/20"
+    >
+      <!-- Form Header with Gradient -->
+      <div dir="ltr" class="bg-[image:var(--primary-gradient)] p-5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3 flex-row-reverse ml-[18%]">
+            <h3 class="text-xl font-bold text-white">پشتیبان برای کل طبقات</h3>
+          </div>
+          <button
+            (click)="closeChooseSupporterForm()"
+            class="p-1 rounded-full hover:bg-white/20 transition-colors duration-200 text-white/80 hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Form Content -->
+      <form
+        [formGroup]="chooseSupporterForm"
+        (ngSubmit)="onSubmitChooseSupporter()"
+        class="p-6 space-y-6"
+      >
+        <!-- Supporter Select -->
+        <div class="space-y-2">
+          <label
+            class="block text-sm font-medium text-gray-700 text-right mb-2"
+          >
+            پشتیبان
+            <span class="text-red-500">*</span>
+          </label>
+          <ng-select
+            notFoundText="اطلاعاتی یافت نشد"
+            class="w-full border rounded-xl mb-2"
+            formControlName="userpersonalid"
+          >
+            <ng-option value="">انتخاب کنید</ng-option>
+            <ng-container *ngFor="let userArray of userList; let index = index">
+              <ng-option
+                *ngFor="let user of userArray"
+                [value]="user.userpersonalid"
+                class="justify-center"
+              >
+                {{ user.username }} {{ user.userlastname }}
+              </ng-option>
+            </ng-container>
+          </ng-select>
+        </div>
+
+        <!-- Building ID -->
+        <div class="space-y-2">
+          <label
+            class="block text-sm font-medium text-gray-700 text-right mb-2"
+          >
+            ساختمان
+            <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            class="w-full mb-2 px-4 py-3 bg-gray-50 text-gray-700 rounded-xl border border-gray-200 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            formControlName="buildingid"
+            readonly
+            required
+          />
+        </div>
+
+        <!-- Floor Info -->
+        <div class="space-y-2">
+          <label
+            class="block text-sm font-medium text-gray-700 text-right mb-2"
+          >
+            طبقات
+          </label>
+          <div
+            class="w-full mb-2 px-4 py-3 bg-gray-50 text-gray-700 rounded-xl border border-gray-200"
+          >
+            <span class="text-blue-600 font-medium">همه طبقات</span>
+          </div>
+        </div>
+
+        <!-- Form Buttons -->
+        <div class="flex gap-4 pt-4 justify-between">
+          <button
+            type="submit"
+            class="w-[35%] px-4 py-3 bg-gradient-to-l from-green-600 to-green-500 text-white rounded-xl font-medium hover:from-green-700 hover:to-green-600 shadow-md hover:shadow-lg transition-all flex items-center justify-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 ml-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            تایید
+          </button>
+          <button
+            type="button"
+            (click)="closeChooseSupporterForm()"
+            class="w-full sm:w-auto px-6 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:bg-red-500 hover:border-red-500 hover:text-red-600 hover:shadow-red-100 hover:shadow-sm flex items-center justify-center gap-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            انصراف
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Modern Responsive Filters -->
+<div class="filters bg-white p-4 sm:p-6 rounded-2xl shadow-lg mb-6 sm:mb-8">
+  <div
+    class="flex flex-col sm:flex-row-reverse justify-end gap-4 sm:items-end"
+    dir="rtl"
+  >
+    <!-- Action Buttons -->
+    <div
+      class="flex flex-col xs:flex-row sm:flex-col md:flex-row gap-3 w-full sm:w-auto"
+    >
+      <button
+        class="flex-1 sm:flex-none bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white px-6 py-2 rounded-lg font-medium text-sm shadow-sm hover:shadow-md transition-all duration-300 whitespace-nowrap hover:-translate-y-0.5"
+        (click)="applyFilters()"
+      >
+        جست و جو
+      </button>
+      <button
+        class="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white px-6 py-2 rounded-lg font-medium text-base shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5"
+        (click)="resetFilters()"
+      >
+        <span class="flex items-center justify-center"> تنظیم مجدد </span>
+      </button>
+    </div>
+    <!-- Search Input -->
+    <div class="min-w-0">
+      <div class="relative">
+        <input
+          type="text"
+          id="searchInput"
+          class="px-4 py-2.5 pr-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all indent-2"
+          placeholder="جست و جو ساختمان"
+          [(ngModel)]="searchTerm"
+        />
+        <svg
+          class="h-5 w-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="mat-elevation-z8 modern-table-container" *ngIf="showBuildingsTable">
+  <table
+    mat-table
+    [dataSource]="filteredBuildingsDataSource"
+    matSort
+    [dir]="'rtl'"
+    class="full-width-table modern-table"
+  >
+    <ng-container matColumnDef="buildingid">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        کد
+      </th>
+      <td mat-cell *matCellDef="let row">{{ row.buildingid }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="buildingname">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        نام
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <span class="name-badge">{{ row.buildingname }}</span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="buildingabbrivationname">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        نام اختصاری
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <span class="name-badge">{{ row.buildingabbrivationname }}</span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="buildingfloorcount">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        تعداد طبقات
+      </th>
+      <td mat-cell *matCellDef="let row">{{ row.buildingfloorcount }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="buildingroomcount">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        تعداد اتاق
+      </th>
+      <td mat-cell *matCellDef="let row">{{ row.buildingroomcount }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="buildingcreatetime">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        تاریخ ایجاد
+      </th>
+      <td mat-cell *matCellDef="let row">
+        {{ convertDate(row.buildingcreatetime) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="buildingupdatetime">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        تاریخ ویرایش
+      </th>
+      <td mat-cell *matCellDef="let row">
+        {{ convertDate(row.buildingupdatetime) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef class="sticky-header">ویرایش</th>
+      <td mat-cell *matCellDef="let row">
+        <button
+          class="modern-btn primary-btn"
+          (click)="editBuilding(row.buildingid)"
+        >
+          ویرایش
+        </button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="delete">
+      <th mat-header-cell *matHeaderCellDef class="sticky-header">حذف</th>
+      <td mat-cell *matCellDef="let row">
+        <button
+          class="modern-btn danger-btn"
+          (click)="deleteBuilding(row.buildingid)"
+        >
+          حذف
+        </button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="selectSupporter">
+      <th mat-header-cell *matHeaderCellDef class="sticky-header">پشتیبان</th>
+      <td mat-cell *matCellDef="let row">
+        <button
+          class="modern-btn info-btn"
+          (click)="openChooseSupporterForm(row.buildingid)"
+        >
+          انتخاب
+        </button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="supporterDetails">
+      <th mat-header-cell *matHeaderCellDef class="sticky-header">جزئیات</th>
+      <td mat-cell *matCellDef="let row">
+        <button
+          class="modern-btn info-btn"
+          (click)="openSupporterDetails(row.buildingid, row.buildingname)"
+        >
+          جزئیات
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+  <div
+    *ngIf="showChooseSupporterForm"
+    (click)="closeChooseSupporterForm()"
+  ></div>
+</div>
+
+<mat-paginator
+  [pageSizeOptions]="[5, 10, 25, 100]"
+  showFirstLastButtons
+  #paginator
+>
+</mat-paginator>
+
+<div class="space"></div>

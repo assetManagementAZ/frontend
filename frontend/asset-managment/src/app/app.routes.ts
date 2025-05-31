@@ -13,7 +13,7 @@ import { ProductCategoryComponent } from './Panel/product-category/product-categ
 import { ProductComponent } from './Panel/product-category/product/product.component';
 import { authGuard } from './Services/auth.guard';
 import { ProfileComponent } from './Panel/profile/profile.component';
-import { BuildingSupportersComponent } from './Panel/buildings/building-supporters/building-supporters.component';
+
 import { ProductFeatureCategoryOrderComponent } from './Panel/product-category/product-feature-category-order/product-feature-category-order.component';
 import { DeliveredProductComponent } from './Panel/product-category/delivered-product/delivered-product.component';
 import { SealComponent } from './Panel/seal/seal.component';
@@ -65,10 +65,7 @@ export const routes: Routes = [
         path: 'buildings',
         component: BuildingsComponent,
       },
-      {
-        path: 'buildingSupporters',
-        component: BuildingSupportersComponent,
-      },
+
       {
         path: 'zones',
         component: ZonesComponent,

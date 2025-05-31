@@ -1,0 +1,552 @@
+<div
+  class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[9999] space-y-4 mb-60"
+  *ngIf="showMessage"
+>
+  <!-- Success Message -->
+  <div
+    *ngIf="successMessage"
+    class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-xl shadow-lg flex items-center space-x-3 animate-fade-in-up transition-all duration-300 hover:shadow-xl cursor-pointer max-w-md"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 flex-shrink-0"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M5 13l4 4L19 7"
+      />
+    </svg>
+    <span class="text-sm font-medium">{{ successMessage }}</span>
+  </div>
+
+  <!-- Error Message -->
+  <div
+    *ngIf="errorMessage"
+    class="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-4 rounded-xl shadow-lg flex items-center space-x-3 animate-fade-in-up transition-all duration-300 hover:shadow-xl cursor-pointer max-w-md"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 flex-shrink-0"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M6 18L18 6M6 6l12 12"
+      />
+    </svg>
+    <span class="text-sm font-medium">{{ errorMessage }}</span>
+  </div>
+</div>
+
+<div class="fixed inset-0 z-50 overflow-y-auto" dir="rtl">
+  <div class="flex items-center justify-center min-h-screen p-4">
+    <div
+      class="fixed inset-0 bg-gradient-to-br from-indigo-900/40 to-blue-900/30 backdrop-blur-lg animate-fade-in"
+    ></div>
+
+    <div
+      class="relative w-full max-w-4xl mx-auto transform transition-all duration-500 ease-out scale-100 opacity-100 animate-scale-in"
+    >
+      <div
+        class="bg-white rounded-3xl shadow-3xl overflow-hidden border border-white/20 backdrop-filter backdrop-blur-xl bg-opacity-80 ring-1 ring-blue-100/50"
+      >
+        <div
+          class="bg-gradient-to-r from-indigo-700 to-blue-600 p-8 relative overflow-hidden"
+        >
+          <div
+            class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCUiIGhlaWdodD0iNTAlIj48ZGVmcz48cGF0dGVybiBpZD0icGF0dGVybiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48cmVjdCB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wOCkiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IGZpbGw9InVybCgjcGF0dGVybikiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiLz48L3N2Zz4=')] opacity-20"
+          ></div>
+
+          <div
+            class="relative flex flex-col items-center justify-center text-center"
+          >
+            <div class="flex items-center space-x-4 space-x-reverse mb-2">
+              <h3
+                class="text-3xl font-extrabold text-white tracking-tight drop-shadow-md"
+              >
+                مدیریت پشتیبانان
+              </h3>
+            </div>
+            <p class="text-blue-100/90 text-sm opacity-90 drop-shadow-sm">
+              جزئیات پشتیبانان ساختمان
+              <span class="font-bold text-white">{{ data.buildingName }}</span>
+            </p>
+          </div>
+
+          <button
+            (click)="closeDialog()"
+            class="absolute top-4 right-4 p-2 rounded-full bg-white/15 hover:bg-white/25 transition-all duration-300 text-white/90 hover:text-white transform hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-70"
+            aria-label="بستن"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <div class="p-8">
+          <div *ngIf="loading" class="flex justify-center items-center py-16">
+            <div
+              class="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent shadow-md"
+            ></div>
+            <p class="text-gray-600 text-lg font-medium mr-4">
+              در حال بارگذاری اطلاعات...
+            </p>
+          </div>
+
+          <div *ngIf="error" class="mb-8 animate-fade-in-down">
+            <div
+              class="bg-gradient-to-r from-red-50 to-rose-50 border border-red-300 text-red-700 px-6 py-4 rounded-xl flex items-start space-x-3 space-x-reverse shadow-md"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6 ml-2 mt-0.5 flex-shrink-0 text-red-500"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span class="text-lg font-medium">{{ error }}</span>
+            </div>
+          </div>
+
+          <div
+            *ngIf="!loading && !error"
+            class="grid grid-cols-12 gap-6 mb-6 pb-4 border-b-2 border-blue-100 animate-fade-in"
+          >
+            <div
+              class="col-span-3 font-bold text-gray-600 text-base uppercase tracking-wider text-center mr-8"
+            >
+              طبقه
+            </div>
+            <div
+              class="col-span-6 font-bold text-gray-600 text-base uppercase tracking-wider text-center"
+            >
+              پشتیبان
+            </div>
+            <div
+              class="col-span-3 font-bold text-gray-600 text-base uppercase tracking-wider text-center"
+            >
+              عملیات
+            </div>
+          </div>
+
+          <div *ngIf="!loading && !error" class="space-y-6">
+            <div
+              *ngFor="let floor of floors"
+              class="bg-white rounded-2xl border border-gray-100 hover:border-blue-200 overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 group animate-slide-in-up"
+            >
+              <div class="p-6">
+                <div class="grid grid-cols-12 gap-6 items-center">
+                  <div class="col-span-3 text-center">
+                    <div
+                      class="flex items-center justify-center space-x-4 space-x-reverse"
+                    >
+                      <div
+                        class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-700 font-extrabold text-xl group-hover:bg-blue-100 transition-colors duration-200 shadow-sm"
+                      >
+                        {{ floor }}
+                      </div>
+                      <!-- <span class="text-xl font-bold text-gray-800">
+                        طبقه
+                      </span> -->
+                    </div>
+                  </div>
+
+                  <div class="col-span-6 text-center">
+                    <div
+                      *ngIf="getSupporterForFloor(floor)"
+                      class="flex items-center justify-center space-x-4 space-x-reverse"
+                    >
+                      <div
+                        class="text-xl font-bold text-transparent bg-clip-text bg-[image:var(--secondary-gradient)] leading-tight"
+                      >
+                        {{ getSupporterForFloor(floor)?.username }}
+                        {{ getSupporterForFloor(floor)?.userlastname }}
+                      </div>
+                    </div>
+                    <div
+                      *ngIf="!getSupporterForFloor(floor)"
+                      class="flex items-center justify-center space-x-4 space-x-reverse text-gray-400 italic text-lg"
+                    >
+                      <span>پشتیبان انتخاب نشده</span>
+                    </div>
+                  </div>
+
+                  <div
+                    class="col-span-3 flex justify-center space-x-2 space-x-reverse"
+                  >
+                    <div *ngIf="getSupporterForFloor(floor)">
+                      <button
+                        (click)="editSupporter(floor)"
+                        class="px-10 py-2.5 w-32 h-12 bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white font-semibold transition-all duration-300 text-base flex items-center space-x-2 space-x-reverse shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 rounded-xl"
+                      >
+                        <span>ویرایش</span>
+                      </button>
+                      <button
+                        (click)="deleteSupporter(floor)"
+                        class="px-5 py-2.5 w-32 h-12 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-semibold transition-all duration-300 text-base flex items-center space-x-2 space-x-reverse shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75 rounded-xl mt-2"
+                      >
+                        <span>حذف</span>
+                      </button>
+                    </div>
+                    <div *ngIf="!getSupporterForFloor(floor)">
+                      <button
+                        (click)="chooseSupporter(floor)"
+                        class="px-5 py-2.5 bg-white hover:bg-blue-50 text-blue-700 rounded-xl font-semibold transition-all duration-300 text-base flex items-center space-x-2 space-x-reverse border border-blue-300 shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+                      >
+                        <span>انتخاب </span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Choose Supporter Form -->
+<div
+  class="fixed inset-0 z-[60] flex items-center justify-center p-4 backdrop-blur-sm bg-black/30"
+  *ngIf="showChooseSupporterForm"
+  dir="rtl"
+>
+  <div class="w-full max-w-md transform transition-all">
+    <!-- Glass Card Container -->
+    <div
+      class="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden border border-white/20"
+    >
+      <!-- Form Header with Gradient -->
+      <div dir="ltr" class="bg-[image:var(--primary-gradient)] p-5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3 flex-row-reverse ml-[30%]">
+            <h3 class="text-xl font-bold text-white">انتخاب پشتیبان</h3>
+          </div>
+          <button
+            (click)="closeChooseSupporterForm()"
+            class="p-1 rounded-full hover:bg-white/20 transition-colors duration-200 text-white/80 hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Form Content -->
+      <form
+        [formGroup]="chooseSupporterForm"
+        (ngSubmit)="onSubmitChooseSupporter()"
+        class="p-6 space-y-6"
+      >
+        <!-- Supporter Select -->
+        <div class="space-y-2">
+          <label
+            class="block text-sm font-medium text-gray-700 text-right mb-2"
+          >
+            پشتیبان
+            <span class="text-red-500">*</span>
+          </label>
+          <ng-select
+            notFoundText="اطلاعاتی یافت نشد"
+            class="w-full border rounded-xl mb-2"
+            formControlName="userpersonalid"
+          >
+            <ng-option value="">انتخاب کنید</ng-option>
+            <ng-container *ngFor="let userArray of userList; let index = index">
+              <ng-option
+                *ngFor="let user of userArray"
+                [value]="user.userpersonalid"
+              >
+                {{ user.username }} {{ user.userlastname }}
+              </ng-option>
+            </ng-container>
+          </ng-select>
+        </div>
+
+        <!-- Building Name -->
+        <div class="space-y-2">
+          <label
+            class="block text-sm font-medium text-gray-700 text-right mb-2"
+          >
+            ساختمان
+            <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            class="w-full mb-2 px-4 py-3 bg-gray-50 text-gray-700 rounded-xl border border-gray-200 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            [value]="data.buildingName"
+            readonly
+            required
+          />
+        </div>
+
+        <!-- Floor Input -->
+        <div class="space-y-2">
+          <label
+            class="block text-sm font-medium text-gray-700 text-right mb-2"
+          >
+            طبقه
+            <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            class="w-full mb-2 px-4 py-3 bg-gray-50 text-gray-700 rounded-xl border border-gray-200 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            [value]="selectedFloor"
+            readonly
+            required
+          />
+        </div>
+
+        <!-- Form Buttons -->
+        <div class="flex gap-4 pt-4 justify-between">
+          <button
+            type="submit"
+            class="w-[35%] px-4 py-3 bg-gradient-to-l from-green-600 to-green-500 text-white rounded-xl font-medium hover:from-green-700 hover:to-green-600 shadow-md hover:shadow-lg transition-all flex items-center justify-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 ml-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            تایید
+          </button>
+          <button
+            type="button"
+            (click)="closeChooseSupporterForm()"
+            class="w-full sm:w-auto px-6 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:bg-red-500 hover:border-red-500 hover:text-red-600 hover:shadow-red-100 hover:shadow-sm flex items-center justify-center gap-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            انصراف
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Supporter Form -->
+<div
+  class="fixed inset-0 z-[60] flex items-center justify-center p-4 backdrop-blur-sm bg-black/30"
+  *ngIf="showEditSupporterForm"
+  dir="rtl"
+>
+  <div class="w-full max-w-md transform transition-all">
+    <!-- Glass Card Container -->
+    <div
+      class="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden border border-white/20"
+    >
+      <!-- Form Header with Gradient -->
+      <div dir="ltr" class="bg-[image:var(--primary-gradient)] p-5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3 flex-row-reverse ml-[30%]">
+            <h3 class="text-xl font-bold text-white">ویرایش پشتیبان</h3>
+          </div>
+          <button
+            (click)="closeEditSupporterForm()"
+            class="p-1 rounded-full hover:bg-white/20 transition-colors duration-200 text-white/80 hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Form Content -->
+      <form
+        [formGroup]="editSupporterForm"
+        (ngSubmit)="onSubmitEditSupporter()"
+        class="p-6 space-y-6"
+      >
+        <!-- Current Supporter Info -->
+        <div class="space-y-2">
+          <label
+            class="block text-sm font-medium text-gray-700 text-right mb-2"
+          >
+            پشتیبان فعلی
+          </label>
+          <input
+            type="text"
+            class="w-full mb-2 px-4 py-3 bg-gray-50 text-gray-700 rounded-xl border border-gray-200 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            [value]="
+              currentSupporter?.username + ' ' + currentSupporter?.userlastname
+            "
+            readonly
+          />
+        </div>
+
+        <!-- New Supporter Select -->
+        <div class="space-y-2">
+          <label
+            class="block text-sm font-medium text-gray-700 text-right mb-2"
+          >
+            پشتیبان جدید
+            <span class="text-red-500">*</span>
+          </label>
+          <ng-select
+            notFoundText="اطلاعاتی یافت نشد"
+            class="w-full border rounded-xl mb-2"
+            formControlName="new_supporterpersobalId"
+          >
+            <ng-option value="">انتخاب کنید</ng-option>
+            <ng-container *ngFor="let userArray of userList; let index = index">
+              <ng-option
+                *ngFor="let user of userArray"
+                [value]="user.userpersonalid"
+                [disabled]="
+                  user.userpersonalid === currentSupporter?.userpersonalid
+                "
+              >
+                {{ user.username }} {{ user.userlastname }}
+              </ng-option>
+            </ng-container>
+          </ng-select>
+        </div>
+
+        <!-- Building Name -->
+        <div class="space-y-2">
+          <label
+            class="block text-sm font-medium text-gray-700 text-right mb-2"
+          >
+            ساختمان
+            <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            class="w-full mb-2 px-4 py-3 bg-gray-50 text-gray-700 rounded-xl border border-gray-200 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            [value]="data.buildingName"
+            readonly
+            required
+          />
+        </div>
+
+        <!-- Floor Input -->
+        <div class="space-y-2">
+          <label
+            class="block text-sm font-medium text-gray-700 text-right mb-2"
+          >
+            طبقه
+            <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            class="w-full mb-2 px-4 py-3 bg-gray-50 text-gray-700 rounded-xl border border-gray-200 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            [value]="selectedFloor"
+            readonly
+            required
+          />
+        </div>
+
+        <!-- Form Buttons -->
+        <div class="flex gap-4 pt-4 justify-between">
+          <button
+            type="submit"
+            class="w-[35%] px-4 py-3 bg-gradient-to-l from-green-600 to-green-500 text-white rounded-xl font-medium hover:from-green-700 hover:to-green-600 shadow-md hover:shadow-lg transition-all flex items-center justify-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 ml-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            تایید
+          </button>
+          <button
+            type="button"
+            (click)="closeEditSupporterForm()"
+            class="w-full sm:w-auto px-6 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:bg-red-500 hover:border-red-500 hover:text-red-600 hover:shadow-red-100 hover:shadow-sm flex items-center justify-center gap-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            انصراف
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

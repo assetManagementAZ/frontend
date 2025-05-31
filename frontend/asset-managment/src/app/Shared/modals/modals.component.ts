@@ -2,10 +2,12 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'as-modals',
   standalone: true,
-  imports: [MatDialogModule, MatIconModule],
+  imports: [MatDialogModule, MatIconModule, CommonModule],
   template: `
     <div class="dialog-container">
       <h1 mat-dialog-title class="dialog-title">
@@ -26,11 +28,7 @@ import { MatIconModule } from '@angular/material/icon';
         <button type="button" class="btn btn-danger" (click)="onNoClick()">
           خیر
         </button>
-        <button
-          type="button"
-          class="btn btn-success"
-          [mat-dialog-close]="'delete'"
-        >
+        <button type="button" class="btn btn-success" (click)="onYesClick()">
           بله
         </button>
       </div>
@@ -43,7 +41,12 @@ export class ModalsComponent {
     public dialogRef: MatDialogRef<ModalsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
+
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  onYesClick(): void {
+    this.dialogRef.close('delete');
   }
 }

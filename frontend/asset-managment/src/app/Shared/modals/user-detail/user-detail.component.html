@@ -234,12 +234,27 @@
                   <p class="text-xs font-medium text-green-600 mb-1">
                     سطح کاربری
                   </p>
-                  <p class="font-medium text-gray-800 text-sm">
-                    {{
-                      user && user.userroleid
-                        ? getUserRoleString(user.userroleid)
-                        : ""
-                    }}
+                  <p
+                    *ngIf="
+                      user &&
+                      user.userroleid &&
+                      getUserRoleString(user.userroleid) === 'پشتیبان'
+                    "
+                    (click)="viewSupporterDetails(user.userid)"
+                    class="font-medium text-blue-600 text-sm cursor-pointer hover:text-blue-700 transition-colors duration-200"
+                    title="برای مشاهده اطلاعات بیشتر کلیک کنید"
+                  >
+                    {{ getUserRoleString(user.userroleid) }}
+                  </p>
+                  <p
+                    *ngIf="
+                      user &&
+                      user.userroleid &&
+                      getUserRoleString(user.userroleid) !== 'پشتیبان'
+                    "
+                    class="font-medium text-gray-800 text-sm"
+                  >
+                    {{ getUserRoleString(user.userroleid) }}
                   </p>
                 </div>
                 <div

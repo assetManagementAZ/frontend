@@ -1,172 +1,339 @@
-.address {
-  display: flex;
-  justify-content: right;
-  padding-right: 20px;
-  padding-bottom: 20px;
-  flex-direction: row-reverse;
-}
-.address a,
-.address span {
-  text-decoration: none;
-  color: black;
-  font-size: 14px;
-}
-.mat-elevation-z8 {
-  box-shadow: none;
-}
-.mat-mdc-paginator {
-  display: flex;
-  justify-content: center;
-}
-.backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
-  z-index: 1000; /* Ensure it's on top */
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.choose-supporter-form {
+.animate-fade-in-up {
+  animation: fade-in-up 0.3s ease-out;
+}
+
+/* Material Table Overrides */
+.mat-elevation-z8 {
+  box-shadow: none !important; /* To override default Angular Material elevation shadow if needed */
+}
+
+.modern-table-container {
+  border-radius: 12px; /* Rounded corners for the container */
+  overflow: hidden; /* Ensures content respects border radius */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  margin-bottom: 1.5rem; /* Spacing below the table */
+}
+
+.modern-table {
+  width: 100%;
+  border-collapse: separate; /* Allows for border-spacing and rounded corners on table */
+  border-spacing: 0; /* Removes default spacing between cells */
+}
+
+.modern-table .sticky-header {
+  background: linear-gradient(
+    0deg,
+    #4f46e5 0%,
+    #7c3aed 100%
+  ); /* Vibrant gradient background */
+  color: white; /* White text for contrast */
+  font-weight: 600; /* Semi-bold text */
+  font-size: 0.875rem; /* 14px font size */
+  padding: 12px 16px; /* Ample padding */
+  text-align: right; /* Align text to the right for RTL languages */
+  position: sticky; /* Makes header stick to top on scroll */
+  top: 0;
+  z-index: 10; /* Ensures header stays above table content during scroll */
+  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+}
+
+.modern-table .sticky-header:hover {
+  background: linear-gradient(
+    135deg,
+    #1c0cd2 0%,
+    #6d28d9 100%
+  ); /* Darker gradient on hover */
+  transform: translateY(-2px); /* Slight lift effect */
+  box-shadow: 0 4px 12px rgba(76, 29, 149, 0.3); /* Enhanced shadow on hover */
+}
+
+.modern-table th.mat-header-cell {
+  border-bottom: none; /* Removes default bottom border from Material header cells */
+}
+
+.modern-table td.mat-cell {
+  padding: 12px 16px; /* Consistent padding with header */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05); /* Subtle line between rows */
+  text-align: right; /* Align cell text to the right for RTL */
+}
+
+.modern-table tr.mat-row:hover {
+  background-color: rgba(
+    102,
+    126,
+    234,
+    0.05
+  ); /* Light blue tint on row hover */
+}
+
+/* Modern Button Styles (Comprehensive styles from users.css) */
+.modern-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth, refined transition */
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden; /* Important for ripple and some hover effects */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem; /* Space between icon and text if any */
+}
+
+.modern-btn::before {
+  /* For border animation on hover */
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 2px solid transparent;
+  border-radius: 10px; /* Slightly larger than button for visual effect */
+  transition: all 0.3s ease;
+}
+
+.modern-btn:hover::before {
+  border-color: rgba(255, 255, 255, 0.3); /* Subtle white border on hover */
+}
+
+.modern-btn:hover {
+  transform: translateY(-2px) scale(1.05); /* Lift and slightly enlarge on hover */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 15px rgba(59, 130, 246, 0.3); /* Glow effect */
+}
+
+.modern-btn.primary-btn {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+}
+.modern-btn.primary-btn:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.modern-btn.info-btn {
+  /* From users.css, include for consistency */
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+.modern-btn.info-btn:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+}
+
+.modern-btn.danger-btn {
+  /* Style for delete buttons, adapted from supporter.css */
+  background: linear-gradient(to right, #ef4444, #dc2626);
+  color: white;
+}
+.modern-btn.danger-btn:hover {
+  background: linear-gradient(to right, #dc2626, #b91c1c);
+}
+
+.modern-btn.toggle-btn {
+  /* From users.css, if you use toggle buttons */
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  color: white;
+}
+.modern-btn.toggle-btn.active {
+  /* Example for an active toggle state */
+  background: linear-gradient(
+    135deg,
+    #ef4444,
+    #dc2626
+  ); /* e.g., Red when active */
+}
+.modern-btn.toggle-btn.inactive {
+  /* Example for an inactive toggle state */
+  background: linear-gradient(
+    135deg,
+    #10b981,
+    #059669
+  ); /* e.g., Green when inactive */
+}
+.modern-btn.toggle-btn:hover {
+  filter: brightness(1.1); /* Slightly brighten on hover */
+}
+
+/* Pulse animation for active buttons (from users.css) */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  }
+}
+.modern-btn:active {
+  transform: scale(0.95); /* Button press effect */
+  animation: pulse 0.5s;
+}
+
+/* Ripple effect on click (from users.css) */
+.modern-btn::after {
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  width: 400px;
-  padding: 20px;
-  background-color: #a9b2ff;
-  border-radius: 5px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  z-index: 1001; /* Ensure it's on top of the backdrop */
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%, -50%); /* Center the ripple */
+  transform-origin: center center;
+}
+.modern-btn:focus:not(:active)::after {
+  animation: ripple 1s ease-out;
+}
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0) translate(-50%, -50%);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(20, 20) translate(-50%, -50%);
+    opacity: 0;
+  }
 }
 
-.change-password-form .form-group {
-  margin-bottom: 15px;
-}
-
-.change-password-form .btn {
-  width: 100%;
-}
-.change-password-form label {
-  width: 225px;
-  text-align: end;
-}
-.passButtons {
-  justify-content: center;
-  display: flex;
-  padding-top: 20px;
-}
-.supporter label {
+/* Status Badge (from users.css - useful if you display status) */
+.status-badge {
   display: inline-block;
-  padding: 25px 0 0;
-  width: 160px;
-  height: 65px;
-  text-align: right;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem; /* 12px */
+  font-weight: 500;
 }
-.supporter input,
-select {
-  margin-bottom: 11px;
+.status-badge.active {
+  background-color: #e8f5e9; /* Light green */
+  color: #2e7d32; /* Dark green text */
 }
-.building label {
+.status-badge.inactive {
+  background-color: #ffebee; /* Light red */
+  color: #c62828; /* Dark red text */
+}
+
+/* User Name Badge (from users.css - for highlighting names) */
+.user-name-badge {
+  padding: 6px 12px;
+  border-radius: 6px;
+  background-color: rgba(102, 126, 234, 0.1); /* Light blue tint */
+  color: #4a6cf7; /* Blue text */
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
   display: inline-block;
-  padding: 25px 0 0 10px;
-  width: 160px;
-  height: 75px;
+  position: relative;
 }
-.building input {
-  display: inline;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  width: 360px;
-  margin-left: 0;
-  text-align: end;
-}
-.floor label {
-  display: inline-block;
-  padding: 25px 0 0 10px;
-  width: 160px;
-  height: 65px;
-  text-align: end;
-}
-::ng-deep .cdk-overlay-container {
-  z-index: 9999 !important;
+.user-name-badge:hover {
+  background-color: rgba(102, 126, 234, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(74, 108, 247, 0.2);
 }
 
-::ng-deep .cdk-overlay-connected-position-bounding-box {
-  z-index: 9999 !important;
+/* Paginator Styles */
+.mat-paginator {
+  border-bottom-left-radius: 12px; /* Match table container */
+  border-bottom-right-radius: 12px; /* Match table container */
+  background-color: #f9f9f9; /* Light background for paginator */
 }
-.fontSize {
-  font-family: "Iran-Yekan-Light", sans-serif;
-}
-.customSelect {
-  width: 285px;
-}
-th {
-  color: #0d00ff;
-  font-size: 15px;
-}
-.form-group.sub {
+.mat-mdc-paginator {
   display: flex;
-  flex-direction: row-reverse;
+  justify-content: center; /* Center paginator controls */
+  background: transparent; /* Make it transparent if .mat-paginator has bg */
+  /* border-top: 1px solid #e5e7eb; /* Optional top border */
 }
-.form-select option {
-  text-align: center;
-}
-.customSelect {
-  width: 250px;
-}
-/* message componnent */
-.message-container {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 10px;
-  background-color: #000000;
-  color: #fff;
-  border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  margin-bottom: 240px;
+/* If using ::ng-deep is acceptable for finer control */
+/* ::ng-deep .mat-mdc-paginator-container { justify-content: center; } */
+/* ::ng-deep .mat-mdc-paginator-page-size { display: none; } /* Uncomment to hide page size selector */
+
+/* Search Filter Styles */
+/* Your building-supporter.html filter:
+   <div class="filters w-1/4 bg-white p-6 rounded-2xl shadow-lg mb-8 justify-self-start">
+     <input type="text" class="w-full px-4 py-3 pl-11 border border-gray-300 rounded-xl ...">
+   </div>
+   This largely relies on Tailwind and should be consistent with users.html if it also uses Tailwind for its filters.
+*/
+.filters input::placeholder {
+  text-align: center; /* As in users.css */
+  /* Consider text-align: right; for RTL placeholders if preferred */
 }
 
-.success {
-  color: rgb(5, 167, 5);
+/* Space for bottom margin (from original supporter.css) */
+.space {
+  height: 4rem; /* Provides some spacing at the bottom of the page */
 }
 
-.error {
-  color: red;
+/* RTL Support for table content */
+[dir="rtl"] .modern-table th,
+[dir="rtl"] .modern-table td {
+  text-align: right !important; /* Ensures text alignment for RTL */
 }
-.sub.supporter input {
-  text-align: center;
+[dir="rtl"] .modern-btn {
+  flex-direction: row-reverse; /* For buttons with icons */
 }
-.btn.btn-danger {
-  margin-left: 10px;
+
+/* ::ng-deep styles for ng-select (if used on this page, from users.css) */
+/* Ensure these are appropriate if ng-select components are present */
+::ng-deep .ng-input {
+  padding-right: 30px !important; /* Adjust padding for RTL */
 }
-.btn.btn-primary,
-.btn.btn-danger {
-  margin-bottom: 20px;
+::ng-deep .ng-input > input {
+  direction: rtl !important;
 }
-mat-paginator,
-table,
-thead {
-  background-color: #bac1ff40;
+::ng-deep .ng-value-label.ng-star-inserted {
+  margin-left: 0 !important; /* Remove margin-left for RTL */
+  margin-right: auto; /* Or adjust as needed */
 }
-mat-form-field {
-  direction: rtl;
-  width: 11%;
-  align-content: end;
-  flex-wrap: wrap;
-  display: flex;
-  justify-self: right;
-  margin-top: 10px;
-  margin-right: 10px;
-  border-radius: 9px;
-  height: 80px;
+::ng-deep .ng-select .ng-select-container {
+  border-color: #000000; /* Consider using Tailwind border classes for theme consistency */
+  border-radius: 9px; /* Tailwind: rounded-lg or rounded-xl */
+  height: 44px !important;
 }
-::placeholder {
-  text-align: center;
+
+/* Custom Tooltip Styles from users.css (if tooltips are used) */
+::ng-deep .custom-tooltip {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
+  color: white !important;
+  font-size: 0.875rem !important; /* 14px */
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  max-width: none !important; /* Allow tooltip to size to content */
+  white-space: nowrap !important; /* Prevent text wrapping */
+  font-weight: 500 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important; /* Subtle border */
+}
+/* Arrow for custom tooltip */
+::ng-deep .custom-tooltip::before {
+  content: "" !important;
+  position: absolute !important;
+  /* Example: bottom arrow */
+  top: 100% !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  border-width: 6px !important;
+  border-style: solid !important;
+  border-color: #4f46e5 transparent transparent transparent !important; /* Arrow color matches tooltip */
+}
+
+.filters {
+  margin-left: auto;
+  margin-right: 0;
+  margin-right: 1rem;
 }

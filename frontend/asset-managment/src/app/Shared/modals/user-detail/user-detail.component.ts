@@ -27,6 +27,7 @@ import { ModalsComponent } from '../../../Shared/modals/modals.component';
 import { RouterLink, RouterModule } from '@angular/router';
 import { PcUserComponent } from '../../../Shared/modals/pc-user/pc-user.component';
 import { MatIconModule } from '@angular/material/icon';
+import { SupporterDetailComponent } from '../supporter-detail/supporter-detail.component';
 
 interface User {
   userid: number;
@@ -160,19 +161,36 @@ export class UserDetailComponent implements OnInit {
 
   viewSupporterDetails(supporterId: number): void {
     if (supporterId) {
-      const endpoint = `accounts/user/`;
-      this.dataservice.get(endpoint).subscribe((response: any) => {
-        if (response && response.body) {
-          const supporter = response.body.find(
-            (item: any) => item.userid === supporterId
-          );
-          if (supporter) {
-            this.dialog.open(UserDetailComponent, {
+      const endpoint = `accounts/supporter/`;
+      this.dataservice.get(endpoint).subscribe({
+        next: (response: any) => {
+          if (response && response.body) {
+            const supporter = response.body.find(
+              (item: any) => item.userid === supporterId
+            );
+            this.dialog.open(SupporterDetailComponent, {
               width: '80%',
-              data: { userid: supporterId, showEditButton: false },
+              data: {
+                userpersonalid: supporter?.userpersonalid || supporterId,
+              },
+              disableClose: true,
+            });
+          } else {
+            this.dialog.open(SupporterDetailComponent, {
+              width: '80%',
+              data: { userpersonalid: supporterId },
+              disableClose: true,
             });
           }
-        }
+        },
+        error: (error) => {
+          console.error('Error fetching supporter details:', error);
+          this.dialog.open(SupporterDetailComponent, {
+            width: '80%',
+            data: { userpersonalid: supporterId },
+            disableClose: true,
+          });
+        },
       });
     }
   }

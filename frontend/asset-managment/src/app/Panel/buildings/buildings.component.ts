@@ -21,6 +21,8 @@ import { ModalsComponent } from '../../Shared/modals/modals.component';
 import { RouterLink, RouterModule } from '@angular/router';
 import moment from 'jalali-moment';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { SupporterBuildingComponent } from '../../Shared/modals/supporter-building/supporter-building.component';
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-buildings',
   standalone: true,
@@ -38,6 +40,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     RouterLink,
     RouterModule,
     NgSelectModule,
+    FormsModule,
   ],
   templateUrl: './buildings.component.html',
   styleUrl: './buildings.component.css',
@@ -48,7 +51,6 @@ export class BuildingsComponent implements OnInit {
   chooseSupporterForm!: FormGroup;
   showChooseSupporterForm = false;
   displayedColumns: string[] = [
-    'buildingid',
     'buildingname',
     'buildingabbrivationname',
     'buildingfloorcount',
@@ -58,8 +60,13 @@ export class BuildingsComponent implements OnInit {
     'actions',
     'delete',
     'selectSupporter',
+    'supporterDetails',
   ];
   buildingsDataSource!: MatTableDataSource<any>;
+  searchTerm: string = '';
+  selectedFloorCount: string = '';
+  floorCountOptions: number[] = [];
+  filteredBuildingsDataSource!: MatTableDataSource<any>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -85,19 +92,24 @@ export class BuildingsComponent implements OnInit {
     this.fetchUsers();
     this.showBuildingsTable = true;
     this.buildingForm = this.fb.group({
-      buildingname: ['', Validators.required],
-      buildingabbrivationname: ['', Validators.required],
-      buildingfloorcount: ['', Validators.required],
-      buildingroomcount: ['', Validators.required],
+      buildingname: ['', [Validators.required, Validators.minLength(4)]],
+      buildingabbrivationname: [
+        '',
+        [Validators.required, Validators.minLength(2)],
+      ],
+      buildingfloorcount: ['', [Validators.required, Validators.min(1)]],
+      buildingroomcount: ['', [Validators.required, Validators.min(1)]],
     });
 
     this.chooseSupporterForm = this.fb.group({
       userpersonalid: ['', Validators.required],
       buildingid: ['', Validators.required],
-      floor: ['', Validators.required],
+      floor: ['all', Validators.required],
     });
   }
-
+  ngAfterViewInit() {
+    this.paginator._intl.itemsPerPageLabel = 'مورد در هر صفحه';
+  }
   toggleView(view: 'form' | 'table'): void {
     if (view === 'form') {
       this.isEditing = false;
@@ -120,12 +132,18 @@ export class BuildingsComponent implements OnInit {
   }
 
   fetchBuildings(): void {
-    const endpoint = 'building/create/'; // Define your endpoint
+    const endpoint = 'building/create/';
     this.dataService.get(endpoint).subscribe((response: any) => {
       if (response && response.body) {
         this.buildingsDataSource = new MatTableDataSource(response.body);
-        this.buildingsDataSource.paginator = this.paginator;
-        this.buildingsDataSource.sortingDataAccessor = (item, property) => {
+        this.filteredBuildingsDataSource = new MatTableDataSource(
+          response.body
+        );
+        this.filteredBuildingsDataSource.paginator = this.paginator;
+        this.filteredBuildingsDataSource.sortingDataAccessor = (
+          item,
+          property
+        ) => {
           switch (property) {
             case 'buildingid':
               return item.buildingid;
@@ -135,14 +153,21 @@ export class BuildingsComponent implements OnInit {
               return item.buildingabbrivationname;
             case 'buildingfloorcount':
               return item.buildingfloorcount;
-
             case 'buildingroomcount':
               return item.buildingroomcount;
             default:
               return item[property];
           }
         };
-        this.buildingsDataSource.sort = this.sort;
+        this.filteredBuildingsDataSource.sort = this.sort;
+
+        // Generate floor count options
+        const floorCounts = new Set(
+          response.body.map((building: any) => building.buildingfloorcount)
+        );
+        this.floorCountOptions = Array.from(floorCounts)
+          .map((count) => Number(count))
+          .sort((a, b) => a - b);
       }
     });
   }
@@ -152,83 +177,109 @@ export class BuildingsComponent implements OnInit {
   onSubmitBuildingForm(): void {
     if (this.buildingForm.valid) {
       const formValue = this.buildingForm.value;
-      // Convert userid and userLevel to integers
-      formValue.buildingfloorcount = parseInt(formValue.buildingfloorcount, 10);
-      formValue.buildingroomcount = parseInt(formValue.buildingroomcount, 10);
+
+      // Only include fields that have values
+      const payload: any = {};
+      if (formValue.buildingname) payload.buildingname = formValue.buildingname;
+      if (formValue.buildingabbrivationname)
+        payload.buildingabbrivationname = formValue.buildingabbrivationname;
+      if (formValue.buildingfloorcount)
+        payload.buildingfloorcount = parseInt(formValue.buildingfloorcount, 10);
+      if (formValue.buildingroomcount)
+        payload.buildingroomcount = parseInt(formValue.buildingroomcount, 10);
 
       let endpoint: string;
       let httpMethod: 'post' | 'put';
       if (this.isEditing) {
-        endpoint = `building/${this.buildingId}/`; // Define your endpoint for editing
+        endpoint = `building/${this.buildingId}/`;
         httpMethod = 'put';
       } else {
-        endpoint = 'building/create/'; // Define your endpoint for creation
+        endpoint = 'building/create/';
         httpMethod = 'post';
       }
 
-      this.dataService[httpMethod](endpoint, formValue)
+      this.dataService[httpMethod](endpoint, payload)
         .pipe(
           tap({
             next: (response) => {
               if (response.status === 201 || response.status === 200) {
                 this.successMessage = this.isEditing
-                  ? 'ویرایش ساختمان با موفقیت انجام شد '
-                  : 'ایجاد ساختمان با موفقیت انجام شد ';
+                  ? 'ویرایش ساختمان با موفقیت انجام شد'
+                  : 'ایجاد ساختمان با موفقیت انجام شد';
                 this.errorMessage = '';
-                this.fetchBuildings(); //
+                this.fetchBuildings();
                 this.buildingForm.reset();
+                this.showBuildingForm = false;
                 if (this.isEditing) {
                   this.isEditing = false;
+                  this.buildingId = null;
                 }
               } else {
                 this.errorMessage = this.isEditing
-                  ? '.ویرایش ساحتمان موفقیت آمیز نبود،لطفا دوباره امتحان کنید'
-                  : '.ایجاد ساحتمان موفقیت آمیز نبود،لطفا دوباره امتحان کنید';
+                  ? 'ویرایش ساختمان موفقیت آمیز نبود، لطفا دوباره امتحان کنید'
+                  : 'ایجاد ساختمان موفقیت آمیز نبود، لطفا دوباره امتحان کنید';
                 this.successMessage = '';
               }
               this.showMessages();
             },
             error: (error: HttpErrorResponse) => {
-              console.error(
-                'Error submitting first step:',
-                error.error['non_field_errors']
-              );
-
-              this.errorMessage = error.error['non_field_errors'];
+              console.error('Error submitting form:', error);
+              this.errorMessage =
+                error.error['non_field_errors'] ||
+                (this.isEditing
+                  ? 'خطا در ویرایش ساختمان'
+                  : 'خطا در ایجاد ساختمان');
               this.successMessage = '';
               this.showMessages();
             },
           })
         )
-        .subscribe(); // Empty subscribe to execute the pipe
+        .subscribe();
     } else {
-      this.errorMessage = '.لطفا همه فیلد ها را پر کنید';
+      this.errorMessage = 'لطفا فیلدهای الزامی را پر کنید';
       this.successMessage = '';
       this.showMessages();
     }
   }
   editBuilding(buildingId: number): void {
     this.isEditing = true;
+    this.buildingId = buildingId;
     const endpoint = `building/${buildingId}/`;
-    this.dataService.get(endpoint).subscribe((response: any) => {
-      if (response && response.body) {
-        const buildingData = response.body;
-        this.buildingForm.patchValue({
-          buildingid: buildingData.buildingid,
-          buildingname: buildingData.buildingname,
-          buildingabbrivationname: buildingData.buildingabbrivationname,
-          buildingfloorcount: buildingData.buildingfloorcount,
-          buildingroomcount: buildingData.buildingroomcount,
-        });
-        this.showBuildingForm = true;
-        this.buildingId = buildingData.buildingid;
-      }
+    this.dataService.get(endpoint).subscribe({
+      next: (response: any) => {
+        if (response && response.body) {
+          const buildingData = response.body;
+          // Only patch the fields that exist in the response
+          const formData: any = {};
+          if (buildingData.buildingname)
+            formData.buildingname = buildingData.buildingname;
+          if (buildingData.buildingabbrivationname)
+            formData.buildingabbrivationname =
+              buildingData.buildingabbrivationname;
+          if (buildingData.buildingfloorcount)
+            formData.buildingfloorcount = buildingData.buildingfloorcount;
+          if (buildingData.buildingroomcount)
+            formData.buildingroomcount = buildingData.buildingroomcount;
+
+          this.buildingForm.patchValue(formData);
+          this.showBuildingForm = true;
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.errorMessage = 'خطا در دریافت اطلاعات ساختمان';
+        this.successMessage = '';
+        this.showMessages();
+      },
     });
   }
   deleteBuilding(buildingId: number): void {
     const dialogRef = this.dialog.open(ModalsComponent, {
-      width: '300px',
-      data: { buildingId: buildingId },
+      data: {
+        message: 'آیا از حذف این ساختمان اطمینان دارید؟',
+        itemName: this.buildingsDataSource.data.find(
+          (b) => b.buildingid === buildingId
+        )?.buildingname,
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -238,18 +289,28 @@ export class BuildingsComponent implements OnInit {
     });
   }
   deleteBuildingConfirmed(buildingId: number): void {
-    const endpoint = `building/${buildingId}/`; // Define your endpoint
-    this.dataService.delete(endpoint).subscribe((response: any) => {
-      if (response.status === 204) {
-        this.successMessage = 'حذف ساختمان با موفقیت انجام شد';
-        this.errorMessage = '';
-        this.fetchBuildings(); // Refresh the table after successful deletion
-      } else {
+    const endpoint = `building/${buildingId}/`;
+    this.dataService.delete(endpoint).subscribe({
+      next: (response: any) => {
+        console.log(response);
+        if (response.status === 200) {
+          this.successMessage = 'حذف ساختمان با موفقیت انجام شد';
+          this.errorMessage = '';
+          this.fetchBuildings(); // Refresh the table after successful deletion
+        } else {
+          this.errorMessage =
+            'حذف ساختمان موفقیت آمیز نبود، لطفا دوباره امتحان کنید';
+          this.successMessage = '';
+        }
+        this.showMessages();
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error deleting building:', error);
         this.errorMessage =
-          'حذف ساختمان موفقیت آمیز نبود،لطفا دوباره امتحان کنید';
+          error.error['non_field_errors'] || 'خطا در حذف ساختمان';
         this.successMessage = '';
-      }
-      this.showMessages();
+        this.showMessages();
+      },
     });
   }
   showMessages(): void {
@@ -258,14 +319,6 @@ export class BuildingsComponent implements OnInit {
       this.showMessage = false;
     }, 3000); // Hide message after 1minute
   }
-  // applyFilter(event: Event) {
-  //   const filterValue = (event.target as HTMLInputElement).value;
-  //   this.buildingsDataSource.filter = filterValue.trim().toLowerCase();
-
-  //   if (this.buildingsDataSource.paginator) {
-  //     this.buildingsDataSource.paginator.firstPage();
-  //   }
-  // }
   fetchUsers(): void {
     const endpoint = 'accounts/user/';
     this.dataService.get(endpoint).subscribe((response: any) => {
@@ -296,12 +349,48 @@ export class BuildingsComponent implements OnInit {
     }
   }
   openChooseSupporterForm(buildingid: any): void {
-    this.fetchFloorOptions(buildingid);
-    this.chooseSupporterForm.patchValue({
-      buildingid: buildingid,
-    });
+    // First check if any floor has a supporter
+    const endpoint = 'accounts/supporter/';
+    this.dataService.get(endpoint).subscribe({
+      next: (response: any) => {
+        if (response && response.body) {
+          // Get the building name from the buildings data
+          const building = this.buildingsDataSource.data.find(
+            (b: any) => b.buildingid === buildingid
+          );
 
-    this.showChooseSupporterForm = true;
+          if (!building) {
+            this.errorMessage = 'خطا در یافتن اطلاعات ساختمان';
+            this.successMessage = '';
+            this.showMessages();
+            return;
+          }
+
+          const buildingSupporters = response.body.filter(
+            (supporter: any) => supporter.buildingname === building.buildingname
+          );
+
+          if (buildingSupporters.length > 0) {
+            this.errorMessage = 'از قسمت جزئیات پشتیبانان استفاده کنید';
+            this.successMessage = '';
+            this.showMessages();
+          } else {
+            // Only open the form if no supporters exist
+            this.fetchFloorOptions(buildingid);
+            this.chooseSupporterForm.patchValue({
+              buildingid: buildingid,
+            });
+            this.showChooseSupporterForm = true;
+          }
+        }
+      },
+      error: (error) => {
+        console.error('Error checking supporters:', error);
+        this.errorMessage = 'خطا در بررسی وضعیت پشتیبانان';
+        this.successMessage = '';
+        this.showMessages();
+      },
+    });
   }
   closeChooseSupporterForm(): void {
     this.chooseSupporterForm.reset();
@@ -323,48 +412,10 @@ export class BuildingsComponent implements OnInit {
       formValue.userpersonalid = parseInt(formValue.userpersonalid, 10);
       formValue.buildingid = parseInt(formValue.buildingid, 10);
 
-      let selectedFloors = formValue.floor;
-
-      // Fetch supporter list from API
-      const endpoint = 'accounts/supporter/';
-      this.dataService.get(endpoint).subscribe((response: any) => {
-        if (response && response.body) {
-          this.supporterList = response.body;
-
-          // Check if the floor is taken
-          const isFloorTaken = selectedFloors.includes('all')
-            ? this.supporterList.some(
-                (supporter) => supporter.availablefloor === 'all'
-              )
-            : this.supporterList.some(
-                (supporter) =>
-                  supporter.availablefloor === parseInt(selectedFloors[0])
-              );
-
-          if (isFloorTaken) {
-            const floorNumber = selectedFloors.includes('all')
-              ? 'همه'
-              : selectedFloors[0];
-            this.errorMessage = `طبقه ${floorNumber}  قبلا انتخاب شده است`;
-            this.successMessage = '';
-            this.showMessages();
-          } else {
-            // Send API request
-
-            if (selectedFloors.includes('all')) {
-              // If 'all' is selected, get all floors
-              selectedFloors = this.floorOptions;
-            }
-
-            selectedFloors.forEach((floor: any) => {
-              const apiPayload = { ...formValue, floor: floor };
-              this.sendSupporterSelectionToApi(apiPayload);
-            });
-
-            this.closeChooseSupporterForm();
-          }
-        }
-      });
+      // Send API request with 'all' as floor
+      const apiPayload = { ...formValue, floor: 'all' };
+      this.sendSupporterSelectionToApi(apiPayload);
+      this.closeChooseSupporterForm();
     } else {
       this.errorMessage = '.لطفا همه فیلد ها را پر کنید';
       this.successMessage = '';
@@ -396,12 +447,47 @@ export class BuildingsComponent implements OnInit {
       }
     );
   }
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.buildingsDataSource.filter = filterValue.trim().toLowerCase();
+  applyFilters(): void {
+    let filteredData = [...this.buildingsDataSource.data];
 
-    if (this.buildingsDataSource.paginator) {
-      this.buildingsDataSource.paginator.firstPage();
+    // Search by building name
+    if (this.searchTerm) {
+      filteredData = filteredData.filter(
+        (building) =>
+          building.buildingname
+            .toLowerCase()
+            .includes(this.searchTerm.toLowerCase()) ||
+          building.buildingabbrivationname
+            .toLowerCase()
+            .includes(this.searchTerm.toLowerCase())
+      );
     }
+
+    // Filter by floor count
+    if (this.selectedFloorCount) {
+      filteredData = filteredData.filter(
+        (building) =>
+          building.buildingfloorcount.toString() === this.selectedFloorCount
+      );
+    }
+
+    this.filteredBuildingsDataSource = new MatTableDataSource(filteredData);
+    this.filteredBuildingsDataSource.paginator = this.paginator;
+    this.filteredBuildingsDataSource.sort = this.sort;
+  }
+
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.selectedFloorCount = '';
+    this.filteredBuildingsDataSource = this.buildingsDataSource;
+    this.filteredBuildingsDataSource.paginator = this.paginator;
+    this.filteredBuildingsDataSource.sort = this.sort;
+  }
+
+  openSupporterDetails(buildingId: number, buildingName: string): void {
+    const dialogRef = this.dialog.open(SupporterBuildingComponent, {
+      width: '800px',
+      data: { buildingId, buildingName },
+    });
   }
 }

@@ -86,6 +86,7 @@ export class BuildingSupportersComponent implements OnInit {
     const endpoint = 'accounts/supporter/';
     this.dataService.get(endpoint).subscribe((response: any) => {
       if (response && response.body) {
+        console.log(response.body);
         this.supportersDataSource = new MatTableDataSource(response.body);
         this.supportersDataSource.paginator = this.paginator;
         this.supportersDataSource.sortingDataAccessor = (item, property) => {
@@ -285,6 +286,12 @@ export class BuildingSupportersComponent implements OnInit {
 
     if (this.supportersDataSource.paginator) {
       this.supportersDataSource.paginator.firstPage();
+    }
+  }
+
+  toggleView(view: string): void {
+    if (view === 'form') {
+      this.showChooseSupporterForm = true;
     }
   }
 }

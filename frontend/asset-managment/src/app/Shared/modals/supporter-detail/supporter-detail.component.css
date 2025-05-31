@@ -1,0 +1,93 @@
+/* Modern Glassmorphism Styles */
+:host {
+  display: block;
+}
+
+/* Backdrop Animation */
+.backdrop-blur-sm {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Card Animation */
+.transform {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Hover Effects */
+.hover\:shadow-md:hover {
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+/* Gradient Text */
+.text-gradient {
+  background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+
+  -webkit-text-fill-color: transparent;
+}
+
+/* Loading Spinner */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* RTL Support */
+[dir="rtl"] .space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1;
+}
+
+/* Material Overrides */
+::ng-deep .mat-dialog-container {
+  padding: 0 !important;
+  border-radius: 1rem !important;
+  overflow: hidden !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

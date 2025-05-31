@@ -1,0 +1,196 @@
+<!-- Modern Glassmorphism Modal with RTL Support -->
+<div class="fixed inset-0 z-50 overflow-y-auto" dir="rtl">
+  <div class="flex items-center justify-center min-h-screen p-4">
+    <!-- Backdrop -->
+    <div
+      class="fixed inset-0 bg-gradient-to-br from-blue-900/30 to-indigo-900/20 backdrop-blur-sm transition-opacity"
+    ></div>
+
+    <!-- Modal Container -->
+    <div class="relative w-full max-w-4xl mx-auto transform transition-all">
+      <!-- Glass Card -->
+      <div
+        class="bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-white/20"
+      >
+        <!-- Header with Gradient Accent -->
+        <div class="relative bg-[image:var(--primary-gradient)] p-5">
+          <div dir="ltr" class="flex items-center justify-between">
+            <div class="flex items-center space-x-3 space-x-reverse ml-[42%]">
+              <h3 class="text-xl font-bold text-white">طبقات پشتیبان</h3>
+            </div>
+            <button
+              (click)="closeDialog()"
+              class="p-1 rounded-full hover:bg-white/20 transition-colors duration-200 text-white/80 hover:text-white"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6">
+          <!-- Loading State -->
+          <div *ngIf="loading" class="flex justify-center items-center py-8">
+            <div
+              class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"
+            ></div>
+          </div>
+
+          <!-- Error State -->
+          <div
+            *ngIf="error"
+            class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-4"
+          >
+            {{ error }}
+          </div>
+
+          <!-- No Data Available State -->
+          <div
+            *ngIf="!loading && !error && noDataAvailable"
+            class="flex flex-col items-center justify-center py-8 space-y-4"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-16 w-16 text-gray-400 hover:text-blue-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <p class="text-lg font-medium text-gray-600 mt-2">
+              اطلاعاتی در دسترس نیست
+            </p>
+          </div>
+
+          <!-- Supporter Details -->
+          <div
+            *ngIf="!loading && !error && !noDataAvailable && currentSupporter"
+            class="space-y-6"
+          >
+            <!-- Navigation Controls -->
+            <div
+              *ngIf="totalSupporters > 1"
+              class="flex items-center justify-end space-x-4 space-x-reverse mb-4"
+            >
+              <button
+                (click)="previousSupporter()"
+                [disabled]="currentSupporterIndex === 0"
+                class="p-2 rounded-lg bg-white/80 hover:bg-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                [class.text-gray-400]="currentSupporterIndex === 0"
+                [class.text-blue-600]="currentSupporterIndex > 0"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </button>
+              <span class="text-sm font-medium text-gray-600">
+                {{ currentSupporterIndex + 1 }} از {{ totalSupporters }}
+              </span>
+              <button
+                (click)="nextSupporter()"
+                [disabled]="currentSupporterIndex === totalSupporters - 1"
+                class="p-2 rounded-lg bg-white/80 hover:bg-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                [class.text-gray-400]="
+                  currentSupporterIndex === totalSupporters - 1
+                "
+                [class.text-blue-600]="
+                  currentSupporterIndex < totalSupporters - 1
+                "
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div
+              class="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-sm border border-gray-100 overflow-hidden"
+            >
+              <div class="border-b border-gray-100/50 px-5 py-3 bg-gray-50">
+                <h4
+                  class="text-lg font-semibold text-gray-800 flex items-center"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 text-blue-500 ml-2"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  اطلاعات
+                </h4>
+              </div>
+              <div class="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs"
+                >
+                  <p class="text-xs font-medium text-blue-600 mb-1">ساختمان</p>
+                  <p class="font-medium text-gray-800 text-sm">
+                    <a
+                      class="text-blue-600 hover:text-blue-800 transition-colors duration-200 cursor-pointer"
+                      (click)="
+                        navigateToBuilding(currentSupporter.buildingname)
+                      "
+                    >
+                      {{ currentSupporter.buildingname }}
+                    </a>
+                  </p>
+                </div>
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs"
+                >
+                  <p class="text-xs font-medium text-blue-600 mb-1">طبقه</p>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{ currentSupporter.availablefloor }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
