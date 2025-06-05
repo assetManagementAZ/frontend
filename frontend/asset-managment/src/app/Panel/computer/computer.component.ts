@@ -12,6 +12,7 @@ import {
   FormGroup,
   Validators,
   ReactiveFormsModule,
+  FormsModule,
 } from '@angular/forms';
 import { tap } from 'rxjs';
 import {
@@ -41,6 +42,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     RouterLink,
     RouterModule,
     NgSelectModule,
+    FormsModule,
   ],
   templateUrl: './computer.component.html',
   styleUrl: './computer.component.css',
@@ -58,6 +60,8 @@ export class ComputerComponent implements OnInit {
     'delete',
   ];
   ComputerDataSource!: MatTableDataSource<any>;
+  originalData: any[] = [];
+  searchTerm: string = '';
   osList: any[] = [];
   userList: any[] = [];
   buildingList: any[] = [];
@@ -87,18 +91,67 @@ export class ComputerComponent implements OnInit {
     this.fetchUserList();
     this.showComputerTable = true;
     this.computerForm = this.fb.group({
-      computerpropertynumber: ['', Validators.required],
-      computername: [''],
-      computermodel: ['', Validators.required],
-      computerip: ['', Validators.required],
-      computermacaddress: ['', Validators.required],
-      computerispersonal: ['', Validators.required],
-      osName: ['', Validators.required],
-      osVersionId: ['', Validators.required],
+      computerpropertynumber: [
+        '',
+        [
+          Validators.required,
+          Validators.min(-2147483648),
+          Validators.max(2147483647),
+          Validators.pattern('^[0-9]*$'),
+        ],
+      ],
+      computername: ['', [Validators.maxLength(255)]],
+      computermodel: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(1),
+          Validators.maxLength(255),
+        ],
+      ],
+      computerip: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(1),
+          Validators.maxLength(15),
+          Validators.pattern(
+            '^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
+          ),
+        ],
+      ],
+      computermacaddress: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(1),
+          Validators.pattern('^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$'),
+        ],
+      ],
+      computerispersonal: [
+        '',
+        [
+          Validators.required,
+          Validators.min(-2147483648),
+          Validators.max(2147483647),
+          Validators.pattern('^[0-1]$'),
+        ],
+      ],
+      osName: ['', [Validators.required]],
+      osVersionId: ['', [Validators.required]],
     });
+
+    // Add validation listeners
+    Object.keys(this.computerForm.controls).forEach((key) => {
+      this.computerForm.get(key)?.valueChanges.subscribe(() => {
+        this.validateField(key);
+      });
+    });
+
     this.computerForm.get('osName')?.valueChanges.subscribe((selectedOsId) => {
       this.onOsNameChange(selectedOsId);
     });
+
     this.fetchOsList();
     this.userPcForm = this.fb.group({
       ownerUserId: ['', Validators.required],
@@ -106,7 +159,9 @@ export class ComputerComponent implements OnInit {
       buildingId: ['', Validators.required],
     });
   }
-
+  ngAfterViewInit() {
+    this.paginator._intl.itemsPerPageLabel = 'مورد در هر صفحه';
+  }
   toggleView(view: 'form' | 'table'): void {
     if (view === 'form') {
       this.computerForm.reset();
@@ -141,6 +196,8 @@ export class ComputerComponent implements OnInit {
     const endpoint = 'asset/computer/';
     this.dataService.get(endpoint).subscribe((response: any) => {
       if (response && response.body) {
+        console.log(response.body);
+        this.originalData = response.body;
         this.ComputerDataSource = new MatTableDataSource(response.body);
         this.ComputerDataSource.paginator = this.paginator;
         this.ComputerDataSource.sortingDataAccessor = (item, property) => {
@@ -196,16 +253,19 @@ export class ComputerComponent implements OnInit {
         endpoint = 'asset/computer/';
         httpMethod = 'post';
       }
-      formValue.computerpropertynumber = parseInt(
-        formValue.computerpropertynumber,
-        10
-      );
-      formValue.computerispersonal = parseInt(formValue.computerispersonal, 10);
-      formValue.operationsystemversionid = parseInt(
-        formValue.operationsystemversionid,
-        10
-      );
-      this.dataService[httpMethod](endpoint, formValue)
+
+      // Prepare the data according to backend requirements
+      const requestData = {
+        computerpropertynumber: parseInt(formValue.computerpropertynumber, 10),
+        computername: formValue.computername,
+        computermodel: formValue.computermodel,
+        computerip: formValue.computerip,
+        computermacaddress: formValue.computermacaddress,
+        computerispersonal: parseInt(formValue.computerispersonal, 10),
+        osVersionId: parseInt(formValue.osVersionId, 10), // Changed from operationsystemversionid to osVersionId
+      };
+
+      this.dataService[httpMethod](endpoint, requestData)
         .pipe(
           tap({
             next: (response) => {
@@ -214,6 +274,7 @@ export class ComputerComponent implements OnInit {
                   ? 'ویرایش کامپیوتر با موفقیت انجام شد '
                   : 'ایجاد کامپیوتر با موفقیت انجام شد ';
                 this.errorMessage = '';
+                this.closeComputerForm();
                 this.fetchComputer();
                 this.computerForm.reset();
                 this.showComputerForm = false;
@@ -239,7 +300,7 @@ export class ComputerComponent implements OnInit {
             },
           })
         )
-        .subscribe(); // Empty subscribe to execute the pipe
+        .subscribe();
     } else {
       this.errorMessage = '.لطفا همه فیلد ها را پر کنید';
       this.successMessage = '';
@@ -275,8 +336,10 @@ export class ComputerComponent implements OnInit {
   }
   deleteComputer(computerpropertynumber: number): void {
     const dialogRef = this.dialog.open(ModalsComponent, {
-      width: '300px',
-      data: { computerpropertynumber: computerpropertynumber },
+      data: {
+        message: 'آیا از حذف این کامپیوتر اطمینان دارید؟',
+        computerpropertynumber: computerpropertynumber,
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -481,12 +544,109 @@ export class ComputerComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {});
   }
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.ComputerDataSource.filter = filterValue.trim().toLowerCase();
+  applyFilters(): void {
+    let filteredData = [...this.originalData];
 
-    if (this.ComputerDataSource.paginator) {
-      this.ComputerDataSource.paginator.firstPage();
+    // Search by computer name or property number
+    if (this.searchTerm) {
+      filteredData = filteredData.filter((computer) => {
+        // Convert property number to string for searching
+        const propertyNumber =
+          computer.computerpropertynumber?.toString() || '';
+        const searchTerm = this.searchTerm.toLowerCase();
+
+        // Check if property number starts with the search term
+        const matchesPropertyNumber = propertyNumber.startsWith(searchTerm);
+
+        // Check if computer name includes the search term
+        const matchesName = computer.computername
+          ?.toLowerCase()
+          .includes(searchTerm);
+
+        return matchesPropertyNumber || matchesName;
+      });
+    }
+
+    this.ComputerDataSource = new MatTableDataSource(filteredData);
+    this.ComputerDataSource.paginator = this.paginator;
+    this.ComputerDataSource.sort = this.sort;
+  }
+
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.ComputerDataSource = new MatTableDataSource(this.originalData);
+    this.ComputerDataSource.paginator = this.paginator;
+    this.ComputerDataSource.sort = this.sort;
+  }
+
+  validateField(fieldName: string): void {
+    const control = this.computerForm.get(fieldName);
+    if (control?.invalid && control?.touched) {
+      switch (fieldName) {
+        case 'computerpropertynumber':
+          if (control.errors?.['required']) {
+            this.errorMessage = 'شماره اموال الزامی است';
+          } else if (control.errors?.['min'] || control.errors?.['max']) {
+            this.errorMessage = 'شماره اموال باید جداکثر 9 رقم  باشد';
+          } else if (control.errors?.['pattern']) {
+            this.errorMessage = 'شماره اموال باید فقط شامل اعداد باشد';
+          }
+          break;
+        case 'computername':
+          if (control.errors?.['maxlength']) {
+            this.errorMessage =
+              'نام کامپیوتر نمی‌تواند بیشتر از 255 کاراکتر باشد';
+          }
+          break;
+        case 'computermodel':
+          if (control.errors?.['required']) {
+            this.errorMessage = 'مدل کامپیوتر الزامی است';
+          } else if (control.errors?.['minlength']) {
+            this.errorMessage = 'مدل کامپیوتر نمی‌تواند خالی باشد';
+          } else if (control.errors?.['maxlength']) {
+            this.errorMessage =
+              'مدل کامپیوتر نمی‌تواند بیشتر از 255 کاراکتر باشد';
+          }
+          break;
+        case 'computerip':
+          if (control.errors?.['required']) {
+            this.errorMessage = 'آدرس آی پی الزامی است';
+          } else if (control.errors?.['minlength']) {
+            this.errorMessage = 'آدرس آی پی نمی‌تواند خالی باشد';
+          } else if (control.errors?.['maxlength']) {
+            this.errorMessage = 'آدرس آی پی نمی‌تواند بیشتر از 15 کاراکتر باشد';
+          } else if (control.errors?.['pattern']) {
+            this.errorMessage = 'فرمت آدرس آی پی نامعتبر است';
+          }
+          break;
+        case 'computermacaddress':
+          if (control.errors?.['required']) {
+            this.errorMessage = 'آدرس مک الزامی است';
+          } else if (control.errors?.['minlength']) {
+            this.errorMessage = 'آدرس مک نمی‌تواند خالی باشد';
+          } else if (control.errors?.['pattern']) {
+            this.errorMessage = 'فرمت مک آدرس نامعتبر است';
+          }
+          break;
+        case 'computerispersonal':
+          if (control.errors?.['required']) {
+            this.errorMessage = 'وضعیت مالکیت الزامی است';
+          } else if (control.errors?.['min'] || control.errors?.['max']) {
+            this.errorMessage = '';
+          }
+          break;
+        case 'osName':
+          if (control.errors?.['required']) {
+            this.errorMessage = 'سیستم عامل الزامی است';
+          }
+          break;
+        case 'osVersionId':
+          if (control.errors?.['required']) {
+            this.errorMessage = 'نسخه سیستم عامل الزامی است';
+          }
+          break;
+      }
+      this.showMessages();
     }
   }
 }

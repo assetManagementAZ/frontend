@@ -12,6 +12,7 @@ import {
   FormGroup,
   Validators,
   ReactiveFormsModule,
+  FormsModule,
 } from '@angular/forms';
 import { tap } from 'rxjs';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -35,6 +36,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     RouterLink,
     RouterModule,
     NgSelectModule,
+    FormsModule,
   ],
   templateUrl: './op-version.component.html',
   styleUrl: './op-version.component.css',
@@ -44,7 +46,7 @@ export class OpVersionComponent implements OnInit {
   showVersionTable = false;
   displayedColumns: string[] = [
     'operationsystemversionid',
-    'osName',
+    'operationsystemname',
     'operationsystemversionname',
     'operationsystemversioncreatetime',
     'operationsystemversionupdatetime',
@@ -53,7 +55,10 @@ export class OpVersionComponent implements OnInit {
   ];
 
   versionDataSource!: MatTableDataSource<any>;
+  originalData: any[] = [];
+  searchTerm: string = '';
   osList: any[] = [];
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -81,6 +86,10 @@ export class OpVersionComponent implements OnInit {
     this.fetchOsList();
   }
 
+  ngAfterViewInit() {
+    this.paginator._intl.itemsPerPageLabel = 'مورد در هر صفحه';
+  }
+
   toggleView(view: 'form' | 'table'): void {
     if (view === 'form') {
       this.isEditing = false;
@@ -101,6 +110,7 @@ export class OpVersionComponent implements OnInit {
     this.showVersionForm = false;
     this.versionForm.reset();
   }
+
   fetchOsList(): void {
     const endpoint = 'asset/operation-system/';
     this.dataService.get(endpoint).subscribe((response: any) => {
@@ -109,9 +119,11 @@ export class OpVersionComponent implements OnInit {
       }
     });
   }
+
   convertDate(dateString: string): string {
     return moment(dateString, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
   }
+
   fetchVersion(): void {
     const endpoint = 'asset/operation-system/';
     this.dataService.get(endpoint).subscribe((response: any) => {
@@ -136,19 +148,18 @@ export class OpVersionComponent implements OnInit {
             )
         );
 
+        this.originalData = flattenedData;
         this.versionDataSource = new MatTableDataSource(flattenedData);
         this.versionDataSource.paginator = this.paginator;
-
+        console.log(this.originalData);
         this.versionDataSource.sortingDataAccessor = (item, property) => {
           switch (property) {
             case 'operationsystemversionid':
               return item.operationsystemversionid;
-
             case 'operationsystemversionname':
               return item.operationsystemversionname;
-            case 'osName':
+            case 'operationsystemname':
               return item.operationsystemname;
-
             default:
               return item[property];
           }
@@ -157,10 +168,12 @@ export class OpVersionComponent implements OnInit {
       }
     });
   }
+
   getOsNameById(osId: number): string {
     const os = this.osList.find((item) => item.osId === osId);
     return os ? os.operationsystemname : '';
   }
+
   onSubmitVersionForm(): void {
     if (this.versionForm.valid) {
       const formValue = this.versionForm.value;
@@ -168,10 +181,10 @@ export class OpVersionComponent implements OnInit {
       let endpoint: string;
       let httpMethod: 'post' | 'put';
       if (this.isEditing) {
-        endpoint = `asset/operation-system-version/${this.operationsystemversionid}/`; // Define your endpoint for editing
+        endpoint = `asset/operation-system-version/${this.operationsystemversionid}/`;
         httpMethod = 'put';
       } else {
-        endpoint = 'asset/operation-system-version/'; // Define your endpoint for creation
+        endpoint = 'asset/operation-system-version/';
         httpMethod = 'post';
       }
 
@@ -184,7 +197,8 @@ export class OpVersionComponent implements OnInit {
                   ? 'ویرایش ورژن با موفقیت انجام شد '
                   : 'ایجاد ورژن با موفقیت انجام شد ';
                 this.errorMessage = '';
-                this.fetchVersion(); //
+                this.closeVersionForm();
+                this.fetchVersion();
                 this.versionForm.reset();
                 if (this.isEditing) {
                   this.isEditing = false;
@@ -206,7 +220,7 @@ export class OpVersionComponent implements OnInit {
             },
           })
         )
-        .subscribe(); // Empty subscribe to execute the pipe
+        .subscribe();
     } else {
       this.errorMessage = '.لطفا همه فیلد ها را پر کنید';
       this.successMessage = '';
@@ -220,9 +234,19 @@ export class OpVersionComponent implements OnInit {
     this.dataService.get(endpoint).subscribe((response: any) => {
       if (response && response.body) {
         const versionData = response.body;
+        // Find the version in original data to get the OS name
+        const versionInfo = this.originalData.find(
+          (v) => v.operationsystemversionid === operationsystemversionid
+        );
+
+        // Find the OS in osList to get the correct ID
+        const os = this.osList.find(
+          (os) => os.operationsystemname === versionInfo?.operationsystemname
+        );
+
         this.versionForm.patchValue({
           operationsystemversionname: versionData.operationsystemversionname,
-          osId: versionData.operationsystemversionid,
+          osId: os?.operationsystemid, // Use the OS ID from osList
         });
 
         this.showVersionForm = true;
@@ -230,10 +254,13 @@ export class OpVersionComponent implements OnInit {
       }
     });
   }
+
   deleteVersion(operationsystemversionid: number): void {
     const dialogRef = this.dialog.open(ModalsComponent, {
-      width: '300px',
-      data: { operationsystemversionid: operationsystemversionid },
+      data: {
+        message: 'آیا از حذف این ورژن اطمینان دارید؟',
+        operationsystemversionid: operationsystemversionid,
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -244,12 +271,12 @@ export class OpVersionComponent implements OnInit {
   }
 
   deleteVersionConfirmed(operationsystemversionid: number): void {
-    const endpoint = `asset/operation-system-version/${operationsystemversionid}/`; // Define your endpoint
+    const endpoint = `asset/operation-system-version/${operationsystemversionid}/`;
     this.dataService.delete(endpoint).subscribe((response: any) => {
       if (response.status === 204) {
         this.successMessage = 'حذف ورژن با موفقیت انجام شد';
         this.errorMessage = '';
-        this.fetchVersion(); // Refresh the table after successful deletion
+        this.fetchVersion();
       } else {
         this.errorMessage = 'حذف ورژن موفقیت آمیز نبود،لطفا دوباره امتحان کنید';
         this.successMessage = '';
@@ -257,19 +284,39 @@ export class OpVersionComponent implements OnInit {
       this.showMessages();
     });
   }
+
   showMessages(): void {
     this.showMessage = true;
     setTimeout(() => {
       this.showMessage = false;
-    }, 10000); // Hide message after 1minute
+    }, 3000);
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.versionDataSource.filter = filterValue.trim().toLowerCase();
+  applyFilters(): void {
+    let filteredData = [...this.originalData];
 
-    if (this.versionDataSource.paginator) {
-      this.versionDataSource.paginator.firstPage();
+    // Search by version name or OS name
+    if (this.searchTerm) {
+      filteredData = filteredData.filter(
+        (version) =>
+          version.operationsystemversionname
+            .toLowerCase()
+            .includes(this.searchTerm.toLowerCase()) ||
+          version.operationsystemname
+            .toLowerCase()
+            .includes(this.searchTerm.toLowerCase())
+      );
     }
+
+    this.versionDataSource = new MatTableDataSource(filteredData);
+    this.versionDataSource.paginator = this.paginator;
+    this.versionDataSource.sort = this.sort;
+  }
+
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.versionDataSource = new MatTableDataSource(this.originalData);
+    this.versionDataSource.paginator = this.paginator;
+    this.versionDataSource.sort = this.sort;
   }
 }

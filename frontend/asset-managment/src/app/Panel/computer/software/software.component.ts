@@ -12,6 +12,7 @@ import {
   FormGroup,
   Validators,
   ReactiveFormsModule,
+  FormsModule,
 } from '@angular/forms';
 import { tap } from 'rxjs';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -33,6 +34,7 @@ import moment from 'jalali-moment';
     MatDialogModule,
     RouterLink,
     RouterModule,
+    FormsModule,
   ],
   templateUrl: './software.component.html',
   styleUrl: './software.component.css',
@@ -50,6 +52,8 @@ export class SoftwareComponent implements OnInit {
   ];
 
   softwareDataSource!: MatTableDataSource<any>;
+  originalData: any[] = [];
+  searchTerm: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -74,6 +78,10 @@ export class SoftwareComponent implements OnInit {
     this.softwareForm = this.fb.group({
       softwarename: ['', Validators.required],
     });
+  }
+
+  ngAfterViewInit() {
+    this.paginator._intl.itemsPerPageLabel = 'مورد در هر صفحه';
   }
 
   toggleView(view: 'form' | 'table'): void {
@@ -102,6 +110,7 @@ export class SoftwareComponent implements OnInit {
     const endpoint = 'software/';
     this.dataService.get(endpoint).subscribe((response: any) => {
       if (response && response.body) {
+        this.originalData = response.body;
         this.softwareDataSource = new MatTableDataSource(response.body);
         this.softwareDataSource.paginator = this.paginator;
         this.softwareDataSource.sortingDataAccessor = (item, property) => {
@@ -118,9 +127,11 @@ export class SoftwareComponent implements OnInit {
       }
     });
   }
+
   convertDate(dateString: string): string {
     return moment(dateString, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
   }
+
   onSubmitSoftwareForm(): void {
     if (this.softwareForm.valid) {
       const formValue = this.softwareForm.value;
@@ -144,6 +155,7 @@ export class SoftwareComponent implements OnInit {
                   ? 'ویرایش نرم افزار با موفقیت انجام شد '
                   : 'ایجاد نرم افزار با موفقیت انجام شد ';
                 this.errorMessage = '';
+                this.closeSoftwareForm();
                 this.fetchSoftware();
                 this.softwareForm.reset();
                 if (this.isEditing) {
@@ -181,6 +193,7 @@ export class SoftwareComponent implements OnInit {
       if (response && response.body) {
         const softwareData = response.body;
         this.softwareForm.patchValue({
+          softwareid: softwareData.softwareid,
           softwarename: softwareData.softwarename,
         });
         this.showSoftwareForm = true;
@@ -191,7 +204,10 @@ export class SoftwareComponent implements OnInit {
 
   deleteSoftware(softwareId: number): void {
     const dialogRef = this.dialog.open(ModalsComponent, {
-      width: '300px',
+      data: {
+        message: 'آیا از حذف این نرم افزار اطمینان دارید؟',
+        softwareId: softwareId,
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -216,6 +232,7 @@ export class SoftwareComponent implements OnInit {
       this.showMessages();
     });
   }
+
   showMessages(): void {
     this.showMessage = true;
     setTimeout(() => {
@@ -223,12 +240,27 @@ export class SoftwareComponent implements OnInit {
     }, 3000);
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.softwareDataSource.filter = filterValue.trim().toLowerCase();
+  applyFilters(): void {
+    let filteredData = [...this.originalData];
 
-    if (this.softwareDataSource.paginator) {
-      this.softwareDataSource.paginator.firstPage();
+    // Search by software name
+    if (this.searchTerm) {
+      filteredData = filteredData.filter((software) =>
+        software.softwarename
+          .toLowerCase()
+          .includes(this.searchTerm.toLowerCase())
+      );
     }
+
+    this.softwareDataSource = new MatTableDataSource(filteredData);
+    this.softwareDataSource.paginator = this.paginator;
+    this.softwareDataSource.sort = this.sort;
+  }
+
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.softwareDataSource = new MatTableDataSource(this.originalData);
+    this.softwareDataSource.paginator = this.paginator;
+    this.softwareDataSource.sort = this.sort;
   }
 }

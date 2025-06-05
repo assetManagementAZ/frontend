@@ -1,199 +1,406 @@
-<div class="address">
-  <a routerLink="/panel">صفحه اصلی </a>
-  <span>&nbsp;/&nbsp;</span>
+<!-- Modern Address Bar -->
+<div class="modern-address-bar">
+  <a routerLink="/panel" class="address-link">صفحه اصلی</a>
+  <span class="separator">/</span>
+  <a routerLink="/computer" class="address-link">لیست کیس ها</a>
+</div>
 
-  <a routerLink="/computer"> لیست کیس ها</a>
+<!-- Action Buttons -->
+<div class="buttons flex justify-end pr-4">
+  <div class="bg-white p-1 rounded-xl shadow-lg inline-block">
+    <button
+      class="bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold py-4 px-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-103 flex items-center"
+      (click)="toggleView('form')"
+    >
+      <span class="text-lg">ایجاد کیس جدید</span>
+    </button>
+  </div>
 </div>
-<div>
-  <button
-    class="btn btn-primary rounded-pill px-3"
-    style="float: right; margin-right: 10px"
-    (click)="toggleView('form')"
+
+<!-- Message Container -->
+<div
+  class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[9999] space-y-4 mb-60"
+  *ngIf="showMessage"
+>
+  <!-- Success Message -->
+  <div
+    *ngIf="successMessage"
+    class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-xl shadow-lg flex items-center space-x-3 animate-fade-in-up transition-all duration-300 hover:shadow-xl cursor-pointer max-w-md"
   >
-    ایجاد کیس جدید
-  </button>
-</div>
-<div class="message-container" *ngIf="showMessage">
-  <div class="success" *ngIf="successMessage">{{ successMessage }}</div>
-  <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
-</div>
-<div class="userPc-form" *ngIf="showUserPcForm">
-  <form [formGroup]="userPcForm" (ngSubmit)="submitUserPc()">
-    <div class="container1">
-      <div class="row">
-        <div class="form-group">
-          <label style="width: 90px" for="ownerUserId">کاربر </label>
-          <ng-select
-            notFoundText="اطلاعاتی بدست نیامد"
-            id="ownerUserId"
-            class="select1"
-            formControlName="ownerUserId"
-          >
-            >
-            <ng-option selected>انتخاب کنید</ng-option>
-            <ng-option *ngFor="let user of userList" [value]="user.userid">
-              {{ user.username }} {{ user.userlastname }}
-            </ng-option>
-          </ng-select>
-        </div>
-      </div>
-      <div class="row">
-        <div class="form-group">
-          <label style="width: 90px" for="buildingId">ساختمان </label>
-          <ng-select
-            notFoundText="اطلاعاتی بدست نیامد"
-            id="buildingId"
-            class="select1"
-            formControlName="buildingId"
-          >
-            >
-            <ng-option selected>انتخاب کنید</ng-option>
-            <ng-option
-              *ngFor="let building of buildingList"
-              [value]="building.buildingid"
-            >
-              {{ building.buildingname }}
-            </ng-option>
-          </ng-select>
-        </div>
-      </div>
-      <div class="row">
-        <div class="form-group">
-          <label style="width: 90px" for="areaId">حوزه </label>
-          <ng-select
-            notFoundText="اطلاعاتی بدست نیامد"
-            id="areaId"
-            class="select1"
-            formControlName="areaId"
-          >
-            >
-            <ng-option selected>انتخاب کنید</ng-option>
-            <ng-option *ngFor="let area of areaList" [value]="area.areaid">
-              {{ area.areaname }}
-            </ng-option>
-          </ng-select>
-        </div>
-      </div>
-      <div class="row">
-        <div class="passButtons">
-          <button
-            type="submit"
-            class="btn btn-primary"
-            style="width: 30%; margin-right: 10px"
-          >
-            تایید
-          </button>
-          <button
-            type="button"
-            class="btn btn-danger"
-            style="width: 30%"
-            (click)="closeUserPcForm()"
-          >
-            بستن
-          </button>
-        </div>
-      </div>
-    </div>
-  </form>
-</div>
-<div>
-  <form
-    class="form1"
-    *ngIf="showComputerForm"
-    [formGroup]="computerForm"
-    (ngSubmit)="onSubmitComputerForm()"
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 flex-shrink-0"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M5 13l4 4L19 7"
+      />
+    </svg>
+    <span class="text-sm font-medium">{{ successMessage }}</span>
+  </div>
+
+  <!-- Error Message -->
+  <div
+    *ngIf="errorMessage"
+    class="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-4 rounded-xl shadow-lg flex items-center space-x-3 animate-fade-in-up transition-all duration-300 hover:shadow-xl cursor-pointer max-w-md"
   >
-    <div class="container2">
-      <div class="sub1">
-        <div class="sub1 gp1">
-          <div class="col-md-6">
-            <div class="form-group">
-              <!-- حتما intger باشد -->
-              <label for="computerpropertynumber"> شماره اموال</label>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 flex-shrink-0"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M6 18L18 6M6 6l12 12"
+      />
+    </svg>
+    <span class="text-sm font-medium">{{ errorMessage }}</span>
+  </div>
+</div>
+
+<!-- Computer Form Modal -->
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/30"
+  *ngIf="showComputerForm"
+  dir="rtl"
+>
+  <div class="w-full max-w-4xl transform transition-all">
+    <!-- Glass Card Container -->
+    <div
+      class="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl overflow-visible border border-white/20"
+    >
+      <!-- Form Header with Gradient -->
+      <div dir="ltr" class="bg-[image:var(--primary-gradient)] p-5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3 flex-row-reverse ml-[43%]">
+            <h3 class="text-xl font-bold text-white">
+              {{ isEditing ? "ویرایش کیس" : "ثبت کیس" }}
+            </h3>
+          </div>
+          <button
+            (click)="closeComputerForm()"
+            class="p-1 rounded-full hover:bg-white/20 transition-colors duration-200 text-white/80 hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Form Content -->
+      <form
+        [formGroup]="computerForm"
+        (ngSubmit)="onSubmitComputerForm()"
+        class="p-6 space-y-6 overflow-visible"
+      >
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-visible"
+        >
+          <!-- Property Number -->
+          <div class="space-y-2">
+            <label
+              for="computerpropertynumber"
+              class="block text-sm font-medium text-gray-700 text-right"
+            >
+              شماره اموال
+              <span class="text-red-500">*</span>
+            </label>
+            <div class="relative mt-2">
               <input
                 type="text"
                 id="computerpropertynumber"
-                class="form-control"
+                class="w-full px-4 py-3 bg-gray-50 text-gray-700 rounded-xl border border-gray-200 focus:ring-blue-500 focus:border-blue-500 transition-all"
                 formControlName="computerpropertynumber"
                 required
+                [ngClass]="{
+                  'border-red-500':
+                    computerForm.get('computerpropertynumber')?.invalid &&
+                    computerForm.get('computerpropertynumber')?.touched
+                }"
               />
+              <div
+                *ngIf="
+                  computerForm.get('computerpropertynumber')?.invalid &&
+                  computerForm.get('computerpropertynumber')?.touched
+                "
+                class="text-red-500 text-sm mt-1"
+              >
+                <span
+                  *ngIf="computerForm.get('computerpropertynumber')?.errors?.['required']"
+                  >شماره اموال الزامی است</span
+                >
+                <span
+                  *ngIf="computerForm.get('computerpropertynumber')?.errors?.['min'] || computerForm.get('computerpropertynumber')?.errors?.['max']"
+                  >شماره اموال باید حداکثر 9 رقم باشد</span
+                >
+                <span
+                  *ngIf="computerForm.get('computerpropertynumber')?.errors?.['pattern']"
+                  >شماره اموال باید فقط شامل اعداد باشد</span
+                >
+              </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="form-group">
-              <label for="computername"> نام</label>
+
+          <!-- Computer Name -->
+          <div class="space-y-2">
+            <label
+              for="computername"
+              class="block text-sm font-medium text-gray-700 text-right"
+            >
+              نام کیس
+            </label>
+            <div class="relative mt-2">
               <input
-                dir="rtl"
                 type="text"
                 id="computername"
-                class="form-control"
+                dir="rtl"
+                class="w-full px-4 py-3 bg-gray-50 text-gray-700 rounded-xl border border-gray-200 focus:ring-blue-500 focus:border-blue-500 transition-all"
                 formControlName="computername"
+                [ngClass]="{
+                  'border-red-500':
+                    computerForm.get('computername')?.invalid &&
+                    computerForm.get('computername')?.touched
+                }"
               />
+              <div
+                *ngIf="
+                  computerForm.get('computername')?.invalid &&
+                  computerForm.get('computername')?.touched
+                "
+                class="text-red-500 text-sm mt-1"
+              >
+                <span
+                  *ngIf="computerForm.get('computername')?.errors?.['maxlength']"
+                  >نام کامپیوتر نمی‌تواند بیشتر از 255 کاراکتر باشد</span
+                >
+              </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="form-group">
-              <label for="computermodel"> مدل </label>
+
+          <!-- Computer Model -->
+          <div class="space-y-2">
+            <label
+              for="computermodel"
+              class="block text-sm font-medium text-gray-700 text-right"
+            >
+              مدل کیس
+              <span class="text-red-500">*</span>
+            </label>
+            <div class="relative mt-2">
               <input
-                dir="rtl"
                 type="text"
                 id="computermodel"
-                class="form-control"
+                dir="rtl"
+                class="w-full px-4 py-3 bg-gray-50 text-gray-700 rounded-xl border border-gray-200 focus:ring-blue-500 focus:border-blue-500 transition-all"
                 formControlName="computermodel"
+                required
+                [ngClass]="{
+                  'border-red-500':
+                    computerForm.get('computermodel')?.invalid &&
+                    computerForm.get('computermodel')?.touched
+                }"
               />
+              <div
+                *ngIf="
+                  computerForm.get('computermodel')?.invalid &&
+                  computerForm.get('computermodel')?.touched
+                "
+                class="text-red-500 text-sm mt-1"
+              >
+                <span
+                  *ngIf="computerForm.get('computermodel')?.errors?.['required']"
+                  >مدل کامپیوتر الزامی است</span
+                >
+                <span
+                  *ngIf="computerForm.get('computermodel')?.errors?.['minlength']"
+                  >مدل کامپیوتر نمی‌تواند خالی باشد</span
+                >
+                <span
+                  *ngIf="computerForm.get('computermodel')?.errors?.['maxlength']"
+                  >مدل کامپیوتر نمی‌تواند بیشتر از 255 کاراکتر باشد</span
+                >
+              </div>
             </div>
           </div>
-        </div>
-        <div class="sub1 gp2">
-          <div class="col-md-6">
-            <div class="form-group">
-              <label for="computerip"> IP </label>
+
+          <!-- IP Address -->
+          <div class="space-y-2">
+            <label
+              for="computerip"
+              class="block text-sm font-medium text-gray-700 text-right"
+            >
+              IP
+              <span class="text-red-500">*</span>
+            </label>
+            <div class="relative mt-2">
               <input
                 type="text"
                 id="computerip"
-                class="form-control"
+                class="w-full px-4 py-3 bg-gray-50 text-gray-700 rounded-xl border border-gray-200 focus:ring-blue-500 focus:border-blue-500 transition-all"
                 formControlName="computerip"
-                placeholder="حداکثر 15 رقم"
+                required
+                placeholder="مثال: 192.168.1.1"
+                [ngClass]="{
+                  'border-red-500':
+                    computerForm.get('computerip')?.invalid &&
+                    computerForm.get('computerip')?.touched
+                }"
               />
+              <div
+                *ngIf="
+                  computerForm.get('computerip')?.invalid &&
+                  computerForm.get('computerip')?.touched
+                "
+                class="text-red-500 text-sm mt-1"
+              >
+                <span
+                  *ngIf="computerForm.get('computerip')?.errors?.['required']"
+                  >آدرس IP الزامی است</span
+                >
+                <span
+                  *ngIf="computerForm.get('computerip')?.errors?.['minlength']"
+                  >آدرس IP نمی‌تواند خالی باشد</span
+                >
+                <span
+                  *ngIf="computerForm.get('computerip')?.errors?.['maxlength']"
+                  >آدرس IP نمی‌تواند بیشتر از 15 کاراکتر باشد</span
+                >
+                <span
+                  *ngIf="computerForm.get('computerip')?.errors?.['pattern']"
+                  >فرمت آدرس IP نامعتبر است</span
+                >
+              </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="form-group">
-              <label for="computermacaddress"> MacAddress</label>
+
+          <!-- MAC Address -->
+          <div class="space-y-2">
+            <label
+              for="computermacaddress"
+              class="block text-sm font-medium text-gray-700 text-right"
+            >
+              Mac Address
+              <span class="text-red-500">*</span>
+            </label>
+            <div class="relative mt-2">
               <input
                 type="text"
                 id="computermacaddress"
-                class="form-control"
+                class="w-full px-4 py-3 bg-gray-50 text-gray-700 rounded-xl border border-gray-200 focus:ring-blue-500 focus:border-blue-500 transition-all"
                 formControlName="computermacaddress"
-                placeholder="255.255.255.255"
+                required
+                placeholder="مثال: 00:1A:2B:3C:4D:5E"
+                [ngClass]="{
+                  'border-red-500':
+                    computerForm.get('computermacaddress')?.invalid &&
+                    computerForm.get('computermacaddress')?.touched
+                }"
               />
+              <div
+                *ngIf="
+                  computerForm.get('computermacaddress')?.invalid &&
+                  computerForm.get('computermacaddress')?.touched
+                "
+                class="text-red-500 text-sm mt-1"
+              >
+                <span
+                  *ngIf="computerForm.get('computermacaddress')?.errors?.['required']"
+                >
+                  آدرس MAC الزامی است
+                </span>
+                <span
+                  *ngIf="computerForm.get('computermacaddress')?.errors?.['minlength']"
+                  >آدرس MAC نمی‌ تواند خالی باشد</span
+                >
+                <span
+                  *ngIf="computerForm.get('computermacaddress')?.errors?.['pattern']"
+                  >فرمت آدرس MAC نامعتبر است</span
+                >
+              </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="form-group">
-              <label for="computerispersonal"> مالکیت</label>
+
+          <!-- Ownership Status -->
+          <div class="space-y-2">
+            <label
+              for="computerispersonal"
+              class="block text-sm font-medium text-gray-700 text-right"
+            >
+              مالکیت
+              <span class="text-red-500">*</span>
+            </label>
+            <div class="relative mt-2">
               <select
                 id="computerispersonal"
-                class="select1"
+                class="w-full px-4 py-3 bg-gray-50 text-gray-700 rounded-xl border border-gray-200 focus:ring-blue-500 focus:border-blue-500 transition-all"
                 formControlName="computerispersonal"
+                required
+                [ngClass]="{
+                  'border-red-500':
+                    computerForm.get('computerispersonal')?.invalid &&
+                    computerForm.get('computerispersonal')?.touched
+                }"
               >
                 <option value="0">شخصی است</option>
                 <option value="1">شخصی نیست</option>
               </select>
+              <div
+                *ngIf="
+                  computerForm.get('computerispersonal')?.invalid &&
+                  computerForm.get('computerispersonal')?.touched
+                "
+                class="text-red-500 text-sm mt-1"
+              >
+                <span
+                  *ngIf="computerForm.get('computerispersonal')?.errors?.['required']"
+                  >وضعیت مالکیت الزامی است</span
+                >
+              </div>
             </div>
           </div>
-        </div>
-        <div class="sub1 gp3">
-          <div class="col-md-6">
-            <div class="form-group">
-              <label class="os-label" style="width: 90px" for="osName">
-                سیستم عامل</label
-              >
+
+          <!-- Operating System -->
+          <div class="space-y-2">
+            <label
+              for="osName"
+              class="block text-sm font-medium text-gray-700 text-right"
+            >
+              سیستم عامل
+              <span class="text-red-500">*</span>
+            </label>
+            <div class="relative mt-2">
               <ng-select
-                notFoundText="اطلاعاتی بدست نیامد"
                 id="osName"
-                class="select1"
+                class="w-full"
                 formControlName="osName"
+                notFoundText="اطلاعاتی بدست نیامد"
+                (change)="onOsNameChange($event)"
+                [ngClass]="{
+                  'border-red-500':
+                    computerForm.get('osName')?.invalid &&
+                    computerForm.get('osName')?.touched
+                }"
               >
                 <ng-option
                   *ngFor="let os of osList"
@@ -202,18 +409,40 @@
                   {{ os.operationsystemname }}
                 </ng-option>
               </ng-select>
+              <div
+                *ngIf="
+                  computerForm.get('osName')?.invalid &&
+                  computerForm.get('osName')?.touched
+                "
+                class="text-red-500 text-sm mt-1"
+              >
+                <span *ngIf="computerForm.get('osName')?.errors?.['required']"
+                  >سیستم عامل الزامی است</span
+                >
+              </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="form-group">
-              <label class="os-label" style="width: 90px" for="osVersionId">
-                ورژن سیستم عامل</label
-              >
+
+          <!-- OS Version -->
+          <div class="space-y-2">
+            <label
+              for="osVersionId"
+              class="block text-sm font-medium text-gray-700 text-right"
+            >
+              ورژن سیستم عامل
+              <span class="text-red-500">*</span>
+            </label>
+            <div class="relative mt-2">
               <ng-select
-                notFoundText="اطلاعاتی بدست نیامد"
                 id="osVersionId"
-                class="select1"
+                class="w-full"
                 formControlName="osVersionId"
+                notFoundText="اطلاعاتی بدست نیامد"
+                [ngClass]="{
+                  'border-red-500':
+                    computerForm.get('osVersionId')?.invalid &&
+                    computerForm.get('osVersionId')?.touched
+                }"
               >
                 <ng-option
                   *ngFor="let version of selectedOsVersions"
@@ -222,177 +451,524 @@
                   {{ version.operationsystemversionname }}
                 </ng-option>
               </ng-select>
+              <div
+                *ngIf="
+                  computerForm.get('osVersionId')?.invalid &&
+                  computerForm.get('osVersionId')?.touched
+                "
+                class="text-red-500 text-sm mt-1"
+              >
+                <span
+                  *ngIf="computerForm.get('osVersionId')?.errors?.['required']"
+                  >نسخه سیستم عامل الزامی است</span
+                >
+              </div>
             </div>
           </div>
         </div>
+
+        <!-- Form Buttons -->
+        <div class="flex gap-4 pt-4 justify-between">
+          <button
+            type="submit"
+            class="w-[15%] px-4 py-3 bg-gradient-to-l from-blue-600 to-blue-500 text-white rounded-xl font-medium hover:from-blue-700 hover:to-blue-600 shadow-md hover:shadow-lg transition-all flex items-center justify-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 ml-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            {{ isEditing ? "ویرایش" : "ثبت" }}
+          </button>
+          <button
+            type="button"
+            (click)="closeComputerForm()"
+            class="w-full sm:w-auto px-6 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:bg-red-500 hover:border-red-500 hover:text-red-600 hover:shadow-red-100 hover:shadow-sm flex items-center justify-center gap-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            انصراف
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- User PC Form Modal -->
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/30"
+  *ngIf="showUserPcForm"
+  dir="rtl"
+>
+  <div class="w-full max-w-2xl transform transition-all">
+    <!-- Glass Card Container -->
+    <div
+      class="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden border border-white/20"
+    >
+      <!-- Form Header with Gradient -->
+      <div dir="ltr" class="bg-[image:var(--primary-gradient)] p-5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3 flex-row-reverse ml-[43%]">
+            <h3 class="text-xl font-bold text-white">تحویل کیس</h3>
+          </div>
+          <button
+            (click)="closeUserPcForm()"
+            class="p-1 rounded-full hover:bg-white/20 transition-colors duration-200 text-white/80 hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
-      <div class="buttons2">
-        <button type="submit" class="btn btn-primary">
-          {{ this.isEditing ? "ویرایش" : "ثبت" }}
-        </button>
-        <button
-          type="button"
-          class="btn btn-danger"
-          (click)="closeComputerForm()"
+
+      <!-- Form Content -->
+      <form
+        [formGroup]="userPcForm"
+        (ngSubmit)="submitUserPc()"
+        class="p-6 space-y-6"
+      >
+        <div class="grid grid-cols-1 gap-6">
+          <!-- User Selection -->
+          <div class="space-y-2">
+            <label
+              for="ownerUserId"
+              class="block text-sm font-medium text-gray-700 text-right"
+            >
+              کاربر
+              <span class="text-red-500">*</span>
+            </label>
+            <div class="relative mt-2">
+              <ng-select
+                id="ownerUserId"
+                class="w-full"
+                formControlName="ownerUserId"
+                notFoundText="اطلاعاتی بدست نیامد"
+                (change)="fetchUserWorkingLocations($event)"
+              >
+                <ng-option *ngFor="let user of userList" [value]="user.userid">
+                  {{ user.username }} {{ user.userlastname }}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+
+          <!-- Building Selection -->
+          <div class="space-y-2">
+            <label
+              for="buildingId"
+              class="block text-sm font-medium text-gray-700 text-right"
+            >
+              ساختمان
+              <span class="text-red-500">*</span>
+            </label>
+            <div class="relative mt-2">
+              <ng-select
+                id="buildingId"
+                class="w-full"
+                formControlName="buildingId"
+                notFoundText="اطلاعاتی بدست نیامد"
+                (change)="fetchArea($event)"
+              >
+                <ng-option
+                  *ngFor="let building of buildingList"
+                  [value]="building.buildingid"
+                >
+                  {{ building.buildingname }}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+
+          <!-- Area Selection -->
+          <div class="space-y-2">
+            <label
+              for="areaId"
+              class="block text-sm font-medium text-gray-700 text-right"
+            >
+              حوزه
+              <span class="text-red-500">*</span>
+            </label>
+            <div class="relative mt-2">
+              <ng-select
+                id="areaId"
+                class="w-full"
+                formControlName="areaId"
+                notFoundText="اطلاعاتی بدست نیامد"
+              >
+                <ng-option *ngFor="let area of areaList" [value]="area.areaid">
+                  {{ area.areaname }}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Buttons -->
+        <div class="flex gap-4 pt-4 justify-between">
+          <button
+            type="submit"
+            class="w-[20%] px-4 py-3 bg-gradient-to-l from-blue-600 to-blue-500 text-white rounded-xl font-medium hover:from-blue-700 hover:to-blue-600 shadow-md hover:shadow-lg transition-all flex items-center justify-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 ml-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            تایید
+          </button>
+          <button
+            type="button"
+            (click)="closeUserPcForm()"
+            class="w-full sm:w-auto px-6 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:bg-red-500 hover:border-red-500 hover:text-red-600 hover:shadow-red-100 hover:shadow-sm flex items-center justify-center gap-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            انصراف
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modern Responsive Filters -->
+<div class="filters bg-white p-4 sm:p-6 rounded-2xl shadow-lg mb-6 sm:mb-8">
+  <div
+    class="flex flex-col sm:flex-row-reverse justify-end gap-4 sm:items-end"
+    dir="rtl"
+  >
+    <!-- Action Buttons -->
+    <div
+      class="flex flex-col xs:flex-row sm:flex-col md:flex-row gap-3 w-full sm:w-auto"
+    >
+      <button
+        class="flex-1 sm:flex-none bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white px-6 py-2 rounded-lg font-medium text-sm shadow-sm hover:shadow-md transition-all duration-300 whitespace-nowrap hover:-translate-y-0.5"
+        (click)="applyFilters()"
+      >
+        جست و جو
+      </button>
+      <button
+        class="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white px-6 py-2 rounded-lg font-medium text-base shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5"
+        (click)="resetFilters()"
+      >
+        <span class="flex items-center justify-center"> تنظیم مجدد </span>
+      </button>
+    </div>
+    <!-- Search Input -->
+    <div class="min-w-0">
+      <div class="relative">
+        <input
+          type="text"
+          id="searchInput"
+          class="placeholder:text-center px-4 py-2.5 pr-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all indent-2"
+          placeholder="جست و جو کیس"
+          [(ngModel)]="searchTerm"
+        />
+        <svg
+          class="h-5 w-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
         >
-          بستن
-        </button>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          />
+        </svg>
       </div>
     </div>
-  </form>
-  <mat-form-field class="secondary-Form-field">
-    <input matInput (keyup)="applyFilter($event)" placeholder="فیلتر" />
-  </mat-form-field>
-  <!-- Computer Table -->
-  <div class="mat-elevation-z8" *ngIf="showComputerTable">
-    <table
-      mat-table
-      [dataSource]="ComputerDataSource"
-      matSort
-      [dir]="'rtl'"
-      class="full-width-table"
-    >
-      <!-- Computer Property Number Column -->
-      <ng-container matColumnDef="computerpropertynumber">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>شماره اموال</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row?.computerpropertynumber }}
-        </td>
-      </ng-container>
-
-      <!-- Computer Name Column -->
-      <ng-container matColumnDef="computername">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>نام کیس</th>
-        <td mat-cell *matCellDef="let row">{{ row?.computername }}</td>
-      </ng-container>
-      <!-- Computer Model Column -->
-      <ng-container matColumnDef="computermodel">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>مدل کیس</th>
-        <td mat-cell *matCellDef="let row">{{ row?.computermodel }}</td>
-      </ng-container>
-      <!-- Computer Ip Column -->
-      <ng-container matColumnDef="computerip">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>IP</th>
-        <td mat-cell *matCellDef="let row">{{ row?.computerip }}</td>
-      </ng-container>
-      <!-- Computer Mac Column -->
-      <ng-container matColumnDef="computermacaddress">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Mac Address</th>
-        <td mat-cell *matCellDef="let row">{{ row?.computermacaddress }}</td>
-      </ng-container>
-      <!-- Computer Op Column -->
-      <ng-container matColumnDef="osName">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>سیستم عامل</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row?.operationsystemversionid.operationsystemname }}
-        </td>
-      </ng-container>
-      <!-- Computer Op Version Column -->
-      <ng-container matColumnDef="osVersionId">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>
-          نسخه سیستم عامل
-        </th>
-        <td mat-cell *matCellDef="let row">
-          {{ row?.operationsystemversionid?.operationsystemversionname }}
-        </td>
-      </ng-container>
-
-      <!-- Computer Ownership Version Column -->
-      <ng-container matColumnDef="computerispersonal">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>وضعیت مالکیت</th>
-        <td mat-cell *matCellDef="let row">
-          {{ getPersonalStatus(row?.computerispersonal) }}
-        </td>
-      </ng-container>
-      <!-- Computer Sealling Version Column -->
-      <ng-container matColumnDef="computersealling">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>شماره پلمپ</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row?.sealing?.computerseallingnumber || "(خالی)" }}
-        </td>
-      </ng-container>
-      <!-- User Button Column -->
-      <ng-container matColumnDef="userPc">
-        <th mat-header-cell *matHeaderCellDef>تحویل کیس</th>
-        <td mat-cell *matCellDef="let row">
-          <button
-            [disabled]="row.isAbortion"
-            class="btn btn-primary"
-            (click)="
-              openUserPcForm(
-                row?.computerpropertynumber,
-                row?.sealing?.computerseallingnumber || null
-              )
-            "
-          >
-            تحویل
-          </button>
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="viewUser">
-        <th mat-header-cell *matHeaderCellDef>کاربر</th>
-        <td mat-cell *matCellDef="let row">
-          <button
-            [disabled]="row.isAbortion"
-            class="btn btn-info"
-            (click)="viewUser(row?.computerpropertynumber)"
-          >
-            مشاهده
-          </button>
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="viewDetail">
-        <th mat-header-cell *matHeaderCellDef>اطلاعات</th>
-        <td mat-cell *matCellDef="let row">
-          <button
-            class="btn btn-info"
-            (click)="viewDetail(row?.computerpropertynumber)"
-          >
-            مشاهده
-          </button>
-        </td>
-      </ng-container>
-      <!-- Edit button column  -->
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>ویرایش</th>
-        <td mat-cell *matCellDef="let row">
-          <button
-            [disabled]="row.isAbortion"
-            class="btn btn-primary"
-            style="width: 76px"
-            (click)="editComputer(row?.computerpropertynumber)"
-          >
-            ویرایش
-          </button>
-        </td>
-      </ng-container>
-      <!-- Delete Button Column -->
-      <ng-container matColumnDef="delete">
-        <th mat-header-cell *matHeaderCellDef>حذف</th>
-        <td mat-cell *matCellDef="let row">
-          <button
-            [disabled]="row.isAbortion"
-            class="btn btn-danger"
-            style="width: 76px"
-            (click)="deleteComputer(row?.computerpropertynumber)"
-          >
-            حذف
-          </button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-
-    <mat-paginator
-      [pageSizeOptions]="[5, 10, 25, 100]"
-      aria-label="Select page of buildings"
-    ></mat-paginator>
   </div>
-  <div
-    class="backdrop"
-    *ngIf="showUserPcForm"
-    (click)="closeUserPcForm()"
-  ></div>
 </div>
+
+<!-- Modern Table -->
+<div class="mat-elevation-z8 modern-table-container" *ngIf="showComputerTable">
+  <table
+    mat-table
+    [dataSource]="ComputerDataSource"
+    matSort
+    [dir]="'rtl'"
+    class="full-width-table modern-table"
+  >
+    <!-- Property Number Column -->
+    <ng-container matColumnDef="computerpropertynumber">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        شماره اموال
+      </th>
+      <td mat-cell *matCellDef="let row">
+        {{ row?.computerpropertynumber }}
+      </td>
+    </ng-container>
+
+    <!-- Computer Name Column -->
+    <ng-container matColumnDef="computername">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        نام کیس
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <span class="name-badge">{{ row?.computername }}</span>
+      </td>
+    </ng-container>
+
+    <!-- Computer Model Column -->
+    <ng-container matColumnDef="computermodel">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        مدل کیس
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <span class="name-badge">{{ row?.computermodel }}</span>
+      </td>
+    </ng-container>
+
+    <!-- IP Column -->
+    <ng-container matColumnDef="computerip">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        IP
+      </th>
+      <td mat-cell *matCellDef="let row">{{ row?.computerip }}</td>
+    </ng-container>
+
+    <!-- MAC Address Column -->
+    <ng-container matColumnDef="computermacaddress">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        Mac Address
+      </th>
+      <td mat-cell *matCellDef="let row">{{ row?.computermacaddress }}</td>
+    </ng-container>
+
+    <!-- OS Column -->
+    <ng-container matColumnDef="osName">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        سیستم عامل
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <span class="name-badge">
+          {{ row?.operationsystemversionid.operationsystemname }}
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- OS Version Column -->
+    <ng-container matColumnDef="osVersionId">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        نسخه سیستم عامل
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <span class="name-badge">
+          {{ row?.operationsystemversionid?.operationsystemversionname }}
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- Ownership Status Column -->
+    <ng-container matColumnDef="computerispersonal">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        وضعیت مالکیت
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <span class="name-badge">
+          {{ getPersonalStatus(row?.computerispersonal) }}
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- Sealing Number Column -->
+    <ng-container matColumnDef="computersealling">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="sticky-header"
+      >
+        شماره پلمپ
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <span class="name-badge">
+          {{ row?.sealing?.computerseallingnumber || "(خالی)" }}
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- Handover Button Column -->
+    <ng-container matColumnDef="userPc">
+      <th mat-header-cell *matHeaderCellDef class="sticky-header">تحویل کیس</th>
+      <td mat-cell *matCellDef="let row">
+        <button
+          [disabled]="row.isAbortion"
+          class="modern-btn primary-btn"
+          [ngClass]="{ 'disabled-btn': row.isAbortion }"
+          (click)="
+            openUserPcForm(
+              row?.computerpropertynumber,
+              row?.sealing?.computerseallingnumber || null
+            )
+          "
+        >
+          تحویل
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- View User Button Column -->
+    <ng-container matColumnDef="viewUser">
+      <th mat-header-cell *matHeaderCellDef class="sticky-header">کاربر</th>
+      <td mat-cell *matCellDef="let row">
+        <button
+          [disabled]="row.isAbortion"
+          class="modern-btn primary-btn"
+          [ngClass]="{ 'disabled-btn': row.isAbortion }"
+          (click)="viewUser(row?.computerpropertynumber)"
+        >
+          مشاهده
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- View Details Button Column -->
+    <ng-container matColumnDef="viewDetail">
+      <th mat-header-cell *matHeaderCellDef class="sticky-header">اطلاعات</th>
+      <td mat-cell *matCellDef="let row">
+        <button
+          class="modern-btn primary-btn"
+          (click)="viewDetail(row?.computerpropertynumber)"
+        >
+          مشاهده
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- Edit Button Column -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef class="sticky-header">ویرایش</th>
+      <td mat-cell *matCellDef="let row">
+        <button
+          [disabled]="row.isAbortion"
+          class="modern-btn primary-btn"
+          [ngClass]="{ 'disabled-btn': row.isAbortion }"
+          (click)="editComputer(row?.computerpropertynumber)"
+        >
+          ویرایش
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- Delete Button Column -->
+    <ng-container matColumnDef="delete">
+      <th mat-header-cell *matHeaderCellDef class="sticky-header">حذف</th>
+      <td mat-cell *matCellDef="let row">
+        <button
+          [disabled]="row.isAbortion"
+          class="modern-btn danger-btn"
+          [ngClass]="{ 'disabled-btn': row.isAbortion }"
+          (click)="deleteComputer(row?.computerpropertynumber)"
+        >
+          حذف
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      [ngClass]="{ 'aborted-row': row.isAbortion }"
+    ></tr>
+  </table>
+</div>
+
+<mat-paginator
+  [pageSizeOptions]="[5, 10, 25, 100]"
+  showFirstLastButtons
+  #paginator
+  class="centered-paginator"
+>
+</mat-paginator>
+<div class="space"></div>

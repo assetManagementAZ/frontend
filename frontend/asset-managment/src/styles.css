@@ -309,3 +309,175 @@ body {
   text-overflow: ellipsis;
   place-self: center;
 }
+/* NgSelect Styling to Match Regular Select Fields */
+
+/* Main ng-select container */
+.ng-select {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.ng-select.ng-select-single .ng-select-container {
+  height: auto !important;
+  min-height: 48px !important; /* Match py-3 padding */
+}
+
+/* Style the main control to match your regular select */
+.ng-select .ng-select-container {
+  background-color: #f9fafb !important; /* bg-gray-50 */
+  border: 1px solid #e5e7eb !important; /* border-gray-200 */
+  border-radius: 0.75rem !important; /* rounded-xl */
+  padding: 0 1rem !important; /* px-4 */
+  min-height: 48px !important;
+  transition: all 0.15s ease-in-out !important;
+}
+
+/* Focus state */
+.ng-select.ng-select-focused .ng-select-container {
+  border-color: #3b82f6 !important; /* focus:border-blue-500 */
+  box-shadow: 0 0 0 1px #3b82f6 !important; /* focus:ring-blue-500 */
+}
+
+/* Error state styling */
+.ng-select.border-red-500 .ng-select-container {
+  border-color: #ef4444 !important; /* border-red-500 */
+}
+
+/* Input styling inside ng-select */
+.ng-select .ng-select-container .ng-value-container {
+  padding: 0 !important;
+  align-items: center !important;
+}
+
+.ng-select .ng-select-container .ng-value-container .ng-input > input {
+  color: #374151 !important; /* text-gray-700 */
+  font-size: 1rem !important;
+  padding: 0.75rem 0 !important; /* py-3 equivalent */
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Selected value styling */
+.ng-select .ng-select-container .ng-value-container .ng-value {
+  color: #374151 !important; /* text-gray-700 */
+  font-size: 1rem !important;
+  padding: 0.75rem 0 !important; /* py-3 equivalent */
+  margin: 0 !important;
+}
+
+.ng-select .ng-select-container .ng-value-container .ng-value .ng-value-label {
+  color: #374151 !important; /* text-gray-700 */
+  font-size: 1rem !important;
+}
+
+/* Arrow/indicator styling */
+.ng-select .ng-select-container .ng-arrow-wrapper {
+  padding-right: 0.5rem !important;
+}
+
+.ng-select .ng-select-container .ng-arrow-wrapper .ng-arrow {
+  border-left: 4px solid transparent !important;
+  border-right: 4px solid transparent !important;
+  border-top: 4px solid #9ca3af !important; /* gray-400 */
+  margin-top: 0 !important;
+}
+
+.ng-select.ng-select-opened .ng-select-container .ng-arrow-wrapper .ng-arrow {
+  border-top: 4px solid transparent !important;
+  border-bottom: 4px solid #9ca3af !important;
+}
+
+/* Clear button styling */
+.ng-select .ng-select-container .ng-clear-wrapper {
+  color: #9ca3af !important;
+}
+
+/* Dropdown panel styling */
+.ng-dropdown-panel {
+  background: white !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  margin-top: 4px !important;
+  z-index: 1050 !important;
+}
+
+/* Dropdown options styling */
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
+  color: #374151 !important;
+  padding: 0.75rem 1rem !important;
+  font-size: 1rem !important;
+  transition: background-color 0.15s ease-in-out !important;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option:hover {
+  background-color: #f3f4f6 !important;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected {
+  background-color: #dbeafe !important; /* blue-100 */
+  color: #1e40af !important; /* blue-800 */
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-highlighted {
+  background-color: #e0e7ff !important; /* indigo-100 */
+  color: #3730a3 !important; /* indigo-800 */
+}
+
+/* Loading spinner */
+.ng-select .ng-spinner-zone {
+  padding-right: 0.5rem !important;
+}
+
+/* Not found text styling */
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-disabled {
+  color: #9ca3af !important;
+  font-style: italic !important;
+}
+
+/* Placeholder styling */
+.ng-select .ng-select-container .ng-value-container .ng-placeholder {
+  color: #9ca3af !important;
+  font-size: 1rem !important;
+  padding: 0.75rem 0 !important;
+}
+
+/* Multiple selection mode adjustments */
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container {
+  padding: 0.25rem 0 !important;
+}
+
+.ng-select.ng-select-multiple
+  .ng-select-container
+  .ng-value-container
+  .ng-value {
+  background-color: #e0e7ff !important;
+  color: #3730a3 !important;
+  border-radius: 0.375rem !important;
+  padding: 0.25rem 0.5rem !important;
+  margin: 0.25rem 0.25rem 0.25rem 0 !important;
+  font-size: 0.875rem !important;
+}
+
+.ng-select.ng-select-multiple
+  .ng-select-container
+  .ng-value-container
+  .ng-value
+  .ng-value-label {
+  color: inherit !important;
+  font-size: inherit !important;
+}
+
+/* RTL Support for your Persian text */
+.ng-select[dir="rtl"] .ng-select-container .ng-arrow-wrapper {
+  padding-left: 0.5rem !important;
+  padding-right: 0 !important;
+}
+
+/* Ensure dropdown appears above modal if needed */
+.ng-dropdown-panel {
+  z-index: 9999 !important;
+}

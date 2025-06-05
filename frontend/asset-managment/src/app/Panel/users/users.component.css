@@ -400,7 +400,7 @@ mat-form-field {
 }
 
 /* User Name Badge */
-.user-name-badge {
+.name-badge {
   padding: 6px 12px;
   border-radius: 6px;
   background-color: rgba(102, 126, 234, 0.1);
@@ -412,7 +412,7 @@ mat-form-field {
   position: relative;
 }
 
-.user-name-badge:hover {
+.name-badge:hover {
   background-color: rgba(102, 126, 234, 0.2);
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(74, 108, 247, 0.2);

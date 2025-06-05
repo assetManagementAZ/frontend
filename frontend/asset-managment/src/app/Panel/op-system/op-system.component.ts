@@ -12,6 +12,7 @@ import {
   FormGroup,
   Validators,
   ReactiveFormsModule,
+  FormsModule,
 } from '@angular/forms';
 import { tap } from 'rxjs';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -33,6 +34,7 @@ import moment from 'jalali-moment';
     MatInputModule,
     RouterLink,
     RouterModule,
+    FormsModule,
   ],
   templateUrl: './op-system.component.html',
   styleUrl: './op-system.component.css',
@@ -50,6 +52,8 @@ export class OpSystemComponent implements OnInit {
   ];
 
   opDataSource!: MatTableDataSource<any>;
+  originalData: any[] = [];
+  searchTerm: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -74,6 +78,10 @@ export class OpSystemComponent implements OnInit {
     this.opForm = this.fb.group({
       operationsystemname: ['', Validators.required],
     });
+  }
+
+  ngAfterViewInit() {
+    this.paginator._intl.itemsPerPageLabel = 'مورد در هر صفحه';
   }
 
   toggleView(view: 'form' | 'table'): void {
@@ -101,6 +109,7 @@ export class OpSystemComponent implements OnInit {
     const endpoint = 'asset/operation-system/';
     this.dataService.get(endpoint).subscribe((response: any) => {
       if (response && response.body) {
+        this.originalData = response.body;
         this.opDataSource = new MatTableDataSource(response.body);
         this.opDataSource.paginator = this.paginator;
         this.opDataSource.sortingDataAccessor = (item, property) => {
@@ -117,9 +126,11 @@ export class OpSystemComponent implements OnInit {
       }
     });
   }
+
   convertDate(dateString: string): string {
     return moment(dateString, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
   }
+
   onSubmitOpForm(): void {
     if (this.opForm.valid) {
       const formValue = this.opForm.value;
@@ -127,10 +138,10 @@ export class OpSystemComponent implements OnInit {
       let endpoint: string;
       let httpMethod: 'post' | 'put';
       if (this.isEditing) {
-        endpoint = `asset/operation-system/${this.operationsystemid}/`; // Define your endpoint for editing
+        endpoint = `asset/operation-system/${this.operationsystemid}/`;
         httpMethod = 'put';
       } else {
-        endpoint = 'asset/operation-system/'; // Define your endpoint for creation
+        endpoint = 'asset/operation-system/';
         httpMethod = 'post';
       }
 
@@ -143,7 +154,8 @@ export class OpSystemComponent implements OnInit {
                   ? 'ویرایش سیستم عامل با موفقیت انجام شد '
                   : 'ایجاد سیستم عامل با موفقیت انجام شد ';
                 this.errorMessage = '';
-                this.fetchOp(); //
+                this.closeOpForm();
+                this.fetchOp();
                 this.opForm.reset();
                 if (this.isEditing) {
                   this.isEditing = false;
@@ -165,7 +177,7 @@ export class OpSystemComponent implements OnInit {
             },
           })
         )
-        .subscribe(); // Empty subscribe to execute the pipe
+        .subscribe();
     } else {
       this.errorMessage = '.لطفا همه فیلد ها را پر کنید';
       this.successMessage = '';
@@ -174,8 +186,8 @@ export class OpSystemComponent implements OnInit {
   }
 
   editOp(operationsystemid: number): void {
-    this.isEditing = true; // Set to edit mode
-    const endpoint = `asset/operation-system/${operationsystemid}/`; // Define your endpoint
+    this.isEditing = true;
+    const endpoint = `asset/operation-system/${operationsystemid}/`;
     this.dataService.get(endpoint).subscribe((response: any) => {
       if (response && response.body) {
         const opData = response.body;
@@ -191,8 +203,10 @@ export class OpSystemComponent implements OnInit {
 
   deleteOp(operationsystemid: number): void {
     const dialogRef = this.dialog.open(ModalsComponent, {
-      width: '300px',
-      data: { operationsystemid: operationsystemid },
+      data: {
+        message: 'آیا از حذف این سیستم عامل اطمینان دارید؟',
+        operationsystemid: operationsystemid,
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -203,12 +217,12 @@ export class OpSystemComponent implements OnInit {
   }
 
   deleteOpConfirmed(operationsystemid: number): void {
-    const endpoint = `asset/operation-system/${operationsystemid}/`; // Define your endpoint
+    const endpoint = `asset/operation-system/${operationsystemid}/`;
     this.dataService.delete(endpoint).subscribe((response: any) => {
       if (response.status === 204) {
         this.successMessage = 'حذف سیستم عامل با موفقیت انجام شد';
         this.errorMessage = '';
-        this.fetchOp(); // Refresh the table after successful deletion
+        this.fetchOp();
       } else {
         this.errorMessage =
           'حذف سیستم عامل موفقیت آمیز نبود،لطفا دوباره امتحان کنید';
@@ -217,19 +231,35 @@ export class OpSystemComponent implements OnInit {
       this.showMessages();
     });
   }
+
   showMessages(): void {
     this.showMessage = true;
     setTimeout(() => {
       this.showMessage = false;
-    }, 10000); // Hide message after 1minute
+    }, 3000);
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.opDataSource.filter = filterValue.trim().toLowerCase();
+  applyFilters(): void {
+    let filteredData = [...this.originalData];
 
-    if (this.opDataSource.paginator) {
-      this.opDataSource.paginator.firstPage();
+    // Search by op system name
+    if (this.searchTerm) {
+      filteredData = filteredData.filter((op) =>
+        op.operationsystemname
+          .toLowerCase()
+          .includes(this.searchTerm.toLowerCase())
+      );
     }
+
+    this.opDataSource = new MatTableDataSource(filteredData);
+    this.opDataSource.paginator = this.paginator;
+    this.opDataSource.sort = this.sort;
+  }
+
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.opDataSource = new MatTableDataSource(this.originalData);
+    this.opDataSource.paginator = this.paginator;
+    this.opDataSource.sort = this.sort;
   }
 }

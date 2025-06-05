@@ -12,6 +12,7 @@ import {
   FormGroup,
   Validators,
   ReactiveFormsModule,
+  FormsModule,
 } from '@angular/forms';
 import { tap } from 'rxjs';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -33,6 +34,7 @@ import moment from 'jalali-moment';
     MatDialogModule,
     RouterLink,
     RouterModule,
+    FormsModule,
   ],
   templateUrl: './zones.component.html',
   styleUrl: './zones.component.css',
@@ -61,6 +63,8 @@ export class ZonesComponent implements OnInit {
   showMessage = false;
   isEditing = false;
   areaId: any;
+  searchTerm: string = '';
+  originalData: any[] = [];
 
   constructor(
     private dataService: DataService,
@@ -75,7 +79,9 @@ export class ZonesComponent implements OnInit {
       areaname: ['', Validators.required],
     });
   }
-
+  ngAfterViewInit() {
+    this.paginator._intl.itemsPerPageLabel = 'مورد در هر صفحه';
+  }
   toggleView(view: 'form' | 'table'): void {
     if (view === 'form') {
       this.isEditing = false;
@@ -101,6 +107,7 @@ export class ZonesComponent implements OnInit {
     const endpoint = 'area/';
     this.dataService.get(endpoint).subscribe((response: any) => {
       if (response && response.body) {
+        this.originalData = response.body;
         this.areaDataSource = new MatTableDataSource(response.body);
         this.areaDataSource.paginator = this.paginator;
         this.areaDataSource.sortingDataAccessor = (item, property) => {
@@ -193,8 +200,11 @@ export class ZonesComponent implements OnInit {
 
   deleteArea(areaId: number): void {
     const dialogRef = this.dialog.open(ModalsComponent, {
-      width: '300px',
-      data: { areaId: areaId },
+      // width: '300px',
+      data: {
+        message: 'آیا از حذف این حوزه اطمینان دارید؟',
+        areaId: areaId,
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -225,12 +235,25 @@ export class ZonesComponent implements OnInit {
     }, 3000);
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.areaDataSource.filter = filterValue.trim().toLowerCase();
+  applyFilters(): void {
+    let filteredData = [...this.originalData];
 
-    if (this.areaDataSource.paginator) {
-      this.areaDataSource.paginator.firstPage();
+    // Search by area name
+    if (this.searchTerm) {
+      filteredData = filteredData.filter((area) =>
+        area.areaname.toLowerCase().includes(this.searchTerm.toLowerCase())
+      );
     }
+
+    this.areaDataSource = new MatTableDataSource(filteredData);
+    this.areaDataSource.paginator = this.paginator;
+    this.areaDataSource.sort = this.sort;
+  }
+
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.areaDataSource = new MatTableDataSource(this.originalData);
+    this.areaDataSource.paginator = this.paginator;
+    this.areaDataSource.sort = this.sort;
   }
 }
