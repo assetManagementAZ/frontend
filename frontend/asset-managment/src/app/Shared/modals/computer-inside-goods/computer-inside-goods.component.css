@@ -53,3 +53,29 @@ thead {
 /* ::ng-deep .mat-mdc-dialog-surface.mdc-dialog__surface {
   background-color: #bdc3f7;
 } */
+/* --- Status Background Enhancements --- */
+.status-background {
+  /* Basic styling for the background area */
+  padding: 0.25rem 0.5rem; /* Adjust padding as needed */
+  border-radius: 0.375rem; /* Tailwind's rounded-md */
+  display: inline-block; /* Ensures background only covers content */
+  min-width: 80px; /* Give it a consistent minimum width */
+  text-align: center;
+  color: #fff; /* Default text color over patterned background */
+  transition: all 0.3s ease-in-out; /* Smooth transitions */
+  background-size: 10px 10px; /* Size of the repeating pattern */
+  background-blend-mode: overlay; /* Blends pattern with solid color/gradient */
+}
+
+.status-background-red {
+  background-color: #ef4444; /* Red-600 */
+}
+
+.status-background-blue {
+  background-color: #3b82f6; /* Blue-600 */
+}
+
+.status-background:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}

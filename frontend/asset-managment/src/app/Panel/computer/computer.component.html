@@ -666,7 +666,7 @@
             >
               <path
                 fill-rule="evenodd"
-                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9z"
+                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
                 clip-rule="evenodd"
               />
             </svg>
@@ -729,239 +729,150 @@
   </div>
 </div>
 
-<!-- Modern Table -->
-<div class="mat-elevation-z8 modern-table-container" *ngIf="showComputerTable">
-  <table
-    mat-table
-    [dataSource]="ComputerDataSource"
-    matSort
-    [dir]="'rtl'"
-    class="full-width-table modern-table"
-  >
-    <!-- Property Number Column -->
-    <ng-container matColumnDef="computerpropertynumber">
-      <th
-        mat-header-cell
-        *matHeaderCellDef
-        mat-sort-header
-        class="sticky-header"
-      >
-        شماره اموال
-      </th>
-      <td mat-cell *matCellDef="let row">
-        {{ row?.computerpropertynumber }}
-      </td>
-    </ng-container>
-
-    <!-- Computer Name Column -->
-    <ng-container matColumnDef="computername">
-      <th
-        mat-header-cell
-        *matHeaderCellDef
-        mat-sort-header
-        class="sticky-header"
-      >
-        نام کیس
-      </th>
-      <td mat-cell *matCellDef="let row">
-        <span class="name-badge">{{ row?.computername }}</span>
-      </td>
-    </ng-container>
-
-    <!-- Computer Model Column -->
-    <ng-container matColumnDef="computermodel">
-      <th
-        mat-header-cell
-        *matHeaderCellDef
-        mat-sort-header
-        class="sticky-header"
-      >
-        مدل کیس
-      </th>
-      <td mat-cell *matCellDef="let row">
-        <span class="name-badge">{{ row?.computermodel }}</span>
-      </td>
-    </ng-container>
-
-    <!-- IP Column -->
-    <ng-container matColumnDef="computerip">
-      <th
-        mat-header-cell
-        *matHeaderCellDef
-        mat-sort-header
-        class="sticky-header"
-      >
-        IP
-      </th>
-      <td mat-cell *matCellDef="let row">{{ row?.computerip }}</td>
-    </ng-container>
-
-    <!-- MAC Address Column -->
-    <ng-container matColumnDef="computermacaddress">
-      <th
-        mat-header-cell
-        *matHeaderCellDef
-        mat-sort-header
-        class="sticky-header"
-      >
-        Mac Address
-      </th>
-      <td mat-cell *matCellDef="let row">{{ row?.computermacaddress }}</td>
-    </ng-container>
-
-    <!-- OS Column -->
-    <ng-container matColumnDef="osName">
-      <th
-        mat-header-cell
-        *matHeaderCellDef
-        mat-sort-header
-        class="sticky-header"
-      >
-        سیستم عامل
-      </th>
-      <td mat-cell *matCellDef="let row">
-        <span class="name-badge">
-          {{ row?.operationsystemversionid.operationsystemname }}
-        </span>
-      </td>
-    </ng-container>
-
-    <!-- OS Version Column -->
-    <ng-container matColumnDef="osVersionId">
-      <th
-        mat-header-cell
-        *matHeaderCellDef
-        mat-sort-header
-        class="sticky-header"
-      >
-        نسخه سیستم عامل
-      </th>
-      <td mat-cell *matCellDef="let row">
-        <span class="name-badge">
-          {{ row?.operationsystemversionid?.operationsystemversionname }}
-        </span>
-      </td>
-    </ng-container>
-
-    <!-- Ownership Status Column -->
-    <ng-container matColumnDef="computerispersonal">
-      <th
-        mat-header-cell
-        *matHeaderCellDef
-        mat-sort-header
-        class="sticky-header"
-      >
-        وضعیت مالکیت
-      </th>
-      <td mat-cell *matCellDef="let row">
-        <span class="name-badge">
-          {{ getPersonalStatus(row?.computerispersonal) }}
-        </span>
-      </td>
-    </ng-container>
-
-    <!-- Sealing Number Column -->
-    <ng-container matColumnDef="computersealling">
-      <th
-        mat-header-cell
-        *matHeaderCellDef
-        mat-sort-header
-        class="sticky-header"
-      >
-        شماره پلمپ
-      </th>
-      <td mat-cell *matCellDef="let row">
-        <span class="name-badge">
-          {{ row?.sealing?.computerseallingnumber || "(خالی)" }}
-        </span>
-      </td>
-    </ng-container>
-
-    <!-- Handover Button Column -->
-    <ng-container matColumnDef="userPc">
-      <th mat-header-cell *matHeaderCellDef class="sticky-header">تحویل کیس</th>
-      <td mat-cell *matCellDef="let row">
-        <button
-          [disabled]="row.isAbortion"
-          class="modern-btn primary-btn"
-          [ngClass]="{ 'disabled-btn': row.isAbortion }"
-          (click)="
-            openUserPcForm(
-              row?.computerpropertynumber,
-              row?.sealing?.computerseallingnumber || null
-            )
-          "
+<!-- Computer Icons Grid -->
+<div class="computer-grid-container" *ngIf="showComputerTable">
+  <div class="computer-grid">
+    <div
+      class="computer-icon"
+      *ngFor="let computer of ComputerDataSource?.filteredData || []"
+      [ngClass]="{
+        'aborted-computer': computer.isAbortion
+      }"
+    >
+      <div class="computer-icon-inner">
+        <div class="status-tooltip" *ngIf="computer.isAbortion">
+          <span class="tooltip-text">این کیس اسقاط شده است</span>
+        </div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-12 w-12"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          [ngClass]="{
+            'text-red-500': computer.isAbortion,
+            'text-blue-500': !computer.isAbortion
+          }"
         >
-          تحویل
-        </button>
-      </td>
-    </ng-container>
-
-    <!-- View User Button Column -->
-    <ng-container matColumnDef="viewUser">
-      <th mat-header-cell *matHeaderCellDef class="sticky-header">کاربر</th>
-      <td mat-cell *matCellDef="let row">
-        <button
-          [disabled]="row.isAbortion"
-          class="modern-btn primary-btn"
-          [ngClass]="{ 'disabled-btn': row.isAbortion }"
-          (click)="viewUser(row?.computerpropertynumber)"
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+          />
+        </svg>
+        <div
+          class="property-number"
+          [ngClass]="{
+            'text-red-600': computer.isAbortion,
+            'text-gray-800': !computer.isAbortion
+          }"
         >
-          مشاهده
-        </button>
-      </td>
-    </ng-container>
-
-    <!-- View Details Button Column -->
-    <ng-container matColumnDef="viewDetail">
-      <th mat-header-cell *matHeaderCellDef class="sticky-header">اطلاعات</th>
-      <td mat-cell *matCellDef="let row">
-        <button
-          class="modern-btn primary-btn"
-          (click)="viewDetail(row?.computerpropertynumber)"
-        >
-          مشاهده
-        </button>
-      </td>
-    </ng-container>
-
-    <!-- Edit Button Column -->
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef class="sticky-header">ویرایش</th>
-      <td mat-cell *matCellDef="let row">
-        <button
-          [disabled]="row.isAbortion"
-          class="modern-btn primary-btn"
-          [ngClass]="{ 'disabled-btn': row.isAbortion }"
-          (click)="editComputer(row?.computerpropertynumber)"
-        >
-          ویرایش
-        </button>
-      </td>
-    </ng-container>
-
-    <!-- Delete Button Column -->
-    <ng-container matColumnDef="delete">
-      <th mat-header-cell *matHeaderCellDef class="sticky-header">حذف</th>
-      <td mat-cell *matCellDef="let row">
-        <button
-          [disabled]="row.isAbortion"
-          class="modern-btn danger-btn"
-          [ngClass]="{ 'disabled-btn': row.isAbortion }"
-          (click)="deleteComputer(row?.computerpropertynumber)"
-        >
-          حذف
-        </button>
-      </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: displayedColumns"
-      [ngClass]="{ 'aborted-row': row.isAbortion }"
-    ></tr>
-  </table>
+          {{ computer.computerpropertynumber }}
+        </div>
+        <div class="computer-actions">
+          <button
+            class="action-btn view-detail"
+            (click)="viewDetail(computer.computerpropertynumber)"
+          >
+            <span class="tooltip-text">مشاهده جزئیات</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+              <path
+                fill-rule="evenodd"
+                d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+          <button
+            class="action-btn handover"
+            [disabled]="computer.isAbortion"
+            (click)="
+              openUserPcForm(
+                computer.computerpropertynumber,
+                computer.sealing?.computerseallingnumber || null
+              )
+            "
+          >
+            <span class="tooltip-text">تحویل کیس</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+          <button
+            class="action-btn view-user"
+            [disabled]="computer.isAbortion"
+            (click)="viewUser(computer.computerpropertynumber)"
+          >
+            <span class="tooltip-text">مشاهده کاربر</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+          <button
+            class="action-btn edit"
+            [disabled]="computer.isAbortion"
+            (click)="editComputer(computer.computerpropertynumber)"
+          >
+            <span class="tooltip-text">ویرایش کیس</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+              />
+            </svg>
+          </button>
+          <button
+            class="action-btn delete"
+            [disabled]="computer.isAbortion"
+            (click)="deleteComputer(computer.computerpropertynumber)"
+          >
+            <span class="tooltip-text">حذف کیس</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <mat-paginator

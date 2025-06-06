@@ -59,7 +59,7 @@ export class ComputerComponent implements OnInit {
     'actions',
     'delete',
   ];
-  ComputerDataSource!: MatTableDataSource<any>;
+  ComputerDataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   originalData: any[] = [];
   searchTerm: string = '';
   osList: any[] = [];
@@ -194,36 +194,44 @@ export class ComputerComponent implements OnInit {
 
   fetchComputer(): void {
     const endpoint = 'asset/computer/';
-    this.dataService.get(endpoint).subscribe((response: any) => {
-      if (response && response.body) {
-        console.log(response.body);
-        this.originalData = response.body;
-        this.ComputerDataSource = new MatTableDataSource(response.body);
-        this.ComputerDataSource.paginator = this.paginator;
-        this.ComputerDataSource.sortingDataAccessor = (item, property) => {
-          switch (property) {
-            case 'computerpropertynumber':
-              return item.computerpropertynumber;
-            case 'computername':
-              return item.computername;
-            case 'computermodel':
-              return item.computermodel;
-            case 'computerip':
-              return item.computerip;
-            case 'computermacaddress':
-              return item.computermacaddress;
-            case 'computerispersonal':
-              return this.getPersonalStatus(item.computerispersonal);
-            case 'osName':
-              return item.operationsystemversionid.operationsystemname;
-            case 'osVersionId':
-              return item.operationsystemversionid.operationsystemversionname;
-            default:
-              return item[property];
-          }
-        };
-        this.ComputerDataSource.sort = this.sort;
-      }
+    this.dataService.get(endpoint).subscribe({
+      next: (response: any) => {
+        if (response && response.body) {
+          console.log(response.body);
+          this.originalData = response.body;
+          this.ComputerDataSource = new MatTableDataSource(response.body);
+          this.ComputerDataSource.paginator = this.paginator;
+          this.ComputerDataSource.sortingDataAccessor = (item, property) => {
+            switch (property) {
+              case 'computerpropertynumber':
+                return item.computerpropertynumber;
+              case 'computername':
+                return item.computername;
+              case 'computermodel':
+                return item.computermodel;
+              case 'computerip':
+                return item.computerip;
+              case 'computermacaddress':
+                return item.computermacaddress;
+              case 'computerispersonal':
+                return this.getPersonalStatus(item.computerispersonal);
+              case 'osName':
+                return item.operationsystemversionid.operationsystemname;
+              case 'osVersionId':
+                return item.operationsystemversionid.operationsystemversionname;
+              default:
+                return item[property];
+            }
+          };
+          this.ComputerDataSource.sort = this.sort;
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching computer data:', error);
+        this.errorMessage = 'خطا در دریافت اطلاعات کامپیوترها';
+        this.successMessage = '';
+        this.showMessages();
+      },
     });
   }
 

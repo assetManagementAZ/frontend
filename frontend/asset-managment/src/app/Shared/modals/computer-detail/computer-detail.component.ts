@@ -69,6 +69,12 @@ export class ComputerDetailComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   pcList: any[] = [];
+
+  // Add getter for computer data
+  get computerData() {
+    return this.pcDataSource?.data?.[0] || {};
+  }
+
   constructor(
     private dataService: DataService,
     private fb: FormBuilder,
@@ -123,7 +129,24 @@ export class ComputerDetailComponent implements OnInit {
     });
   }
   convertDate(dateString: string): string {
-    return moment(dateString, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
+    try {
+      if (!dateString) {
+        return '-';
+      }
+
+      // Check if the date is valid
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return '-';
+      }
+
+      // Convert to Jalali
+      const jalaliDate = moment(date).format('jYYYY/jMM/jDD');
+      return jalaliDate;
+    } catch (error) {
+      console.warn('Error converting date:', error);
+      return '-';
+    }
   }
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;

@@ -1,102 +1,543 @@
-<div class="dialog-container">
-  <div class="dialog-header">
-    <button mat-icon-button (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
-  <div class="dialog-content mat-elevation-z8">
-    <table
-      mat-table
-      [dataSource]="dataSource"
-      matSort
-      [dir]="'rtl'"
-      class="full-width-table"
+<!-- Modern Glassmorphism PC Inventory Modal with Enhanced UI -->
+<div class="fixed inset-0 z-50 overflow-y-auto" dir="rtl">
+  <div class="flex items-center justify-center min-h-screen p-4">
+    <!-- Enhanced Backdrop with Circuit Pattern -->
+    <div
+      class="fixed inset-0 bg-gradient-to-br from-blue-900/30 to-indigo-900/20 backdrop-blur-sm transition-opacity"
     >
-      <ng-container matColumnDef="deliveredgoodsid">
-        <th mat-header-cell *matHeaderCellDef>کد کالا</th>
-        <td mat-cell *matCellDef="let row">{{ row.deliveredgoodsid }}</td>
-      </ng-container>
+      <div
+        class="absolute inset-0 opacity-10"
+        style="
+          background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDYwIDYwIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iLjEiPjxwYXRoIGQ9Ik0zNiAzNkg1NkM1Ni41MiAzNiA1NyAzNi40OCA1NyAzN3YxOEM1NyA1NS41MiA1Ni41MiA1NiA1NiA1NkgzNkMzNS40OCA1NiAzNSA1NS41MiAzNSA1NVYzN0MzNSAzNi40OCAzNS40OCAzNiAzNiAzNnptLTI0IDBIMTZDMTUuNDggMzYgMTUgMzYuNDggMTUgMzd2MThDMTUgNTUuNTIgMTUuNDggNTYgMTYgNTZIMzZDMzYuNTIgNTYgMzcgNTUuNTIgMzcgNTVWMzdDMzcgMzYuNDggMzYuNTIgMzYgMzYgMzZIMTJ6TTM2IDRINTZDNTYuNTIgNCA1NyA0LjQ4IDU3IDV2MThDNTcgMjMuNTIgNTYuNTIgMjQgNTYgMjRIMzZDMzUuNDggMjQgMzUgMjMuNTIgMzUgMjNWNUMzNSA0LjQ4IDM1LjQ4IDQgMzYgNHptLTI0IDBIMTZDMTUuNDggNCAxNSA0LjQ4IDE1IDV2MThDMTUgMjMuNTIgMTUuNDggMjQgMTYgMjRIMzZDMzYuNTIgMjQgMzcgMjMuNTIgMzcgMjNWNUMzNyA0LjQ4IDM2LjUyIDQgMzYgNEgxMnoiLz48L2c+PC9nPjwvc3ZnPg==');
+        "
+      ></div>
+    </div>
 
-      <ng-container matColumnDef="deliveredgoodsserial">
-        <th mat-header-cell *matHeaderCellDef>شماره سریال کالا</th>
-        <td mat-cell *matCellDef="let row">{{ row.deliveredgoodsserial }}</td>
-      </ng-container>
-      <ng-container matColumnDef="gooodsgroupname">
-        <th mat-header-cell *matHeaderCellDef>دسته کالا</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.goodsid.gooodsgroupid.gooodsgroupname }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="goodsname">
-        <th mat-header-cell *matHeaderCellDef>کالا</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.goodsid.goodsname }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="ispartinsidecomputer">
-        <th mat-header-cell *matHeaderCellDef>قطعه داخل کیس</th>
-        <td mat-cell *matCellDef="let row">
-          {{
-            getIsPartinsideComputer(
-              row.goodsid.gooodsgroupid.ispartinsidecomputer
-            )
-          }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="isallowedtosendout">
-        <th mat-header-cell *matHeaderCellDef>امکان ارسال به بیرون</th>
-        <td mat-cell *matCellDef="let row">
-          {{
-            getIsAllowedToSendOut(row.goodsid.gooodsgroupid.isallowedtosendout)
-          }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="isallowedtobeaborted">
-        <th mat-header-cell *matHeaderCellDef>اسقاط پذیری</th>
-        <td mat-cell *matCellDef="let row">
-          {{
-            getIsAllowedToBeAborted(
-              row.goodsid.gooodsgroupid.isallowedtobeaborted
-            )
-          }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="isallowedtomove">
-        <th mat-header-cell *matHeaderCellDef>جابجایی</th>
-        <td mat-cell *matCellDef="let row">
-          {{ getIsAllowedToMove(row.goodsid.gooodsgroupid.isallowedtomove) }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="ispossibletorepair">
-        <th mat-header-cell *matHeaderCellDef>امکان تعمیر</th>
-        <td mat-cell *matCellDef="let row">
-          {{
-            getIsPossibleToRepair(row.goodsid.gooodsgroupid.ispossibletorepair)
-          }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="isAbortion">
-        <th mat-header-cell *matHeaderCellDef>وضعیت اسقاط</th>
-        <td mat-cell *matCellDef="let row">
-          {{ getAbortion(row.isAbortion) }}
-        </td>
-      </ng-container>
-      <!--  deliveredgoodscreatetime  Column -->
-      <ng-container matColumnDef="deliveredgoodscreatetime">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>تاریخ ایجاد</th>
-        <td mat-cell *matCellDef="let row">
-          {{ convertDate(row.deliveredgoodscreatetime) }}
-        </td>
-      </ng-container>
-      <!-- deliveredgoodsupdatetime Column -->
-      <ng-container matColumnDef="deliveredgoodsupdatetime">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>تاریخ ویرایش</th>
-        <td mat-cell *matCellDef="let row">
-          {{ convertDate(row.deliveredgoodsupdatetime) }}
-        </td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
+    <!-- Modal Container -->
+    <div class="relative w-full max-w-6xl mx-auto transform transition-all">
+      <!-- Enhanced Glass Card with PC Case Design -->
+      <div
+        class="bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-white/20"
+      >
+        <!-- Header with Gradient Accent -->
+        <div class="relative bg-[image:var(--primary-gradient)] p-5">
+          <div dir="ltr" class="flex items-center justify-between">
+            <div class="flex items-center space-x-3 space-x-reverse ml-[37%]">
+              <h3 class="text-xl font-bold text-white">
+                اطلاعات کالاهای داخل کامپیوتر
+              </h3>
+            </div>
+            <button
+              (click)="closeDialog()"
+              class="p-1 rounded-full hover:bg-white/20 transition-colors duration-200 text-white/80 hover:text-white"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6">
+          <!-- Enhanced No Goods Message -->
+          <div
+            *ngIf="totalGoodDetails === 0"
+            class="flex flex-col items-center justify-center py-12 px-4 text-center"
+          >
+            <div
+              class="bg-gradient-to-br from-blue-50 to-white rounded-full p-6 mb-6 shadow-inner border border-blue-100/50"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-16 w-16 text-blue-400 hover:text-blue-500 transition-colors"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-3">
+              هیچ کالایی در این کامپیوتر وجود ندارد
+            </h3>
+            <p class="text-gray-500 text-center max-w-md leading-relaxed">
+              در حال حاضر هیچ کالایی در داخل این کامپیوتر ثبت نشده است.
+            </p>
+            <button
+              (click)="closeDialog()"
+              class="mt-6 px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 shadow-sm hover:shadow-md text-sm font-medium"
+            >
+              بازگشت به صفحه قبل
+            </button>
+          </div>
+
+          <!-- Enhanced Goods Information Card -->
+          <div *ngIf="totalGoodDetails > 0" class="grid grid-cols-1 gap-6">
+            <div
+              class="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-sm border border-gray-100 overflow-hidden"
+            >
+              <div class="border-b border-gray-100/50 px-5 py-3 bg-gray-50">
+                <div class="flex items-center justify-between">
+                  <h4
+                    class="text-lg font-semibold text-gray-800 flex items-center"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5 text-blue-500 ml-2"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    اطلاعات کالا
+                  </h4>
+
+                  <!-- Enhanced Good Detail Navigation -->
+                  <div
+                    class="flex items-center space-x-2 space-x-reverse"
+                    *ngIf="totalGoodDetails > 1"
+                  >
+                    <button
+                      (click)="previousGoodDetail()"
+                      [disabled]="currentGoodDetailIndex === 0"
+                      class="p-2 rounded-lg bg-white/80 hover:bg-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                      [class.text-gray-400]="currentGoodDetailIndex === 0"
+                      [class.text-blue-600]="currentGoodDetailIndex > 0"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                    <span
+                      class="text-sm font-medium text-gray-600 px-2 py-1 bg-white/80 rounded-md border border-gray-200/50"
+                    >
+                      {{ currentGoodDetailIndex + 1 }} از {{ totalGoodDetails }}
+                    </span>
+                    <button
+                      (click)="nextGoodDetail()"
+                      [disabled]="
+                        currentGoodDetailIndex === totalGoodDetails - 1
+                      "
+                      class="p-2 rounded-lg bg-white/80 hover:bg-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                      [class.text-gray-400]="
+                        currentGoodDetailIndex === totalGoodDetails - 1
+                      "
+                      [class.text-blue-600]="
+                        currentGoodDetailIndex < totalGoodDetails - 1
+                      "
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Enhanced Information Grid -->
+              <div
+                class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+              >
+                <!-- Dynamic Info Cards -->
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs hover:shadow-sm transition-all duration-200"
+                >
+                  <div class="flex items-center mb-1">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4 text-blue-500 ml-1 mb-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
+                    </svg>
+                    <p class="text-xs font-medium text-blue-600">کد کالا</p>
+                  </div>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{ currentGood?.deliveredgoodsid || "-" }}
+                  </p>
+                </div>
+
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs hover:shadow-sm transition-all duration-200"
+                >
+                  <div class="flex items-center mb-1">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4 text-blue-500 ml-1 mb-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
+                    </svg>
+                    <p class="text-xs font-medium text-blue-600">
+                      شماره سریال کالا
+                    </p>
+                  </div>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{ currentGood?.deliveredgoodsserial || "-" }}
+                  </p>
+                </div>
+
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs hover:shadow-sm transition-all duration-200"
+                >
+                  <div class="flex items-center mb-1">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4 text-blue-500 ml-1 mb-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                      />
+                    </svg>
+                    <p class="text-xs font-medium text-blue-600">دسته کالا</p>
+                  </div>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{
+                      currentGood?.goodsid?.gooodsgroupid?.gooodsgroupname ||
+                        "-"
+                    }}
+                  </p>
+                </div>
+
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs hover:shadow-sm transition-all duration-200"
+                >
+                  <div class="flex items-center mb-1">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4 text-blue-500 ml-1 mb-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                      />
+                    </svg>
+                    <p class="text-xs font-medium text-blue-600">کالا</p>
+                  </div>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{ currentGood?.goodsid?.goodsname || "-" }}
+                  </p>
+                </div>
+
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs hover:shadow-sm transition-all duration-200"
+                >
+                  <div class="flex items-center mb-1">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4 text-blue-500 ml-1 mb-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+                      />
+                    </svg>
+                    <p class="text-xs font-medium text-blue-600">
+                      قطعه داخل کیس
+                    </p>
+                  </div>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{
+                      getIsPartinsideComputer(
+                        currentGood?.goodsid?.gooodsgroupid
+                          ?.ispartinsidecomputer
+                      )
+                    }}
+                  </p>
+                </div>
+
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs hover:shadow-sm transition-all duration-200"
+                >
+                  <div class="flex items-center mb-1">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4 text-blue-500 ml-1 mb-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+                      />
+                    </svg>
+                    <p class="text-xs font-medium text-blue-600">
+                      امکان ارسال به بیرون
+                    </p>
+                  </div>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{
+                      getIsAllowedToSendOut(
+                        currentGood?.goodsid?.gooodsgroupid?.isallowedtosendout
+                      )
+                    }}
+                  </p>
+                </div>
+
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs hover:shadow-sm transition-all duration-200"
+                >
+                  <div class="flex items-center mb-1">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg "
+                      class="h-4 w-4 text-blue-500 ml-1 mb-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                    <p class="text-xs font-medium text-blue-600">اسقاط پذیری</p>
+                  </div>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{
+                      getIsAllowedToBeAborted(
+                        currentGood?.goodsid?.gooodsgroupid
+                          ?.isallowedtobeaborted
+                      )
+                    }}
+                  </p>
+                </div>
+
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs hover:shadow-sm transition-all duration-200"
+                >
+                  <div class="flex items-center mb-1">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4 text-blue-500 ml-1 mb-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+                      />
+                    </svg>
+                    <p class="text-xs font-medium text-blue-600">جابجایی</p>
+                  </div>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{
+                      getIsAllowedToMove(
+                        currentGood?.goodsid?.gooodsgroupid?.isallowedtomove
+                      )
+                    }}
+                  </p>
+                </div>
+
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs hover:shadow-sm transition-all duration-200"
+                >
+                  <div class="flex items-center mb-1">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4 text-blue-500 ml-1 mb-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                      />
+                    </svg>
+                    <p class="text-xs font-medium text-blue-600">امکان تعمیر</p>
+                  </div>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{
+                      getIsPossibleToRepair(
+                        currentGood?.goodsid?.gooodsgroupid?.ispossibletorepair
+                      )
+                    }}
+                  </p>
+                </div>
+
+                <!-- Enhanced Abortion Status -->
+                <div
+                  class="bg-white/80 p-3 rounded-lg border-2 shadow-xs hover:shadow-sm transition-all duration-200"
+                  [ngClass]="{
+                    'border-red-200/80': currentGood?.isAbortion,
+                    'border-green-200/80': !currentGood?.isAbortion
+                  }"
+                >
+                  <div class="flex items-center mb-1">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg "
+                      class="h-4 w-4 ml-1 mb-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      [ngClass]="{
+                        'text-red-500': currentGood?.isAbortion,
+                        'text-green-500': !currentGood?.isAbortion
+                      }"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        [attr.d]="
+                          currentGood?.isAbortion
+                            ? 'M6 18L18 6M6 6l12 12'
+                            : 'M5 13l4 4L19 7'
+                        "
+                      />
+                    </svg>
+                    <p class="text-xs font-medium">وضعیت اسقاط</p>
+                  </div>
+                  <p
+                    class="font-medium text-sm status-background"
+                    [ngClass]="{
+                      'status-background-red': currentGood?.isAbortion,
+                      'status-background-blue': !currentGood?.isAbortion
+                    }"
+                  >
+                    {{ getAbortion(currentGood?.isAbortion) }}
+                  </p>
+                </div>
+
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs hover:shadow-sm transition-all duration-200"
+                >
+                  <div class="flex items-center mb-1">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4 text-blue-500 ml-1 mb-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                    <p class="text-xs font-medium text-blue-600">تاریخ ایجاد</p>
+                  </div>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{
+                      convertDate(currentGood?.deliveredgoodscreatetime) || "-"
+                    }}
+                  </p>
+                </div>
+
+                <div
+                  class="bg-white/80 p-3 rounded-lg border border-gray-100 shadow-xs hover:shadow-sm transition-all duration-200"
+                >
+                  <div class="flex items-center mb-1">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4 text-blue-500 ml-1 mb-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <p class="text-xs font-medium text-blue-600">
+                      تاریخ ویرایش
+                    </p>
+                  </div>
+                  <p class="font-medium text-gray-800 text-sm">
+                    {{
+                      convertDate(currentGood?.deliveredgoodsupdatetime) || "-"
+                    }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
