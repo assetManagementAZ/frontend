@@ -50,6 +50,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
 export class ComputerComponent implements OnInit {
   showComputerForm = false;
   showComputerTable = false;
+  isLoadingDetail = false;
+  detailLoadingMessage = '';
   displayedColumns: string[] = [
     'computerpropertynumber',
     'computersealling',
@@ -458,8 +460,21 @@ export class ComputerComponent implements OnInit {
   ): void {
     this.buildingList = [];
     this.areaList = [];
+
+    // First check if computer has an owner
+    const computer = this.ComputerDataSource.data.find(
+      (c) => c.computerpropertynumber === computerpropertynumber
+    );
+
+    if (computer?.owneruserid) {
+      this.errorMessage = `این کامپیوتر قبلاً به ${computer.owneruserid.username} اختصاص داده شده است`;
+      this.successMessage = '';
+      this.showMessages();
+      return;
+    }
+
     if (computerseallingnumber === null) {
-      this.errorMessage = ' شما اجازه تحویل کامپیوتر غیر پلمپ را ندارید';
+      this.errorMessage = 'شما اجازه تحویل کامپیوتر غیر پلمپ را ندارید';
       this.successMessage = '';
       this.showMessages();
     } else {
@@ -543,14 +558,25 @@ export class ComputerComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {});
   }
   viewDetail(computerpropertynumber: number): void {
+    this.isLoadingDetail = true;
+    this.detailLoadingMessage = 'در حال دریافت اطلاعات...';
+
     const config: MatDialogConfig = {
       data: { computerpropertynumber },
-
       disableClose: true,
     };
+
     const dialogRef = this.dialog.open(ComputerDetailComponent, config);
 
-    dialogRef.afterClosed().subscribe((result) => {});
+    // Clear loading state when dialog is opened
+    dialogRef.afterOpened().subscribe(() => {
+      this.isLoadingDetail = false;
+      this.detailLoadingMessage = '';
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      // Additional cleanup if needed
+    });
   }
   applyFilters(): void {
     let filteredData = [...this.originalData];

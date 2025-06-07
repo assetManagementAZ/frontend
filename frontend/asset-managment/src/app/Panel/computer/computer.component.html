@@ -743,6 +743,11 @@
         <div class="status-tooltip" *ngIf="computer.isAbortion">
           <span class="tooltip-text">این کیس اسقاط شده است</span>
         </div>
+        <div class="owner-tooltip" *ngIf="!computer.isAbortion">
+          <span class="tooltip-text">{{
+            computer.owneruserid ? computer.computername : "بدون مالک"
+          }}</span>
+        </div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-12 w-12"
@@ -774,6 +779,7 @@
           <button
             class="action-btn view-detail"
             (click)="viewDetail(computer.computerpropertynumber)"
+            [disabled]="isLoadingDetail"
           >
             <span class="tooltip-text">مشاهده جزئیات</span>
             <svg
@@ -819,7 +825,7 @@
             [disabled]="computer.isAbortion"
             (click)="viewUser(computer.computerpropertynumber)"
           >
-            <span class="tooltip-text">مشاهده کاربر</span>
+            <span class="tooltip-text">مشاهده مالک</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-5 w-5"
@@ -883,3 +889,11 @@
 >
 </mat-paginator>
 <div class="space"></div>
+
+<!-- Add this at the end of the file, before the closing </div> -->
+<div class="loading-overlay" *ngIf="isLoadingDetail">
+  <div class="loading-content">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">{{ detailLoadingMessage }}</p>
+  </div>
+</div>

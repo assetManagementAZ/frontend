@@ -552,3 +552,30 @@ input:focus {
   opacity: 1;
   transform: translateY(0);
 }
+
+.owner-tooltip {
+  position: absolute;
+  top: -10px;
+  right: 75%;
+  transform: translateX(-50%);
+  z-index: 100;
+}
+
+.owner-tooltip .tooltip-text {
+  background: rgba(59, 130, 246, 0.9);
+  font-weight: 500;
+  white-space: nowrap;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.owner-tooltip .tooltip-text::after {
+  border-color: rgba(59, 130, 246, 0.9) transparent transparent transparent;
+}
+
+.computer-icon:hover .owner-tooltip .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}

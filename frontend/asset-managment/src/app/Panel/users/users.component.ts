@@ -127,6 +127,8 @@ export class UsersComponent implements OnInit {
   isActive: string = '';
   searchTerm: string = '';
   showPassword = false;
+  isLoadingDetail = false;
+  detailLoadingMessage = '';
   displayedColumns: string[] = [
     'rowNumber',
     'userid',
@@ -836,11 +838,18 @@ export class UsersComponent implements OnInit {
     }
   }
   viewDetail(userid: number): void {
+    this.isLoadingDetail = true;
+    this.detailLoadingMessage = 'در حال دریافت اطلاعات...';
     const config: MatDialogConfig = {
       data: { userid, showEditButton: true },
       disableClose: true,
     };
     const dialogRef = this.dialog.open(UserDetailComponent, config);
+    // Clear loading state when dialog is opened
+    dialogRef.afterOpened().subscribe(() => {
+      this.isLoadingDetail = false;
+      this.detailLoadingMessage = '';
+    });
     this.sideNavService.openForm();
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -855,11 +864,18 @@ export class UsersComponent implements OnInit {
     });
   }
   viewProperty(userpersonalid: number): void {
+    this.isLoadingDetail = true;
+    this.detailLoadingMessage = 'در حال دریافت اطلاعات...';
     const config: MatDialogConfig = {
       data: { userpersonalid },
       disableClose: true,
     };
     const dialogRef = this.dialog.open(UsersPropertyComponent, config);
+    // Clear loading state when dialog is opened
+    dialogRef.afterOpened().subscribe(() => {
+      this.isLoadingDetail = false;
+      this.detailLoadingMessage = '';
+    });
     this.sideNavService.openForm();
 
     dialogRef.afterClosed().subscribe(() => {
