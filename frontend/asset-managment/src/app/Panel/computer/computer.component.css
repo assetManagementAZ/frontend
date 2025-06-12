@@ -579,3 +579,199 @@ input:focus {
   opacity: 1;
   transform: translateY(0);
 }
+/* Hint Button Styles */
+.hint-container {
+  position: relative;
+  display: inline-block;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+}
+
+.hint-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.hint-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #f59e0b, #ea580c);
+}
+
+.hint-card {
+  position: absolute;
+  top: 40px;
+  right: 8px;
+  width: 250px;
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: flex-start;
+}
+
+.hint-content {
+  flex: 1;
+  font-size: 0.875rem;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.hint-close {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.hint-close:hover {
+  color: #6b7280;
+}
+
+/* Animation for the hint card */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* Step Form Styles */
+.step-item {
+  position: relative;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background-color: #f9fafb;
+  transition: all 0.3s ease;
+}
+
+.step-item.completed {
+  background-color: #f0fdf4;
+}
+
+.step-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #6b7280;
+  transition: all 0.3s ease;
+}
+
+.step-icon.completed {
+  background-color: #10b981;
+  color: white;
+}
+
+.step-icon svg {
+  color: white;
+}
+
+.step-item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 1.25rem;
+  top: 4rem;
+  bottom: -1rem;
+  width: 2px;
+  background-color: #e5e7eb;
+  transition: all 0.3s ease;
+}
+
+.step-item.completed:not(:last-child)::after {
+  background-color: #10b981;
+}
+/* Steps Animation */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.step-item.in-progress {
+  animation: pulse 1.5s infinite;
+}
+
+/* Status Colors */
+.bg-green-50 {
+  background-color: rgba(16, 185, 129, 0.1);
+}
+.border-green-200 {
+  border-color: rgba(16, 185, 129, 0.2);
+}
+.text-green-700 {
+  color: rgb(4, 120, 87);
+}
+
+.bg-red-50 {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+.border-red-200 {
+  border-color: rgba(239, 68, 68, 0.2);
+}
+.text-red-700 {
+  color: rgb(185, 28, 28);
+}
+
+.bg-blue-50 {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+.border-blue-200 {
+  border-color: rgba(59, 130, 246, 0.2);
+}
+.text-blue-700 {
+  color: rgb(29, 78, 216);
+}
+
+/* Progress Bar */
+.steps-progress {
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+}

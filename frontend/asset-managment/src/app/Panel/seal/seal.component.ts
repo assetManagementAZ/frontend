@@ -124,6 +124,7 @@ export class SealComponent implements OnInit {
     const endpoint = 'asset/computer-sealling/';
     this.dataService.get(endpoint).subscribe((response: any) => {
       if (response && response.body) {
+        console.log(response.body);
         this.sealDataSource = new MatTableDataSource(response.body);
         this.sealDataSource.paginator = this.paginator;
         this.sealDataSource.sortingDataAccessor = (item, property) => {
@@ -167,6 +168,7 @@ export class SealComponent implements OnInit {
         .pipe(
           tap({
             next: (response) => {
+              console.log(response.body);
               if (response.status === 201 || response.status === 200) {
                 this.successMessage = this.isEditing
                   ? 'ویرایش پلمپ با موفقیت انجام شد '

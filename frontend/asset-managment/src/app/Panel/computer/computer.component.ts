@@ -26,7 +26,7 @@ import { PcUserComponent } from '../../Shared/modals/pc-user/pc-user.component';
 import { UsersComputerDetailComponent } from '../../Shared/modals/users-computer-detail/users-computer-detail.component';
 import { ComputerDetailComponent } from '../../Shared/modals/computer-detail/computer-detail.component';
 import { NgSelectModule } from '@ng-select/ng-select';
-
+import { trigger, transition, style, animate } from '@angular/animations';
 @Component({
   selector: 'as-computer',
   standalone: true,
@@ -46,20 +46,44 @@ import { NgSelectModule } from '@ng-select/ng-select';
   ],
   templateUrl: './computer.component.html',
   styleUrl: './computer.component.css',
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(-10px)' }),
+        animate(
+          '150ms ease-out',
+          style({ opacity: 1, transform: 'translateY(0)' })
+        ),
+      ]),
+      transition(':leave', [
+        animate(
+          '100ms ease-in',
+          style({ opacity: 0, transform: 'translateY(-10px)' })
+        ),
+      ]),
+    ]),
+  ],
 })
 export class ComputerComponent implements OnInit {
   showComputerForm = false;
   showComputerTable = false;
   isLoadingDetail = false;
   detailLoadingMessage = '';
+  createdSealId: number | null = null;
+  infoMessage: string = '';
+  errorMessage: string = '';
+  successMessage: string = '';
+  showMessage = false;
   displayedColumns: string[] = [
     'computerpropertynumber',
-    'computersealling',
-    'viewDetail',
-    'userPc',
-    'viewUser',
+    'computername',
+    'computermodel',
+    'computerip',
+    'computermacaddress',
+    'computerispersonal',
+    'osName',
+    'osVersionId',
     'actions',
-    'delete',
   ];
   ComputerDataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   originalData: any[] = [];
@@ -72,16 +96,19 @@ export class ComputerComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   selectedOsId!: number;
-  // Computer form
   computerForm!: FormGroup;
   userPcForm!: FormGroup;
   showUserPcForm = false;
-  successMessage: string = '';
-  errorMessage: string = '';
-  showMessage = false;
   isEditing = false;
   computerpropertynumber: any;
   userPcid: any;
+  showHandoverSteps = false;
+  handoverStep = 0;
+  selectedComputerForHandover: {
+    propertyNumber: number;
+    sealingNumber: any;
+  } | null = null;
+
   constructor(
     private dataService: DataService,
     private fb: FormBuilder,
@@ -390,15 +417,6 @@ export class ComputerComponent implements OnInit {
     }
   }
 
-  // updateOsVersions(osId: number): void {
-  //   const selectedOs = this.osList.find((os) => os.operationsystemid === osId);
-  //   if (selectedOs && selectedOs.operationversions) {
-  //     this.selectedOsVersions = selectedOs.operationversions;
-  //   } else {
-  //     this.selectedOsVersions = [];
-  //   }
-  // }
-
   fetchUserList(): void {
     const endpoint = 'accounts/user/';
     this.dataService.get(endpoint).subscribe((response: any) => {
@@ -416,13 +434,25 @@ export class ComputerComponent implements OnInit {
     });
   }
   fetchUserWorkingLocations(ownerUserId: number): void {
+    this.buildingList = [];
+    this.areaList = [];
+
+    // If no user is selected (null or undefined), clear the form controls
+    if (!ownerUserId) {
+      this.userPcForm.get('buildingId')?.setValue(null);
+      this.userPcForm.get('areaId')?.setValue(null);
+      return;
+    }
+
     const endpoint = `accounts/subbuser/detail/working/locations/${ownerUserId}/`;
+    console.log('Fetching working locations for user:', ownerUserId);
     this.dataService.get(endpoint).subscribe((response: any) => {
       if (response && response.body) {
         const workingLocations = response.body;
+        console.log('Working locations received:', workingLocations);
+        // Only fetch buildings initially
         workingLocations.forEach((location: any) => {
           this.fetchBuilding(location.buildingid);
-          this.fetchArea(location.areaid);
         });
       }
     });
@@ -430,6 +460,7 @@ export class ComputerComponent implements OnInit {
 
   fetchBuilding(buildingId: number): void {
     const endpoint = `building/${buildingId}/`;
+    console.log('Fetching building:', buildingId);
     this.dataService.get(endpoint).subscribe((response: any) => {
       if (
         response &&
@@ -438,115 +469,210 @@ export class ComputerComponent implements OnInit {
           (b) => b.buildingid === response.body.buildingid
         )
       ) {
+        console.log('Adding building to list:', response.body);
         this.buildingList.push(response.body);
       }
     });
   }
+
+  // Add new method to fetch areas for a specific building
+  onBuildingSelect(buildingId: number): void {
+    this.areaList = []; // Clear previous areas
+    const endpoint = `accounts/subbuser/detail/working/locations/${
+      this.userPcForm.get('ownerUserId')?.value
+    }/`;
+    this.dataService.get(endpoint).subscribe((response: any) => {
+      if (response && response.body) {
+        const workingLocations = response.body;
+        // Filter locations for the selected building
+        const buildingLocations = workingLocations.filter(
+          (location: any) => location.buildingid === buildingId
+        );
+        // Fetch areas only for the selected building
+        buildingLocations.forEach((location: any) => {
+          this.fetchArea(location.areaid);
+        });
+      }
+    });
+  }
+
   fetchArea(areaId: number): void {
     const endpoint = `area/${areaId}/`;
+    console.log('Fetching area:', areaId);
     this.dataService.get(endpoint).subscribe((response: any) => {
+      console.log('Area response:', response);
       if (
         response &&
         response.body &&
         !this.areaList.some((a) => a.areaid === response.body.areaid)
       ) {
+        console.log('Adding area to list:', response.body);
         this.areaList.push(response.body);
+        console.log('Current areaList:', this.areaList);
       }
     });
   }
   openUserPcForm(
     computerpropertynumber: number,
-    computerseallingnumber: any | null
+    computerseallingnumber: any | null,
+    isFromUserAction: boolean = false
   ): void {
-    this.buildingList = [];
-    this.areaList = [];
-
+    this.fetchComputer();
     // First check if computer has an owner
     const computer = this.ComputerDataSource.data.find(
       (c) => c.computerpropertynumber === computerpropertynumber
     );
-
-    if (computer?.owneruserid) {
-      this.errorMessage = `این کامپیوتر قبلاً به ${computer.owneruserid.username} اختصاص داده شده است`;
+    if (computer?.owneruserid && isFromUserAction) {
+      this.infoMessage = `این کامپیوتر قبلاً به <span class="font-bold bg-yellow-100 text-yellow-800 px-2 py-1 rounded">${computer.owneruserid.username} ${computer.owneruserid.userlastname}</span> تحویل داده شده است`;
+      this.errorMessage = '';
       this.successMessage = '';
       this.showMessages();
       return;
     }
+    this.handoverSteps.forEach((step) => (step.status = 'pending'));
+    this.selectedComputerForHandover = {
+      propertyNumber: computerpropertynumber,
+      sealingNumber: computerseallingnumber,
+    };
+    this.showHandoverSteps = true;
 
     if (computerseallingnumber === null) {
-      this.errorMessage = 'شما اجازه تحویل کامپیوتر غیر پلمپ را ندارید';
-      this.successMessage = '';
-      this.showMessages();
+      this.executeStep(1); // Start with step 1 if no seal exists
     } else {
-      this.showUserPcForm = true;
-      this.userPcForm
-        .get('ownerUserId')
-        ?.valueChanges.subscribe((ownerUserId: number) => {
-          if (ownerUserId) {
-            this.buildingList = [];
-            this.areaList = [];
-            this.fetchUserWorkingLocations(ownerUserId);
-          }
-        });
-      this.userPcid = computerpropertynumber;
+      // Skip to step 3 if seal already exists
+      this.handoverSteps[0].status = 'success';
+      this.handoverSteps[1].status = 'success';
+      this.handoverSteps[2].status = 'in-progress';
+      this.fetchUserList();
+    }
+  }
+  // New method to execute steps
+  executeStep(stepNumber: number): void {
+    const step = this.handoverSteps[stepNumber - 1];
+    step.status = 'in-progress';
+
+    switch (stepNumber) {
+      case 1: // Create seal
+        this.createAndAssignSeal(
+          this.selectedComputerForHandover!.propertyNumber
+        );
+        break;
+      case 2: // Assign seal to computer
+        if (this.createdSealId !== null) {
+          this.assignSealToComputer(
+            this.selectedComputerForHandover!.propertyNumber,
+            this.createdSealId
+          );
+        }
+        break;
+      case 3: // Assign computer to user
+        this.fetchUserList(); // Fetch user list for the form
+
+        break;
     }
   }
 
-  closeUserPcForm(): void {
+  closeHandoverSteps(): void {
+    this.showHandoverSteps = false;
+    this.handoverStep = 0;
+    this.selectedComputerForHandover = null;
+    this.userPcForm.reset();
     this.buildingList = [];
     this.areaList = [];
-    this.userPcForm.reset();
-    this.showUserPcForm = false;
-    this.isEditing = false;
   }
 
+  createAndAssignSeal(computerpropertynumber: number): void {
+    const step = this.handoverSteps[0];
+
+    const sealData = {
+      computerseallingnumber: Math.floor(Math.random() * 1000000),
+      title: 'Computerseallingnumber',
+      isexpired: 0,
+    };
+
+    this.dataService.post(step.apiEndpoint, sealData).subscribe({
+      next: (response: any) => {
+        if (response && response.body) {
+          this.createdSealId = response.body.computerseallingid;
+          step.status = 'success';
+          this.executeStep(2); // Proceed to next step
+        } else {
+          step.status = 'error';
+          this.errorMessage = 'خطا در ایجاد پلمپ جدید';
+          this.showMessages();
+        }
+      },
+      error: (error) => {
+        step.status = 'error';
+        this.errorMessage = 'خطا در ایجاد پلمپ جدید';
+        this.showMessages();
+        console.error('Error creating seal:', error);
+      },
+    });
+  }
+
+  // Update the seal assignment method
+  assignSealToComputer(computerpropertynumber: number, sealId: number): void {
+    const step = this.handoverSteps[1];
+    const endpoint = `asset/assign-seall-to-computer/${sealId}/`;
+
+    const assignData = {
+      computerpropertynumber: computerpropertynumber,
+    };
+
+    this.dataService.put(endpoint, assignData).subscribe({
+      next: (response: any) => {
+        if (response && response.status === 200) {
+          step.status = 'success';
+          this.fetchComputer();
+          this.fetchUserList();
+          // Update step 3 status
+          this.handoverSteps[2].status = 'in-progress';
+        } else {
+          step.status = 'error';
+          this.errorMessage = 'خطا در اختصاص پلمپ به کیس';
+          this.showMessages();
+        }
+      },
+      error: (error) => {
+        step.status = 'error';
+        this.errorMessage = 'خطا در اختصاص پلمپ به کیس';
+        this.showMessages();
+        console.error('Error assigning seal:', error);
+      },
+    });
+  }
+
+  // Update the submit method
   submitUserPc(): void {
-    if (this.userPcForm.valid) {
-      const formValue = this.userPcForm.value;
+    if (this.userPcForm.valid && this.selectedComputerForHandover) {
+      const step = this.handoverSteps[2];
+      step.status = 'in-progress';
 
-      formValue.ownerUserId = parseInt(formValue.ownerUserId, 10);
-      formValue.areaId = parseInt(formValue.areaId, 10);
-      formValue.buildingId = parseInt(formValue.buildingId, 10);
+      const formData = this.userPcForm.value;
+      const endpoint = `asset/assign-computer-to-user/${this.selectedComputerForHandover.propertyNumber}/`;
 
-      let endpoint: string;
-      let httpMethod: 'patch';
-      endpoint = `asset/assign-computer-to-user/${this.userPcid}/`;
-      httpMethod = 'patch';
-
-      this.dataService[httpMethod](endpoint, formValue)
-        .pipe(
-          tap({
-            next: (response) => {
-              if (response.status === 200) {
-                this.successMessage = ' تحویل  کامپیوتر با موفقیت انجام شد ';
-                this.errorMessage = '';
-                this.fetchComputer();
-                this.userPcForm.reset();
-                this.showUserPcForm = false;
-              } else {
-                this.errorMessage =
-                  '. تحویل کامپیوتر موفقیت آمیز نبود،لطفا دوباره امتحان کنید';
-                this.successMessage = '';
-              }
-              this.showMessages();
-            },
-            error: (error) => {
-              console.error('Error submitting form :', error);
-              this.errorMessage =
-                '.مشکلی در ارسال اطلاعات به وجود آمد ، لطفا دوباره امتحان کنید';
-              this.successMessage = '';
-              this.showMessages();
-            },
-          })
-        )
-        .subscribe();
-    } else {
-      this.errorMessage = '.لطفا همه فیلد ها را پر کنید';
-      this.successMessage = '';
-      this.showMessages();
+      this.dataService.put(endpoint, formData).subscribe({
+        next: (response) => {
+          step.status = 'success';
+          this.successMessage = 'کامپیوتر با موفقیت به کاربر تحویل داده شد';
+          this.errorMessage = '';
+          this.showMessages();
+          // Close both forms
+          this.showUserPcForm = false;
+          this.showHandoverSteps = false;
+          this.fetchComputer();
+        },
+        error: (error) => {
+          step.status = 'error';
+          this.errorMessage =
+            error.error.detail || 'خطا در تحویل کامپیوتر به کاربر';
+          this.successMessage = '';
+          this.showMessages();
+        },
+      });
     }
   }
-
   viewUser(computerpropertynumber: number): void {
     const config: MatDialogConfig = {
       data: { computerpropertynumber: computerpropertynumber },
@@ -555,7 +681,9 @@ export class ComputerComponent implements OnInit {
     };
     const dialogRef = this.dialog.open(PcUserComponent, config);
 
-    dialogRef.afterClosed().subscribe((result) => {});
+    dialogRef.afterClosed().subscribe((result) => {
+      this.fetchComputer();
+    });
   }
   viewDetail(computerpropertynumber: number): void {
     this.isLoadingDetail = true;
@@ -608,9 +736,7 @@ export class ComputerComponent implements OnInit {
 
   resetFilters(): void {
     this.searchTerm = '';
-    this.ComputerDataSource = new MatTableDataSource(this.originalData);
-    this.ComputerDataSource.paginator = this.paginator;
-    this.ComputerDataSource.sort = this.sort;
+    this.applyFilters();
   }
 
   validateField(fieldName: string): void {
@@ -682,5 +808,60 @@ export class ComputerComponent implements OnInit {
       }
       this.showMessages();
     }
+  }
+  handoverSteps = [
+    {
+      id: 1,
+      title: 'ایجاد پلمپ جدید',
+      description: 'در حال ایجاد پلمپ جدید برای کیس...',
+      completedDescription: 'پلمپ جدید با موفقیت ایجاد شد',
+      status: 'pending', // 'pending', 'in-progress', 'success', 'error'
+      apiEndpoint: 'asset/computer-sealling/',
+      apiMethod: 'post',
+    },
+    {
+      id: 2,
+      title: 'پلمپ کردن کیس',
+      description: 'در حال پلمپ کردن کیس...',
+      completedDescription: 'کیس با موفقیت پلمپ شد',
+      status: 'pending',
+      apiEndpoint: 'asset/assign-seall-to-computer/{sealId}/',
+      apiMethod: 'put',
+    },
+    {
+      id: 3,
+      title: 'تحویل کیس به کاربر',
+      description: 'در حال تحویل کیس به کاربر...',
+      completedDescription: 'کیس با موفقیت به کاربر تحویل داده شد',
+      status: 'pending',
+      apiEndpoint: 'asset/assign-computer-to-user/{propertyNumber}/',
+      apiMethod: 'put',
+      showFormButton: true,
+    },
+  ];
+  getCompletedStepsCount(): number {
+    return this.handoverSteps.filter((step) => step.status === 'success')
+      .length;
+  }
+
+  getCurrentStep(): number {
+    const inProgressStep = this.handoverSteps.find(
+      (step) => step.status === 'in-progress'
+    );
+    if (inProgressStep) return inProgressStep.id;
+
+    const firstPendingStep = this.handoverSteps.find(
+      (step) => step.status === 'pending'
+    );
+    return firstPendingStep ? firstPendingStep.id : this.handoverSteps.length;
+  }
+
+  showUserPcFormModal(): void {
+    this.userPcForm.reset();
+    this.showUserPcForm = true;
+  }
+
+  closeUserPcForm(): void {
+    this.showUserPcForm = false;
   }
 }

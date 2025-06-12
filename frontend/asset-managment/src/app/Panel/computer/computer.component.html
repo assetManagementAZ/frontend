@@ -65,6 +65,14 @@
     </svg>
     <span class="text-sm font-medium">{{ errorMessage }}</span>
   </div>
+
+  <!-- Info Message -->
+  <div
+    *ngIf="infoMessage"
+    class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-4 rounded-xl shadow-lg flex items-center space-x-3 animate-fade-in-up transition-all duration-300 hover:shadow-xl cursor-pointer max-w-md"
+  >
+    <span class="text-sm font-medium" [innerHTML]="infoMessage"></span>
+  </div>
 </div>
 
 <!-- Computer Form Modal -->
@@ -514,7 +522,7 @@
 
 <!-- User PC Form Modal -->
 <div
-  class="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/30"
+  class="fixed inset-0 z-[60] flex items-center justify-center p-4 backdrop-blur-sm bg-black/30"
   *ngIf="showUserPcForm"
   dir="rtl"
 >
@@ -530,7 +538,7 @@
             <h3 class="text-xl font-bold text-white">تحویل کیس</h3>
           </div>
           <button
-            (click)="closeUserPcForm()"
+            (click)="showUserPcForm = false"
             class="p-1 rounded-full hover:bg-white/20 transition-colors duration-200 text-white/80 hover:text-white"
           >
             <svg
@@ -597,7 +605,7 @@
                 class="w-full"
                 formControlName="buildingId"
                 notFoundText="اطلاعاتی بدست نیامد"
-                (change)="fetchArea($event)"
+                (change)="onBuildingSelect($event)"
               >
                 <ng-option
                   *ngFor="let building of buildingList"
@@ -655,7 +663,7 @@
           </button>
           <button
             type="button"
-            (click)="closeUserPcForm()"
+            (click)="showUserPcForm = false"
             class="w-full sm:w-auto px-6 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:bg-red-500 hover:border-red-500 hover:text-red-600 hover:shadow-red-100 hover:shadow-sm flex items-center justify-center gap-2"
           >
             <svg
@@ -802,7 +810,8 @@
             (click)="
               openUserPcForm(
                 computer.computerpropertynumber,
-                computer.sealing?.computerseallingnumber || null
+                computer.sealing?.computerseallingnumber,
+                true
               )
             "
           >
@@ -890,10 +899,92 @@
 </mat-paginator>
 <div class="space"></div>
 
-<!-- Add this at the end of the file, before the closing </div> -->
 <div class="loading-overlay" *ngIf="isLoadingDetail">
   <div class="loading-content">
     <div class="loading-spinner"></div>
     <p class="loading-text">{{ detailLoadingMessage }}</p>
+  </div>
+</div>
+
+<!-- Handover Steps Modal -->
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/30"
+  *ngIf="showHandoverSteps"
+  dir="rtl"
+>
+  <div class="w-full max-w-2xl transform transition-all">
+    <div
+      class="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden border border-white/20"
+    >
+      <div dir="ltr" class="bg-[image:var(--primary-gradient)] p-5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3 flex-row-reverse ml-[43%]">
+            <h3 class="text-xl font-bold text-white">تحویل کیس</h3>
+          </div>
+          <button
+            (click)="closeHandoverSteps()"
+            class="p-1 rounded-full hover:bg-white/20 transition-colors duration-200 text-white/80 hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="p-6 space-y-6">
+        <div class="space-y-4">
+          <div
+            *ngFor="let step of handoverSteps"
+            class="flex items-center space-x-4 space-x-reverse"
+          >
+            <div class="flex-shrink-0">
+              <div
+                class="w-8 h-8 rounded-full flex items-center justify-center"
+                [ngClass]="{
+                  'bg-gray-200': step.status === 'pending',
+                  'bg-blue-500': step.status === 'in-progress',
+                  'bg-green-500': step.status === 'success',
+                  'bg-red-500': step.status === 'error'
+                }"
+              >
+                <span class="text-white font-medium">{{ step.id }}</span>
+              </div>
+            </div>
+            <div class="flex-grow">
+              <h4 class="text-lg font-medium text-gray-900">
+                {{ step.title }}
+              </h4>
+              <p class="text-sm text-gray-500">
+                {{
+                  step.status === "success"
+                    ? step.completedDescription
+                    : step.description
+                }}
+              </p>
+            </div>
+            <div *ngIf="step.showFormButton && step.status === 'in-progress'">
+              <button
+                (click)="showUserPcFormModal()"
+                class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+              >
+                باز کردن فرم
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
