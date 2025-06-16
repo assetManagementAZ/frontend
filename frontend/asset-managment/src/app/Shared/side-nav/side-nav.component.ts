@@ -15,11 +15,13 @@ import {
   RouterLinkActive,
   RouterModule,
   Router,
+  NavigationEnd,
 } from '@angular/router';
 import { ThemeService } from '../../Services/theme.service';
 import { AuthService } from '../../Services/auth.service';
 import { DataService } from '../../Services/data-service.service';
 import { SideNavService } from '../../Services/side-nav.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'as-side-nav',
@@ -42,7 +44,8 @@ export class SideNavComponent implements AfterViewInit, OnInit {
     private themeService: ThemeService,
     private authservice: AuthService,
     private dataService: DataService,
-    private sideNavService: SideNavService
+    private sideNavService: SideNavService,
+    private router: Router
   ) {
     this.isDarkMode = this.themeService.isDarkMode();
     this.userRole = this.authservice.getUserRole();
@@ -111,5 +114,10 @@ export class SideNavComponent implements AfterViewInit, OnInit {
       default:
         return 'کاربر';
     }
+  }
+
+  isActiveRoute(routes: string[]): boolean {
+    const currentRoute = this.router.url;
+    return routes.some((route) => currentRoute.startsWith(route));
   }
 }

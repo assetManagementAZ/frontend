@@ -29,6 +29,25 @@ import { PcUserComponent } from '../../../Shared/modals/pc-user/pc-user.componen
 import { MatIconModule } from '@angular/material/icon';
 import { ComputerInsideGoodsComponent } from '../computer-inside-goods/computer-inside-goods.component';
 import moment from 'jalali-moment';
+
+interface SealData {
+  computerseallingid: number;
+  computerseallingnumber: number;
+  computerseallingcreatetime: string;
+  computerseallingupdatetime: string;
+  isexpired: number;
+  createruserid: {
+    userpersonalid: number;
+    username: string;
+    userlastname: string;
+  };
+  updateruserid?: {
+    userpersonalid: number;
+    username: string;
+    userlastname: string;
+  };
+}
+
 @Component({
   selector: 'as-computer-detail',
   standalone: true,
@@ -69,6 +88,7 @@ export class ComputerDetailComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   pcList: any[] = [];
+  sealData: SealData | null = null;
 
   // Add getter for computer data
   get computerData() {
@@ -115,7 +135,6 @@ export class ComputerDetailComponent implements OnInit {
               return item.operationsystemversionid.operationsystemname;
             case 'operationsystemversionname':
               return item.operationsystemversionid.operationsystemversionname;
-
             case 'computerseallingnumber':
               return item.sealing.computerseallingnumber;
             case 'isexpired':
@@ -125,9 +144,30 @@ export class ComputerDetailComponent implements OnInit {
           }
         };
         this.pcDataSource.sort = this.sort;
+
+        // Fetch seal data after getting computer data
+        this.fetchSealData(dataArray[0].sealing?.computerseallingnumber);
       }
     });
   }
+
+  fetchSealData(sealNumber: number): void {
+    if (!sealNumber) return;
+
+    this.dataService
+      .get('asset/computer-sealling/')
+      .subscribe((response: any) => {
+        if (response && response.body) {
+          const seals = Array.isArray(response.body)
+            ? response.body
+            : [response.body];
+          this.sealData = seals.find(
+            (seal: SealData) => seal.computerseallingnumber === sealNumber
+          );
+        }
+      });
+  }
+
   convertDate(dateString: string): string {
     try {
       if (!dateString) {

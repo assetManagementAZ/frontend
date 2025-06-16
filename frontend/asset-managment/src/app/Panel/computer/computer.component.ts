@@ -27,6 +27,7 @@ import { UsersComputerDetailComponent } from '../../Shared/modals/users-computer
 import { ComputerDetailComponent } from '../../Shared/modals/computer-detail/computer-detail.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { UserDetailComponent } from '../../Shared/modals/user-detail/user-detail.component';
 @Component({
   selector: 'as-computer',
   standalone: true,
@@ -74,6 +75,7 @@ export class ComputerComponent implements OnInit {
   errorMessage: string = '';
   successMessage: string = '';
   showMessage = false;
+  userPcFormSuccess = false;
   displayedColumns: string[] = [
     'computerpropertynumber',
     'computername',
@@ -404,7 +406,7 @@ export class ComputerComponent implements OnInit {
     this.showMessage = true;
     setTimeout(() => {
       this.showMessage = false;
-    }, 3000);
+    }, 2000);
   }
   onOsNameChange(selectedOsId: number): void {
     const selectedOs = this.osList.find(
@@ -655,13 +657,24 @@ export class ComputerComponent implements OnInit {
       this.dataService.put(endpoint, formData).subscribe({
         next: (response) => {
           step.status = 'success';
-          this.successMessage = 'کامپیوتر با موفقیت به کاربر تحویل داده شد';
-          this.errorMessage = '';
-          this.showMessages();
-          // Close both forms
-          this.showUserPcForm = false;
-          this.showHandoverSteps = false;
-          this.fetchComputer();
+          // this.successMessage = 'کامپیوتر با موفقیت به کاربر تحویل داده شد';
+          // this.errorMessage = '';
+          // this.showMessages();
+
+          // Show success state in the form
+          this.userPcFormSuccess = true;
+
+          // Close the user PC form after a short delay
+          setTimeout(() => {
+            this.showUserPcForm = false;
+            this.userPcFormSuccess = false;
+
+            // Close the handover steps after another delay
+            setTimeout(() => {
+              this.showHandoverSteps = false;
+              this.fetchComputer();
+            }, 1500);
+          }, 2000);
         },
         error: (error) => {
           step.status = 'error';
@@ -674,15 +687,50 @@ export class ComputerComponent implements OnInit {
     }
   }
   viewUser(computerpropertynumber: number): void {
-    const config: MatDialogConfig = {
-      data: { computerpropertynumber: computerpropertynumber },
-      // height: '55%',
-      disableClose: true,
-    };
-    const dialogRef = this.dialog.open(PcUserComponent, config);
+    const userpersonalid = this.ComputerDataSource.data.find(
+      (c) => c.computerpropertynumber === computerpropertynumber
+    )?.owneruserid?.userpersonalid;
 
-    dialogRef.afterClosed().subscribe((result) => {
-      this.fetchComputer();
+    if (!userpersonalid) {
+      this.infoMessage = 'این کیس مالک ندارد';
+      this.showMessage = true;
+      setTimeout(() => {
+        this.showMessage = false;
+      }, 2000);
+      return;
+    }
+
+    // First fetch all users to find the matching userid
+    this.dataService.get('accounts/user/').subscribe((response: any) => {
+      if (response && response.body) {
+        const user = response.body.find(
+          (u: any) => u.userpersonalid === userpersonalid
+        );
+        if (user) {
+          this.isLoadingDetail = true;
+          this.detailLoadingMessage = 'در حال دریافت اطلاعات...';
+          const config: MatDialogConfig = {
+            data: {
+              userid: user.userid,
+              showEditButton: false,
+              hideButtons: true,
+              computerpropertynumber: computerpropertynumber,
+            },
+            disableClose: true,
+          };
+          const dialogRef = this.dialog.open(UserDetailComponent, config);
+          // Clear loading state when dialog is opened
+          dialogRef.afterOpened().subscribe(() => {
+            this.isLoadingDetail = false;
+            this.detailLoadingMessage = '';
+          });
+          dialogRef.afterClosed().subscribe((result) => {
+            if (result === true) {
+              this.fetchComputer(); // Refresh the computer list if owner was deleted
+            }
+          });
+        }
+      }
     });
   }
   viewDetail(computerpropertynumber: number): void {
@@ -818,6 +866,7 @@ export class ComputerComponent implements OnInit {
       status: 'pending', // 'pending', 'in-progress', 'success', 'error'
       apiEndpoint: 'asset/computer-sealling/',
       apiMethod: 'post',
+      last: false,
     },
     {
       id: 2,
@@ -827,6 +876,7 @@ export class ComputerComponent implements OnInit {
       status: 'pending',
       apiEndpoint: 'asset/assign-seall-to-computer/{sealId}/',
       apiMethod: 'put',
+      last: false,
     },
     {
       id: 3,
@@ -837,6 +887,7 @@ export class ComputerComponent implements OnInit {
       apiEndpoint: 'asset/assign-computer-to-user/{propertyNumber}/',
       apiMethod: 'put',
       showFormButton: true,
+      last: true,
     },
   ];
   getCompletedStepsCount(): number {

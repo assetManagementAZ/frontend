@@ -11,16 +11,20 @@
     </div>
     <ul class="nav-links">
       <li>
-        <a routerLink="/panel">
+        <a routerLink="/panel" routerLinkActive="active">
           <i class="fa fa-home"></i>
           <span class="link_name">خانه</span>
         </a>
         <ul class="sub-menu blank">
-          <li><a class="link_name" routerLink="/panel">خانه</a></li>
+          <li>
+            <a class="link_name" routerLink="/panel" routerLinkActive="active"
+              >خانه</a
+            >
+          </li>
         </ul>
       </li>
       <li *ngIf="userRole !== 'user'">
-        <div class="iocn-link">
+        <div class="iocn-link" [class.active]="isActiveRoute(['/users'])">
           <a routerLink="#">
             <i class="fa fa-users"></i>
             <span class="link_name"> کاربران</span>
@@ -29,12 +33,29 @@
         </div>
         <ul class="sub-menu">
           <li><a class="link_name" routerLink="#"> کاربران</a></li>
-
-          <li><a routerLink="/users">کاربران سیستم </a></li>
+          <li>
+            <a routerLink="/users" routerLinkActive="active">کاربران سیستم </a>
+          </li>
         </ul>
       </li>
       <li *ngIf="userRole !== 'user' && userRole !== 'supporter'">
-        <div class="iocn-link">
+        <div
+          class="iocn-link"
+          [class.active]="
+            isActiveRoute([
+              '/buildings',
+              '/zones',
+              '/op',
+              '/version',
+              '/software',
+
+              '/feature',
+              '/prfeature',
+              '/products',
+              '/pfcOrder'
+            ])
+          "
+        >
           <a routerLink="#">
             <i class="fa fa-database"></i>
             <span class="link_name">اطلاعات پایه </span>
@@ -47,30 +68,53 @@
               >اطلاعات پایه&#x2726;</a
             >
           </li>
-          <li><a routerLink="/buildings">ساختمان</a></li>
-          <li><a routerLink="/zones">حوزه</a></li>
+          <li>
+            <a routerLink="/buildings" routerLinkActive="active">ساختمان</a>
+          </li>
+          <li><a routerLink="/zones" routerLinkActive="active">حوزه</a></li>
           <li>
             <a class="group_name" routerLink="#"> بخش کیس &#x2726;</a>
           </li>
-          <li><a routerLink="/op">سیستم عامل</a></li>
-          <li><a routerLink="/version">ورژن سیستم عامل</a></li>
-          <li><a routerLink="/software">نرم افزار</a></li>
-          <li><a routerLink="/computer"> کیس</a></li>
-          <li><a routerLink="/seal"> پلمپ </a></li>
+          <li><a routerLink="/op" routerLinkActive="active">سیستم عامل</a></li>
+          <li>
+            <a routerLink="/version" routerLinkActive="active"
+              >ورژن سیستم عامل</a
+            >
+          </li>
+          <li>
+            <a routerLink="/software" routerLinkActive="active">نرم افزار</a>
+          </li>
           <li>
             <a class="group_name" routerLink="#"> بخش کالا &#x2726;</a>
           </li>
-          <li><a routerLink="/feature">دسته ویژگی ها </a></li>
-          <li><a routerLink="/prfeature"> ویژگی کالا</a></li>
-          <li><a routerLink="/products/:category"> دسته کالا</a></li>
-          <li><a routerLink="/products"> کالا ها</a></li>
-          <li><a routerLink="/pfcOrder"> ترتیب کالا ها</a></li>
-
-          <li><a routerLink="/deliveredProducts"> کالا تحویلی</a></li>
+          <li>
+            <a routerLink="/feature" routerLinkActive="active"
+              >دسته ویژگی ها
+            </a>
+          </li>
+          <li>
+            <a routerLink="/prfeature" routerLinkActive="active"> ویژگی کالا</a>
+          </li>
+          <li>
+            <a routerLink="/products/:category" routerLinkActive="active">
+              دسته کالا</a
+            >
+          </li>
+          <li>
+            <a routerLink="/products" routerLinkActive="active"> کالا ها</a>
+          </li>
+          <li>
+            <a routerLink="/pfcOrder" routerLinkActive="active">
+              ترتیب کالا ها</a
+            >
+          </li>
         </ul>
       </li>
       <li *ngIf="userRole !== 'user' && userRole !== 'supporter'">
-        <div class="iocn-link">
+        <div
+          class="iocn-link"
+          [class.active]="isActiveRoute(['/deliveredProducts', '/computer'])"
+        >
           <a routerLink="#">
             <i class="fa fa-product-hunt"></i>
             <span class="link_name"> دارایی</span>
@@ -79,12 +123,19 @@
         </div>
         <ul class="sub-menu">
           <li><a class="link_name" routerLink="#"> دارایی</a></li>
-          <li><a routerLink="/deliveredProducts"> کالا</a></li>
-          <li><a routerLink="/computer"> کیس</a></li>
+          <li><a routerLink="/computer" routerLinkActive="active"> کیس</a></li>
+          <li>
+            <a routerLink="/deliveredProducts" routerLinkActive="active">
+              کالا</a
+            >
+          </li>
         </ul>
       </li>
       <li *ngIf="userRole !== 'admin'">
-        <div class="iocn-link">
+        <div
+          class="iocn-link"
+          [class.active]="isActiveRoute(['/usersDelivery', '/usersPc'])"
+        >
           <a routerLink="#">
             <i class="fa fa-product-hunt"></i>
             <span class="link_name"> دارایی</span>
@@ -93,12 +144,19 @@
         </div>
         <ul class="sub-menu">
           <li><a class="link_name" routerLink="#"> دارایی</a></li>
-          <li><a routerLink="/usersDelivery"> کالا</a></li>
-          <li><a routerLink="/usersPc"> کامپیوتر</a></li>
+          <li>
+            <a routerLink="/usersDelivery" routerLinkActive="active"> کالا</a>
+          </li>
+          <li>
+            <a routerLink="/usersPc" routerLinkActive="active"> کامپیوتر</a>
+          </li>
         </ul>
       </li>
       <li>
-        <div class="iocn-link">
+        <div
+          class="iocn-link"
+          [class.active]="isActiveRoute(['/ownTicketPage', '/userTicketPage'])"
+        >
           <a routerLink="#">
             <i class="fa fa-ticket"></i>
             <span class="link_name">تیکت ها </span>
@@ -107,9 +165,15 @@
         </div>
         <ul class="sub-menu">
           <li><a class="link_name" routerLink="#">تیکت ها</a></li>
-          <li><a routerLink="/ownTicketPage">تیکت ها شخصی </a></li>
+          <li>
+            <a routerLink="/ownTicketPage" routerLinkActive="active"
+              >تیکت ها شخصی
+            </a>
+          </li>
           <li *ngIf="userRole !== 'user'">
-            <a routerLink="/userTicketPage">تیکت ها کاربران</a>
+            <a routerLink="/userTicketPage" routerLinkActive="active"
+              >تیکت ها کاربران</a
+            >
           </li>
         </ul>
       </li>

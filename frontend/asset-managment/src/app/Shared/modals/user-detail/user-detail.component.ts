@@ -75,6 +75,9 @@ export class UserDetailComponent implements OnInit {
   user: User | null = null;
   currentWorkDetailIndex: number = 0;
   totalWorkDetails: number = 0;
+  successMessage: string = '';
+  errorMessage: string = '';
+  showMessage: boolean = false;
 
   constructor(
     public dialogRef: MatDialogRef<UserDetailComponent>,
@@ -82,6 +85,8 @@ export class UserDetailComponent implements OnInit {
     public data: {
       userid: number;
       showEditButton?: boolean;
+      hideButtons?: boolean;
+      computerpropertynumber?: number;
     },
     private dataservice: DataService,
     private dialog: MatDialog
@@ -109,7 +114,7 @@ export class UserDetailComponent implements OnInit {
       'roomnumber',
     ];
 
-    if (this.showEditButton) {
+    if (this.showEditButton && !this.data.hideButtons) {
       this.displayedColumns.push('workActions');
     }
   }
@@ -205,5 +210,41 @@ export class UserDetailComponent implements OnInit {
 
   closeDialog(): void {
     this.dialogRef.close();
+  }
+
+  deleteOwner(): void {
+    if (!this.data.computerpropertynumber) return;
+
+    const dialogRef = this.dialog.open(ModalsComponent, {});
+
+    dialogRef.afterClosed().subscribe((result: string) => {
+      if (result === 'delete') {
+        this.deleteOwnerConfirmed();
+      }
+    });
+  }
+
+  deleteOwnerConfirmed(): void {
+    if (!this.data.computerpropertynumber) return;
+
+    const endpoint = `asset/assign-computer-to-user/${this.data.computerpropertynumber}/`;
+    this.dataservice.delete(endpoint).subscribe((response: any) => {
+      if (response.status === 204) {
+        this.successMessage = 'حذف مالک با موفقیت انجام شد';
+        this.errorMessage = '';
+        this.dialogRef.close(true);
+      } else {
+        this.errorMessage = 'حذف مالک موفقیت آمیز نبود،لطفا دوباره امتحان کنید';
+        this.successMessage = '';
+      }
+      this.showMessages();
+    });
+  }
+
+  showMessages(): void {
+    this.showMessage = true;
+    setTimeout(() => {
+      this.showMessage = false;
+    }, 3000);
   }
 }
